@@ -1,0 +1,43 @@
+["Beispiel1.Bodenbedeckung.Gebaeude"]
+# Zusaetzlicher Text fuer die Objektidentifikation fuer alle Fehlermeldung 
+# die sich auf ein Objekt der Klasse Beispiel1.Bodenbedeckung.Gebaeude beziehen. 
+# Die TID und Zeilennummer erscheint immer, falls vorhanden. keymsg ist 
+# zusaetzlich (eine Benutzerdefinierte/verständliche Identifikation).
+# inkl. Attributwerte in ${}
+# Fuer irgendeine Sprache bzw. fuer DE
+keymsg_de="Assekuranz-Nr ${AssNr}"
+keymsg="AssNr ${AssNr}"
+
+["Beispiel1.Bodenbedeckung.Gebaeude.c1023"]
+# Constraint-Pruefung ein/ausschalten bzw. nur als Hinweis.
+# Pruefen ob die Konsistenzbedingung erfuellt ist oder nicht.
+# on/warning/off
+check=warning
+# Meldungstext, falls dieses Constraint nicht erfuellt ist. 
+# Wird ergaenzt um Objektidentifikation und Name des Constraints. 
+# Auf DE inkl. Attributwerte in ${}
+msg_de="AndereArt muss definiert sein"
+
+["Beispiel1.Bodenbedeckung.Gebaeude.Art"]
+# Multiplizitaetpruefung ein/ausschalten bzw. nur als Hinweis.
+# z.B. ob bei MANDATORY ein Wert vorhanden ist, oder nicht bzw.
+# bei BAG/LIST ob die entsprechende Anzahl Strukturelemente vorhanden ist
+# on/warning/off
+multiplicity=warning
+# Datentyppruefung ein/ausschalten bzw. nur als Hinweis.
+# z.B. ob eine Zahlenwert innerhalb des Bereichs ist, oder ein 
+# Aufzaehlwert dem Modell entspricht oder die Flaechen eine
+# Gebietseinteilung sind usw.
+# on/warning/off
+type=off
+
+["Beispiel1.Bodenbedeckung.GebaeudeFlaeche.Gebaeude"]
+# Multiplizitaetpruefung ein/ausschalten bzw. nur als Hinweis.
+# Pruefen ob die vom Modell geforderte Anzahl Objekte referenziert wird
+# on/warning/off
+multiplicity=off
+# Zielobjekt-Pruefung ein/ausschalten bzw. nur als Hinweis.
+# Prueft ob das referenzierte Objekt vorhanden ist und
+# ob es von der gewuenschten Klasse ist
+# on/warning/off
+target=warning

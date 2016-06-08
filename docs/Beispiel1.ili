@@ -1,0 +1,131 @@
+INTERLIS 2.3;
+
+CONTRACTED MODEL Beispiel1
+  AT "mailto:ceis@localhost"
+  VERSION "2016-03-29" =
+
+  DOMAIN
+    LKoord = COORD 2480000.00 .. 2850000.00, 1060000.00 .. 1320000.00,
+      ROTATION 2 -> 1;
+      
+
+  TOPIC Bodenbedeckung =
+
+    CLASS GebaeudeArt =
+      Art : MANDATORY TEXT*6; !! R2.1, R2.2
+    END GebaeudeArt;
+
+    CLASS BoFlaechen =
+      Art : MANDATORY ( !! R2.1, R2.2
+        Gebaeude,
+        befestigt,
+        humusiert,
+        Gewaesser,
+        bestockt,
+        vegetationslos);
+      Form : MANDATORY AREA WITH (STRAIGHTS, ARCS) VERTEX LKoord
+        WITHOUT OVERLAPS > 0.10; !! R2.1, R2.2
+    END BoFlaechen;
+
+    FUNCTION checkGebaeudeVersicherungsSystem(str : TEXT):BOOLEAN;
+    
+    !! Metaattribute stehen immer vor dem Modellelement, auf das sie sich 
+    !! beziehen.
+    
+    !! Zusaetzlicher Text fuer die Objektidentifikation fuer alle Fehlermeldung 
+    !! die sich auf ein Objekt der folgenden Klasse beziehen.
+    !! Die TID und Zeilennummer erscheint immer, falls vorhanden. keymsg ist 
+    !! zusaetzlich (eine Benutzerdefinierte/verständliche Identifikation).
+    !! Bei Export aus/Check auf DB ist TID evtl. nicht vorhanden. Bei XML ist Zeilennummer in der Regel nicht hilfreich.
+    !! inkl. Attributwerte in ${}
+    !! Fuer irgendeine Sprache bzw. fuer DE
+    !!@ ilivalid.keymsg = "AssNr ${AssNr}"
+    !!@ ilivalid.keymsg_de = "Assekuranz-Nr ${AssNr}"
+    CLASS Gebaeude =
+      !! Datentyppruefung ein/ausschalten bzw. nur als Hinweis.
+      !! z.B. ob eine Zahlenwert innerhalb des Bereichs ist, oder ein 
+      !! Aufzaehlwert dem Modell entspricht oder die Flaechen eine
+      !! Gebietseinteilung sind usw.
+      !! on/warning/off
+      !!@ ilivalid.type = off
+      !! Multiplizitaetpruefung ein/ausschalten bzw. nur als Hinweis.
+      !! z.B. ob bei MANDATORY ein Wert vorhanden ist, oder nicht bzw.
+      !! bei BAG/LIST ob die entsprechende Anzahl Strukturelemente vorhanden ist
+      !! on/warning/off
+      !!@ ilivalid.multiplicity = warning
+      Art : MANDATORY (
+        Wohn,
+        Industrie,
+        andere); !! R2.1, R2.2
+      AndereArt : TEXT*6; !! R2.1, R2.2
+      AssNr : MANDATORY TEXT*6; !! R2.1, R2.2
+      UNIQUE AssNr;                                    !! R2.3      
+      EXISTENCE CONSTRAINT AndereArt REQUIRED IN GebaeudeArt:Art;    !! R2.4
+
+      !! Constraint-Pruefung ein/ausschalten bzw. nur als Hinweis.
+      !! Pruefen ob die Konsistenzbedingung erfuellt ist oder nicht.
+      !! on/warning/off
+      !!@ ilivalid.check = warning
+      !! Name des Constraints (ili2.3 oder bei ili2.4 falls constraint kein name hat)
+      !! Ergaenzt Fehlermeldung (ohne Name wird interne Id des Constraints verwendet)
+      !!@ ilivalid.name = c1023
+      !! Meldungstext, falls dieses Constraint nicht erfuellt ist. 
+      !! Wird ergaenzt um Objektidentifikation und Name des Constraints. 
+      !! Auf DE inkl. Attributwerte in ${}
+      !!@ ilivalid.msg_de = "AndereArt muss definiert sein"
+      MANDATORY CONSTRAINT Art!=#andere OR DEFINED(AndereArt);       !! R2.5
+      MANDATORY CONSTRAINT INTERLIS.len(AssNr)>=4;     !! R2.6
+      MANDATORY CONSTRAINT checkGebaeudeVersicherungsSystem(AssNr);  !! R2.7
+    END Gebaeude;
+
+    ASSOCIATION GebaeudeFlaeche =
+      !! Zielobjekt-Pruefung ein/ausschalten bzw. nur als Hinweis.
+      !! Prueft ob das referenzierte Objekt vorhanden ist und
+      !! ob es von der gewuenschten Klasse ist
+      !! on/warning/off
+      !!@ ilivalid.target = warning
+      !! Multiplizitaetpruefung ein/ausschalten bzw. nur als Hinweis.
+      !! Pruefen ob die vom Modell geforderte Anzahl Objekte referenziert wird
+      !! on/warning/off
+      !!@ ilivalid.multiplicity = off
+      Gebaeude -- {0..*} Gebaeude;                     !! R2.8, R2.9
+      Flaeche -- {1} BoFlaechen;
+    END GebaeudeFlaeche;
+    
+    VIEW IndustrieGebaeude                             !! R2.10
+    	PROJECTION OF Gebaeude;
+    	WHERE Gebaeude->Art==#Industrie;
+    =
+      ALL OF Gebaeude;
+      MANDATORY CONSTRAINT INTERLIS.len(AssNr)==6;
+    END IndustrieGebaeude;
+    
+  END Bodenbedeckung;
+
+END Beispiel1.
+
+CONTRACTED MODEL Beispiel1Zusatz
+  AT "mailto:ceis@localhost"
+  VERSION "2016-03-29" =
+  IMPORTS Beispiel1;
+
+
+  VIEW TOPIC BodenbedeckungZusatz =
+  DEPENDS ON Beispiel1.Bodenbedeckung;
+
+
+    FUNCTION startsWith(str : TEXT;prefix : TEXT):BOOLEAN;
+    
+    
+    VIEW IndustrieGebaeudeSO
+    	PROJECTION OF Beispiel1.Bodenbedeckung.Gebaeude;
+    	WHERE Gebaeude->Art==#Industrie;
+    =
+      ALL OF Gebaeude;
+      MANDATORY CONSTRAINT startsWith(AssNr,"SO"); !! R1.8
+    END IndustrieGebaeudeSO;
+    
+  END BodenbedeckungZusatz;
+
+END Beispiel1Zusatz.
+

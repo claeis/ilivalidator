@@ -6,3 +6,4 @@ support/
 .project
 .classpath
 *~
+/bin
