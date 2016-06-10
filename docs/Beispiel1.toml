@@ -12,7 +12,7 @@ keymsg="AssNr ${AssNr}"
 # Constraint-Pruefung ein/ausschalten bzw. nur als Hinweis.
 # Pruefen ob die Konsistenzbedingung erfuellt ist oder nicht.
 # on/warning/off
-check=warning
+check="warning"
 # Meldungstext, falls dieses Constraint nicht erfuellt ist. 
 # Wird ergaenzt um Objektidentifikation und Name des Constraints. 
 # Auf DE inkl. Attributwerte in ${}
@@ -23,21 +23,21 @@ msg_de="AndereArt muss definiert sein"
 # z.B. ob bei MANDATORY ein Wert vorhanden ist, oder nicht bzw.
 # bei BAG/LIST ob die entsprechende Anzahl Strukturelemente vorhanden ist
 # on/warning/off
-multiplicity=warning
+multiplicity="warning"
 # Datentyppruefung ein/ausschalten bzw. nur als Hinweis.
 # z.B. ob eine Zahlenwert innerhalb des Bereichs ist, oder ein 
 # Aufzaehlwert dem Modell entspricht oder die Flaechen eine
 # Gebietseinteilung sind usw.
 # on/warning/off
-type=off
+type="off"
 
 ["Beispiel1.Bodenbedeckung.GebaeudeFlaeche.Gebaeude"]
 # Multiplizitaetpruefung ein/ausschalten bzw. nur als Hinweis.
 # Pruefen ob die vom Modell geforderte Anzahl Objekte referenziert wird
 # on/warning/off
-multiplicity=off
+multiplicity="off"
 # Zielobjekt-Pruefung ein/ausschalten bzw. nur als Hinweis.
 # Prueft ob das referenzierte Objekt vorhanden ist und
 # ob es von der gewuenschten Klasse ist
 # on/warning/off
-target=warning
+target="warning"
