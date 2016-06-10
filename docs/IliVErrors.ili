@@ -1,0 +1,37 @@
+INTERLIS 2.3;
+
+!! Ein "einfaches" Modell (Shapefile-Niveau). 
+!! Benutzer sollen nicht noch Daten umbauen muessen, um an die
+!! Informationen zu kommen.
+
+
+MODEL IliVErrors
+  AT "mailto:ceis@localhost"
+  VERSION "2016-06-10" =
+
+  TOPIC ErrorLog =
+
+    CLASS Error =
+    	 Message: MANDATORY TEXT*255; !! Sprachspezifische Fehlermeldungen inkl. aufgeloeste Platzhalter/Attributwerte aber ohne Tid, TechId, UserId, usw.
+    	 Type: MANDATORY (
+    	 	Error, 
+    	 	Warning, !! Fehler, die der Benutzer als akzeptabel konfiguriert hat 
+    	 	Info, !! Info, z.B. Software-Version
+    	 	DetailInfo !! !! Wie Info, aber weniger wichtig
+    	 	);
+         Tid: TEXT*40; !! Bei Check auf der DB evtl. nicht vorhanden
+         TechtId: TEXT*40; !! Der Software interne Schluessel 
+         UserId: TEXT*255; !! Text mit dem fachlichen Schluessel (falls bekannt), z.B. "NBIdent 255, Nummer 30" 
+         IliQName: TEXT*255; !! Qualifizierter Topic-, Class- oder Attribut-Name, z.B. "Beispiel1.Bodenbedeckung.Gebaeude.Art" ; Bei Programmfehlern nicht vorhanden.
+         DataSource: TEXT*255; !! z.B. Dateiname oder DB-Name
+         Line: 1 .. 1000000000; !! Zeilennummer; Bei Check auf der DB evtl. noch nicht vorhanden
+         Geometry : COORD 2480000.00 .. 2850000.00, 1060000.00 .. 1320000.00; !! die Fehlerkoordinate oder Koordinate im/beim Objekt
+         TechDetails : MTEXT; !! evtl. technische Details, z.B. ein Stacktrace
+    END Error;
+
+    
+  END ErrorLog;
+
+END IliVErrors.
+
+
