@@ -1,0 +1,141 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<project basedir="." default="jar" name="ilivalidator">
+
+  <!-- set global properties for this build -->
+  <property name="src" value="${basedir}/src"/>
+  <property name="build" value="${basedir}/build"/>
+  <property name="dist" value="${basedir}/dist"/>
+  <property name="lib" value="${basedir}/libs"/>
+  <property name="versionfile" value="${src}/org/interlis2/validator/Version.properties"/>
+  <property file="user.properties" prefix="user."/>
+
+  <property name="python" value="${user.python}"/>
+  <property name="pythonhome" value="${user.pythonhome}"/>
+  <property name="rst2html" value="${user.rst2html}"/>
+
+  <target name="init">
+    <!-- Create the time stamp -->
+    <tstamp/>
+    <property name="projectjar" value="${ant.project.name}.jar"/>
+    <!-- Create the build directory structure used by compile -->
+    <mkdir dir="${build}"/>
+    <mkdir dir="${dist}"/>
+  </target>
+
+  <target depends="init" name="compile">
+    <!-- Compile the java code from ${src} into ${build}/classes -->
+    <mkdir dir="${build}/classes"/>
+    <javac destdir="${build}/classes" includes="**/*.java" excludes="**/test/*.java"  source="1.6" target="1.6">
+      <classpath>
+        <pathelement location="${lib}/antlr.jar"/>
+        <pathelement location="${lib}/ehibasics.jar"/>
+        <pathelement location="${lib}/gson-2.6.2.jar"/>
+        <pathelement location="${lib}/ili2c-core.jar"/>
+        <pathelement location="${lib}/ili2c-tool.jar"/>
+        <pathelement location="${lib}/iox-api.jar"/>
+        <pathelement location="${lib}/iox-ili.jar"/>
+        <pathelement location="${lib}/jdbm-2.4.jar"/>
+        <pathelement location="${lib}/jts-core-1.14.0.jar"/>
+      </classpath>
+    	<src path="src" />
+    	<src path="gensrc" />
+    </javac>
+  </target>
+
+
+  <target depends="init" name="javadocs">
+    <mkdir dir="${build}/javadoc/api"/>
+    <javadoc Public="true" Windowtitle="${ant.project.name}" destdir="${build}/javadoc/api">
+    	<sourcepath path="src"/>
+    	<sourcepath path="gensrc"/>
+    </javadoc>
+  </target>
+  
+  <target depends="init" name="usrdoc">
+  	<exec dir="docs" executable="${python}">
+  		<env key="PYTHONHOME" value="${pythonhome}"/>
+  		<arg value="${rst2html}"/>
+  		<arg value="ilivalidator.rst"/>
+  		<arg value="ilivalidator.html"/>
+  	</exec>
+  </target>
+
+  <target depends="init,compile" name="jar">
+    <propertyfile file="${versionfile}">
+	<!-- <entry  key="versionMicro" type="int" value="1" operation="+"/> -->
+	<entry  key="versionDate" type="date" value="now" pattern="yyyyMMdd"/>
+    </propertyfile>
+
+    <delete file="${projectjar}" quiet="true"/>
+
+    <jar jarfile="${projectjar}">
+	    <manifest>
+	      <!-- attribute name="Built-By" value="${user.name}"/>
+	      <attribute name="Build-Jdk" value="${java.version}"/>
+	      <attribute name="ArtefactId" value="GBDBS"/>
+	      <attribute name="Buildnumber" value=""/>
+	      <attribute name="Description" value="${mf.description}"/>
+	      <attribute name="GroupId" value="${mf.groupid}"/>
+	      <attribute name="Organisazion" value="${mf.organization}"/>
+	      <attribute name="Url" value="${mf.url}"/>
+	      <attribute name="Version" value="${version}"/-->
+	      <attribute name="Main-Class" value="org.interlis2.validator.Main"/>
+	      <attribute name="Class-Path" value="libs/antlr.jar libs/ehibasics.jar libs/gson-2.6.2.jar libs/ili2c-core.jar libs/ili2c-tool.jar libs/iox-api.jar libs/iox-ili.jar libs/jdbm-2.4.jar libs/jts-core-1.14.0.jar"/>
+	    </manifest>
+    
+	<fileset dir="${build}/classes" includes="**/*.class"/>
+    	<fileset dir="src" includes="**/*.properties"/>
+    </jar>
+  </target>
+  
+  <target depends="init" name="buildnr">
+    <property file="${versionfile}" prefix="buildnr."/>
+    <property name="buildnr" value="${buildnr.versionMajor}.${buildnr.versionMinor}.${buildnr.versionMicro}"/>
+    <!-- <property name="buildnr" value="${DSTAMP}"/> -->
+  </target>
+
+  <target depends="init,buildnr" name="bindist">
+    <delete file="${dist}/${ant.project.name}-${buildnr}.zip" quiet="true"/>
+    <zip zipfile="${dist}/${ant.project.name}-${buildnr}.zip">
+    	<zipfileset dir="${basedir}" prefix="${ant.project.name}-${buildnr}">
+	    	<patternset includes="${ant.project.name}.jar"/>
+    	</zipfileset>
+    	<zipfileset dir="${basedir}" prefix="${ant.project.name}-${buildnr}">
+		<patternset includes="libs/antlr.jar"/>
+		<patternset includes="libs/ehibasics.jar"/>
+		<patternset includes="libs/gson-2.6.2.jar"/>
+		<patternset includes="libs/ili2c-core.jar"/>
+		<patternset includes="libs/ili2c-tool.jar"/>
+		<patternset includes="libs/iox-api.jar"/>
+		<patternset includes="libs/iox-ili.jar"/>
+		<patternset includes="libs/jdbm-2.4.jar"/>
+		<patternset includes="libs/jts-core-1.14.0.jar"/>
+    	</zipfileset>
+    	<zipfileset dir="." prefix="${ant.project.name}-${buildnr}">
+	    	<patternset includes="docs/LICENSE.*"/>
+	    	<patternset includes="docs/README.txt"/>
+	    	<patternset includes="docs/CHANGELOG.txt"/>
+	    	<patternset includes="docs/Beispiel1.ili"/>
+	    	<patternset includes="docs/Beispiel1.toml"/>
+	    	<patternset includes="docs/Beispiel1.xtf"/>
+	    	<patternset includes="docs/IliVErrors.ili"/>
+	    	<patternset includes="docs/ilivalidator.html"/>
+    	</zipfileset>
+    </zip>
+  </target>
+  <target depends="init,buildnr" name="srcdist">
+    <delete file="${dist}/${ant.project.name}-${buildnr}.src.zip" quiet="true"/>
+    <zip zipfile="${dist}/${ant.project.name}-${buildnr}.src.zip">
+    	<zipfileset dir="." prefix="${ant.project.name}-${buildnr}">
+	    	<patternset includes="build.xml"/>
+	    	<!-- <patternset includes="lib/**"/> -->
+	    	<patternset includes="sample/zpl/**"/>
+	    	<patternset includes="src/**" excludes="**/CVS/*;**/bak~/*"/>
+    	</zipfileset>
+    </zip>
+  </target>
+  <target name="clean">
+    <delete dir="${build}"/>
+  </target>
+
+</project>
