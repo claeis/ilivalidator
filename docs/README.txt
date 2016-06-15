@@ -30,7 +30,3 @@ Running ilivalidator
 ilivalidator can be started with
 
 java -jar ilivalidator.jar [options] file.xtf
-
-Documentation
-====================
-<blob/master/docs/ilivalidator.rst>

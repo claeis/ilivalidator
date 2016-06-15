@@ -68,7 +68,7 @@ CONTRACTED MODEL Beispiel1
       !!@ ilivalid.check = warning
       !! Name des Constraints (ili2.3 oder bei ili2.4 falls constraint kein name hat)
       !! Ergaenzt Fehlermeldung (ohne Name wird interne Id des Constraints verwendet)
-      !!@ ilivalid.name = c1023
+      !!@ name = c1023
       !! Meldungstext, falls dieses Constraint nicht erfuellt ist. 
       !! Wird ergaenzt um Objektidentifikation und Name des Constraints. 
       !! Auf DE inkl. Attributwerte in ${}

@@ -143,7 +143,7 @@ Um dieselbe Konfiguration ohne Änderung der ili-Datei vorzunehmen,
 schreibt man in der TOML-Datei:
 
 | ["Beispiel1.Bodenbedeckung.Gebaeude.Art"]
-| multiplicity=off
+| multiplicity="off"
 
 TOML-Konfigurationsdatei
 ~~~~~~~~~~~~~~~~~~~~~~~~
@@ -247,10 +247,10 @@ Metaattribute stehen unmittelbar vor dem Modellelement das sie betreffen und beg
 +------------------+--------------------------+-----------------------------------------------------------------------------------+
 | ConstraintDef    | ::                       | Name des Constraints (ili2.3 oder bei ili2.4 falls constraint kein name hat)      |
 |                  |                          | Ergaenzt Fehlermeldung (ohne Name wird interne Id des Constraints verwendet)      |
-|                  |  ilivalid.name           |                                                                                   |
+|                  |  name                    |                                                                                   |
 |                  |                          | ::                                                                                |
 |                  |                          |                                                                                   |
-|                  |                          |   !!@ ilivalid.name = c1023                                                       |
+|                  |                          |   !!@ name = c1023                                                                |
 |                  |                          |                                                                                   |
 |                  |                          |                                                                                   |
 |                  |                          |                                                                                   |
