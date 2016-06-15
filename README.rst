@@ -33,4 +33,4 @@ java -jar ilivalidator.jar [options] file.xtf
 
 Documentation
 ====================
-`<blob/master/docs/ilivalidator.rst>`_
+`<docs/ilivalidator.rst>`_
