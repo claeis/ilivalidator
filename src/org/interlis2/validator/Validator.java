@@ -20,7 +20,10 @@ import ch.interlis.iox.IoxException;
 import ch.interlis.iox.IoxLogging;
 import ch.interlis.iox.IoxReader;
 import ch.interlis.iox_j.IoxUtility;
+import ch.interlis.iox_j.logging.FileLogger;
 import ch.interlis.iox_j.logging.LogEventFactory;
+import ch.interlis.iox_j.logging.StdLogger;
+import ch.interlis.iox_j.logging.XtfErrorsLogger;
 import ch.interlis.iox_j.validator.ValidationConfig;
 
 public class Validator {
@@ -35,8 +38,8 @@ public class Validator {
 			EhiLogger.logError("no INTERLIS file given");
 			return;
 		}
-	    String logFilename=settings.getValue(Main.SETTING_LOGFILE);
-	    String xtflogFilename=settings.getValue(Main.SETTING_XTFLOG);
+	    String logFilename=settings.getValue(Validator.SETTING_LOGFILE);
+	    String xtflogFilename=settings.getValue(Validator.SETTING_XTFLOG);
 		FileLogger logfile=null;
 		XtfErrorsLogger xtflog=null;
 		StdLogger logStderr=null;
@@ -52,7 +55,7 @@ public class Validator {
 			logStderr=new StdLogger(logFilename);
 			EhiLogger.getInstance().addListener(logStderr);
 			EhiLogger.getInstance().removeListener(StdListener.getInstance());
-		    String configFilename=settings.getValue(Main.SETTING_CONFIGFILE);
+		    String configFilename=settings.getValue(Validator.SETTING_CONFIGFILE);
 
 		    
 			EhiLogger.logState(Main.APP_NAME+"-"+Main.getVersion());
@@ -152,21 +155,21 @@ public class Validator {
 			model=names[0];
 		}
 		ArrayList modeldirv=new ArrayList();
-		String ilidirs=settings.getValue(Main.SETTING_ILIDIRS);
+		String ilidirs=settings.getValue(Validator.SETTING_ILIDIRS);
 	
 		EhiLogger.logState("ilidirs <"+ilidirs+">");
 		String modeldirs[]=ilidirs.split(";");
 		HashSet ilifiledirs=new HashSet();
 		for(int modeli=0;modeli<modeldirs.length;modeli++){
 			String m=modeldirs[modeli];
-			if(m.equals(Main.ITF_DIR)){
+			if(m.equals(Validator.ITF_DIR)){
 				m=itfDir;
 				if(m!=null && m.length()>0){
 					if(!modeldirv.contains(m)){
 						modeldirv.add(m);				
 					}
 				}
-			}else if(m.equals(Main.JAR_DIR)){
+			}else if(m.equals(Validator.JAR_DIR)){
 				m=appHome;
 				if(m!=null){
 					m=new java.io.File(m,"ilimodels").getAbsolutePath();
@@ -237,4 +240,14 @@ public class Validator {
 		}
 		return false;
 	}
+
+
+	public static final String SETTING_DEFAULT_ILIDIRS = Validator.ITF_DIR+";http://models.interlis.ch/;"+Validator.JAR_DIR;
+	public static final String SETTING_ILIDIRS="org.interlis2.validator.ilidirs";
+	public static final String SETTING_DIRUSED="org.interlis2.validator.dirused";
+	public static final String SETTING_CONFIGFILE = "org.interlis2.validator.configfile";
+	public static final String SETTING_LOGFILE = "org.interlis2.validator.log";
+	public static final String SETTING_XTFLOG = "org.interlis2.validator.xtflog";
+	public static final String ITF_DIR="%ITF_DIR";
+	public static final String JAR_DIR="%JAR_DIR";
 }

@@ -2,18 +2,13 @@ package org.interlis2.validator;
 
 import java.util.Iterator;
 
+import org.interlis2.validator.gui.MainFrame;
+
 import ch.ehi.basics.logging.EhiLogger;
 import ch.ehi.basics.settings.Settings;
 
 public class Main {
 
-	public static final String SETTING_ILIDIRS="org.interlis2.validator.ilidirs";
-	public static final String SETTING_DIRUSED="org.interlis2.validator.dirused";
-	public static final String SETTING_CONFIGFILE = "org.interlis2.validator.configfile";
-	public static final String SETTING_LOGFILE = "org.interlis2.validator.log";
-	public static final String SETTING_XTFLOG = "org.interlis2.validator.xtflog"; 
-	public static final String ITF_DIR="%ITF_DIR";
-	public static final String JAR_DIR="%JAR_DIR";
 	/** name of application as shown to user.
 	 */
 	public static final String APP_NAME="ilivalidator";
@@ -26,40 +21,40 @@ public class Main {
 	 */
 	static public void main(String args[]){
 		Settings settings=new Settings();
-		settings.setValue(SETTING_ILIDIRS, ITF_DIR+";http://models.interlis.ch/;"+JAR_DIR);
+		settings.setValue(Validator.SETTING_ILIDIRS, Validator.SETTING_DEFAULT_ILIDIRS);
 		// arguments on export
 		String xtfFile=null;
 		String httpProxyHost = null;
 		String httpProxyPort = null;
-		//if(args.length==0){
-		//readSettings(settings);
-		//	ch.ehi.avgbs2txt.gui.MainFrame.main(avgbsFile,txtFile);
-		//	return;
-		//}
+		if(args.length==0){
+			readSettings(settings);
+			MainFrame.main(xtfFile,settings);
+			return;
+		}
 		int argi=0;
 		boolean doGui=false;
 		for(;argi<args.length;argi++){
 			String arg=args[argi];
 			if(arg.equals("--trace")){
 				EhiLogger.getInstance().setTraceFilter(false); 
-			//}else if(arg.equals("--gui")){
-			//	readSettings(settings);
-			//	doGui=true;
+			}else if(arg.equals("--gui")){
+				readSettings(settings);
+				doGui=true;
 			}else if(arg.equals("--modeldir")){
 				argi++;
-				settings.setValue(SETTING_ILIDIRS, args[argi]);
+				settings.setValue(Validator.SETTING_ILIDIRS, args[argi]);
 				continue;
 			}else if(arg.equals("--config")) {
 			    argi++;
-			    settings.setValue(SETTING_CONFIGFILE, args[argi]);
+			    settings.setValue(Validator.SETTING_CONFIGFILE, args[argi]);
 			    continue;
 			}else if(arg.equals("--log")) {
 			    argi++;
-			    settings.setValue(SETTING_LOGFILE, args[argi]);
+			    settings.setValue(Validator.SETTING_LOGFILE, args[argi]);
 			    continue;
 			}else if(arg.equals("--xtflog")) {
 			    argi++;
-			    settings.setValue(SETTING_XTFLOG, args[argi]);
+			    settings.setValue(Validator.SETTING_XTFLOG, args[argi]);
 			    continue;
 			}else if(arg.equals("--proxy")) {
 				    argi++;
@@ -85,7 +80,7 @@ public class Main {
 				    System.err.println("--config file         config file to control validation.");
 				    System.err.println("--log file            text file, that receives validation results.");
 				    System.err.println("--xtflog file         INTERLIS transfer file, that receives validation results.");
-					System.err.println("--modeldir "+settings.getValue(SETTING_ILIDIRS)+" list of directories/repositories with ili-files.");
+					System.err.println("--modeldir "+settings.getValue(Validator.SETTING_ILIDIRS)+" list of directories/repositories with ili-files.");
 				    System.err.println("--proxy host          proxy server to access model repositories.");
 				    System.err.println("--proxyPort port      proxy port to access model repositories.");
 					System.err.println("--trace               enable trace messages.");
@@ -108,7 +103,7 @@ public class Main {
 			if(argi<args.length){
 				EhiLogger.logAdaption(APP_NAME+": wrong number of arguments; ignored");
 			}
-			//ch.ehi.avgbs2txt.gui.MainFrame.main(avgbsFile,txtFile);
+			MainFrame.main(xtfFile,settings);
 		}else{
 			if(argi+1==args.length){
 				xtfFile=args[argi];
