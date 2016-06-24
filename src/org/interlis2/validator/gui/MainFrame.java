@@ -24,6 +24,7 @@ import org.interlis2.validator.Validator;
  * @author ce
  */
 public class MainFrame extends JFrame {
+	private java.util.ResourceBundle rsrc=java.util.ResourceBundle.getBundle("org.interlis2.validator.gui.IliValidatorTexts");
 	private Settings settings=null;
 	private javax.swing.JPanel jContentPane = null;
 
@@ -50,20 +51,20 @@ public class MainFrame extends JFrame {
 		initialize();
 	}
 	private void initialize() {
-		this.setSize(314, 361);
+		this.setSize(500, 361);
 		this.setContentPane(getJContentPane());
 		this.setDefaultCloseOperation(javax.swing.JFrame.EXIT_ON_CLOSE);
 		this.setName(Main.APP_NAME);
-		this.setTitle(Main.APP_NAME);
+		this.setTitle(rsrc.getString("MainFrame.Title"));
 		
 	    //Create the menu bar.
 		JMenuBar menuBar = new JMenuBar();
 	    setJMenuBar(menuBar);
 
-	    JMenu menu = new JMenu("Tools");
+	    JMenu menu = new JMenu(rsrc.getString("MainFrame.ToolsMenu"));
 	    menu.setMnemonic(KeyEvent.VK_T);
 	    menuBar.add(menu);
-	    JMenuItem menuItem = new JMenuItem("Model Repositories...");
+	    JMenuItem menuItem = new JMenuItem(rsrc.getString("MainFrame.ModelRepositoriesMenuItem"));
 		menuItem.addActionListener(new ActionListener(){
 			public void actionPerformed(java.awt.event.ActionEvent e){
 				RepositoriesDialog dlg=new RepositoriesDialog(MainFrame.this);
@@ -199,28 +200,28 @@ public class MainFrame extends JFrame {
 	private javax.swing.JLabel getXtfFileLabel() {
 		if(xtfFileLabel == null) {
 			xtfFileLabel = new javax.swing.JLabel();
-			xtfFileLabel.setText("xtfFile");
+			xtfFileLabel.setText(rsrc.getString("MainFrame.xtfFileLabel"));
 		}
 		return xtfFileLabel;
 	}
 	private javax.swing.JLabel getConfigFileLabel() {
 		if(configFileLabel == null) {
 			configFileLabel = new javax.swing.JLabel();
-			configFileLabel.setText("configFile");
+			configFileLabel.setText(rsrc.getString("MainFrame.configFileLabel"));
 		}
 		return configFileLabel;
 	}
 	private javax.swing.JLabel getLogFileLabel() {
 		if(logFileLabel == null) {
 			logFileLabel = new javax.swing.JLabel();
-			logFileLabel.setText("logFile");
+			logFileLabel.setText(rsrc.getString("MainFrame.logFileLabel"));
 		}
 		return logFileLabel;
 	}
 	private javax.swing.JLabel getXtfLogFileLabel() {
 		if(xtfLogFileLabel == null) {
 			xtfLogFileLabel = new javax.swing.JLabel();
-			xtfLogFileLabel.setText("XtfLogFile");
+			xtfLogFileLabel.setText(rsrc.getString("MainFrame.xtfLogFileLabel"));
 		}
 		return xtfLogFileLabel;
 	}
@@ -258,7 +259,7 @@ public class MainFrame extends JFrame {
 	private javax.swing.JButton getClearlogBtn() {
 		if(clearlogBtn == null) {
 			clearlogBtn = new javax.swing.JButton();
-			clearlogBtn.setText("clear log");
+			clearlogBtn.setText(rsrc.getString("MainFrame.clearLogButton"));
 			clearlogBtn.addActionListener(new java.awt.event.ActionListener() { 
 				public void actionPerformed(java.awt.event.ActionEvent e) {    
 					logClear();
@@ -342,7 +343,7 @@ public class MainFrame extends JFrame {
 	private javax.swing.JButton getDoValidateBtn() {
 		if(doValidateBtn == null) {
 			doValidateBtn = new javax.swing.JButton();
-			doValidateBtn.setText("validate");
+			doValidateBtn.setText(rsrc.getString("MainFrame.doValidateButton"));
 			doValidateBtn.addActionListener(new java.awt.event.ActionListener() { 
 				public void actionPerformed(java.awt.event.ActionEvent e) {
 					SwingWorker worker = new SwingWorker() {
@@ -354,7 +355,7 @@ public class MainFrame extends JFrame {
 								);
 							}
 							catch (Exception ex) {
-								EhiLogger.logError("validation failed",ex);
+								EhiLogger.logError(rsrc.getString("MainFrame.generalError"),ex);
 							}
 							return null;
 						}
@@ -373,9 +374,9 @@ public class MainFrame extends JFrame {
 				public void actionPerformed(java.awt.event.ActionEvent e) {    
 					String file=getXtfFile();
 					FileChooser fileDialog =  new FileChooser(file);
-					fileDialog.setDialogTitle("Open XTF/ITF file");
-					fileDialog.addChoosableFileFilter(new GenericFileFilter("INTERLIS 2 transfer file (*.xtf)","xtf"));
-					fileDialog.addChoosableFileFilter(new GenericFileFilter("INTERLIS 1 transfer file (*.itf)","itf"));
+					fileDialog.setDialogTitle(rsrc.getString("MainFrame.xtfFileChooserTitle"));
+					fileDialog.addChoosableFileFilter(new GenericFileFilter(rsrc.getString("MainFrame.xtfFileFilter"),"xtf"));
+					fileDialog.addChoosableFileFilter(new GenericFileFilter(rsrc.getString("MainFrame.itfFileFilter"),"itf"));
 					fileDialog.addChoosableFileFilter(GenericFileFilter.createXmlFilter());
 
 					if (fileDialog.showOpenDialog(MainFrame.this) == FileChooser.APPROVE_OPTION) {
@@ -395,9 +396,9 @@ public class MainFrame extends JFrame {
 				public void actionPerformed(java.awt.event.ActionEvent e) {    
 					String file=getLogFile();
 					FileChooser fileDialog =  new FileChooser(file);
-					fileDialog.setDialogTitle("Open log file");
-					fileDialog.addChoosableFileFilter(new GenericFileFilter("Log file (*.log)","log"));
-					fileDialog.addChoosableFileFilter(new GenericFileFilter("Text file (*.txt)","txt"));
+					fileDialog.setDialogTitle(rsrc.getString("MainFrame.logFileChooserTitle"));
+					fileDialog.addChoosableFileFilter(new GenericFileFilter(rsrc.getString("MainFrame.logFileFilter"),"log"));
+					fileDialog.addChoosableFileFilter(new GenericFileFilter(rsrc.getString("MainFrame.txtFileFilter"),"txt"));
 
 					if (fileDialog.showSaveDialog(MainFrame.this) == FileChooser.APPROVE_OPTION) {
 						file=fileDialog.getSelectedFile().getAbsolutePath();
@@ -416,8 +417,8 @@ public class MainFrame extends JFrame {
 				public void actionPerformed(java.awt.event.ActionEvent e) {    
 					String file=getLogFile();
 					FileChooser fileDialog =  new FileChooser(file);
-					fileDialog.setDialogTitle("Open XTF log file");
-					fileDialog.addChoosableFileFilter(new GenericFileFilter("INTERLIS 2 transfer file (*.xtf)","xtf"));
+					fileDialog.setDialogTitle(rsrc.getString("MainFrame.xtflogFileChooserTitle"));
+					fileDialog.addChoosableFileFilter(new GenericFileFilter(rsrc.getString("MainFrame.xtfFileFilter"),"xtf"));
 
 					if (fileDialog.showSaveDialog(MainFrame.this) == FileChooser.APPROVE_OPTION) {
 						file=fileDialog.getSelectedFile().getAbsolutePath();
@@ -436,8 +437,8 @@ public class MainFrame extends JFrame {
 				public void actionPerformed(java.awt.event.ActionEvent e) {    
 					String file=getLogFile();
 					FileChooser fileDialog =  new FileChooser(file);
-					fileDialog.setDialogTitle("Open config file");
-					fileDialog.addChoosableFileFilter(new GenericFileFilter("Config file (*.toml)","toml"));
+					fileDialog.setDialogTitle(rsrc.getString("MainFrame.configFileChooserTitle"));
+					fileDialog.addChoosableFileFilter(new GenericFileFilter(rsrc.getString("MainFrame.configFileFilter"),"toml"));
 
 					if (fileDialog.showSaveDialog(MainFrame.this) == FileChooser.APPROVE_OPTION) {
 						file=fileDialog.getSelectedFile().getAbsolutePath();
