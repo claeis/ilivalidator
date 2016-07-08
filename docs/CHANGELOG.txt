@@ -1,9 +1,11 @@
 
-Daten-Datei
-Log-Datei (Text)
-Log-Datei (XML)
-Konfigurationsdatei
-
+ilivalidator 0.2.0 (2016-07-08)
+-------------------------------
+- added localizable GUI
+- read config from ili metaattrs
+- added TextType, NumericType, EnumerationType validation
+- ili2c-4.5.23
+- iox-ili-1.12.0
 
 ilivalidator 0.1.0 (2016-06-15)
 -------------------------------

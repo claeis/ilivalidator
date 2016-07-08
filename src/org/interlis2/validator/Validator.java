@@ -84,7 +84,7 @@ public class Validator {
 			IoxReader ioxReader=null;
 			ch.interlis.iox_j.validator.Validator validator=null;
 			try{
-				// TODO setup log output
+				// setup log output
 				ValidationConfig modelConfig=new ValidationConfig();
 				modelConfig.mergeIliMetaAttrs(td);
 				if(configFilename!=null){
