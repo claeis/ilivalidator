@@ -1,3 +1,9 @@
+["PARAMETER"]
+# Globale Validator Einstellungen
+# Validierung generell ausschalten
+# on/off
+validation="off"
+
 ["Beispiel1.Bodenbedeckung.Gebaeude"]
 # Zusaetzlicher Text fuer die Objektidentifikation fuer alle Fehlermeldung 
 # die sich auf ein Objekt der Klasse Beispiel1.Bodenbedeckung.Gebaeude beziehen. 

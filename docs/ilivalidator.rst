@@ -157,6 +157,12 @@ schreibt man in der TOML-Datei:
 | ["Beispiel1.Bodenbedeckung.Gebaeude.Art"]
 | multiplicity="off"
 
+Zusätzlich erlaubt die TOML Datei pauschale Konfigurationen im Abschnitt "PARAMETER". Um z.B. generell 
+alle Prüfungen auszuschalten schreibt man in die TOML-Datei:
+
+| ["PARAMETER"]
+| validation="off"
+
 TOML-Konfigurationsdatei
 ~~~~~~~~~~~~~~~~~~~~~~~~
 `Beispiel1.toml`_
