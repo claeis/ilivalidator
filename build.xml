@@ -34,7 +34,6 @@
         <pathelement location="${lib}/ili2c-tool.jar"/>
         <pathelement location="${lib}/iox-api.jar"/>
         <pathelement location="${lib}/iox-ili.jar"/>
-        <pathelement location="${lib}/jdbm-2.4.jar"/>
         <pathelement location="${lib}/jts-core-1.14.0.jar"/>
         <pathelement location="${lib}/toml4j-0.5.1.jar"/>
       </classpath>
@@ -81,7 +80,7 @@
 	      <attribute name="Url" value="${mf.url}"/>
 	      <attribute name="Version" value="${version}"/-->
 	      <attribute name="Main-Class" value="org.interlis2.validator.Main"/>
-	      <attribute name="Class-Path" value="libs/antlr.jar libs/ehibasics.jar libs/gson-2.6.2.jar libs/ili2c-core.jar libs/ili2c-tool.jar libs/iox-api.jar libs/iox-ili.jar libs/jdbm-2.4.jar libs/jts-core-1.14.0.jar libs/toml4j-0.5.1.jar"/>
+	      <attribute name="Class-Path" value="libs/antlr.jar libs/ehibasics.jar libs/gson-2.6.2.jar libs/ili2c-core.jar libs/ili2c-tool.jar libs/iox-api.jar libs/iox-ili.jar libs/jts-core-1.14.0.jar libs/toml4j-0.5.1.jar"/>
 	    </manifest>
     
 	<fileset dir="${build}/classes" includes="**/*.class"/>
@@ -109,7 +108,6 @@
 		<patternset includes="libs/ili2c-tool.jar"/>
 		<patternset includes="libs/iox-api.jar"/>
 		<patternset includes="libs/iox-ili.jar"/>
-		<patternset includes="libs/jdbm-2.4.jar"/>
 		<patternset includes="libs/jts-core-1.14.0.jar"/>
 		<patternset includes="libs/toml4j-0.5.1.jar"/>
     	</zipfileset>
