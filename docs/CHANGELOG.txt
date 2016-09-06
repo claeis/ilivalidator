@@ -1,3 +1,10 @@
+ilivalidator 0.3.0 (2016-09-05)
+-------------------------------
+- iox-ili-1.13.2
+- validator: validate DATE, BOOLEAN, XMLDate, XMLDateTime, XMLTime, UUIDOID
+- validator: validate OID AS UUIDOID
+- validator: added global config section [PARAMTER] with entry validation="off"
+
 ilivalidator 0.2.1 (2016-08-22)
 -------------------------------
 - validator: fix mandatory check if attr type is a domain def

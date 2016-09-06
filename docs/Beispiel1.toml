@@ -2,7 +2,7 @@
 # Globale Validator Einstellungen
 # Validierung generell ausschalten
 # on/off
-validation="off"
+validation="on"
 
 ["Beispiel1.Bodenbedeckung.Gebaeude"]
 # Zusaetzlicher Text fuer die Objektidentifikation fuer alle Fehlermeldung 

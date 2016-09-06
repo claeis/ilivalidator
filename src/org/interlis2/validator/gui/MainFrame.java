@@ -20,8 +20,7 @@ import javax.swing.JOptionPane;
 import org.interlis2.validator.Main;
 import org.interlis2.validator.Validator;
 
-/** GUI.
- * @author ce
+/** GUI of ilivalidator.
  */
 public class MainFrame extends JFrame {
 	private java.util.ResourceBundle rsrc=java.util.ResourceBundle.getBundle("org.interlis2.validator.gui.IliValidatorTexts");

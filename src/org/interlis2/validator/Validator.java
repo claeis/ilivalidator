@@ -26,9 +26,18 @@ import ch.interlis.iox_j.logging.StdLogger;
 import ch.interlis.iox_j.logging.XtfErrorsLogger;
 import ch.interlis.iox_j.validator.ValidationConfig;
 
+/** High-level API of INTERLIS validator.
+ * @see ch.interlis.iox_j.validator.Validator
+ */
 public class Validator {
 
 	/** main workhorse function.
+	 * @param xtfFilename File to validate.
+	 * @param settings Configuration of program. 
+	 * This is not the TOML file, that controls the model specific validation. 
+	 * @see #SETTING_CONFIGFILE
+	 * @see #SETTING_LOGFILE
+	 * @see #SETTING_XTFLOG
 	 */
 	public static void runValidation(
 			String xtfFilename,
@@ -148,6 +157,15 @@ public class Validator {
 		}
 	}
 	
+	/** Compiles the required Interlis models.
+	 * @param aclass Interlis qualified class name of a required class.
+	 * @param ilifile Interlis model file to read. null if not known.
+	 * @param itfDir Folder with Interlis model files or null.
+	 * @param appHome Folder of program. Function will check in ilimodels sub-folder for Interlis models.
+	 * @param settings Configuration of program.
+	 * @return root object of java representation of Interlis model.
+	 * @see #SETTING_ILIDIRS
+	 */
 	public static TransferDescription compileIli(String aclass,File ilifile,String itfDir,String appHome,Settings settings) {
 		String model=null;
 		if(aclass!=null){
@@ -232,6 +250,10 @@ public class Validator {
 	}
 
 
+	/** Checks, if a given filename is an Interlis 1 transferfilename.
+	 * @param filename Name to check.
+	 * @return true if it is a ITF filename, otherwise false.
+	 */
 	public static boolean isItfFilename(String filename)
 	{
 		String xtfExt=ch.ehi.basics.view.GenericFileFilter.getFileExtension(new java.io.File(filename)).toLowerCase();
@@ -242,12 +264,35 @@ public class Validator {
 	}
 
 
+	/** Default path with folders of Interlis model files.
+	 * @see #SETTING_ILIDIRS
+	 */
 	public static final String SETTING_DEFAULT_ILIDIRS = Validator.ITF_DIR+";http://models.interlis.ch/;"+Validator.JAR_DIR;
+	/** Path with folders of Interlis model files. Multiple entries are separated by semicolon (';'). 
+	 * Might contain "http:" URLs which should contain model repositories. 
+	 * Might include placeholders ITF_DIR or JAR_DIR. 
+	 * @see #ITF_DIR
+	 * @see #JAR_DIR
+	 */
 	public static final String SETTING_ILIDIRS="org.interlis2.validator.ilidirs";
+	/** Last used folder in the GUI.
+	 */
 	public static final String SETTING_DIRUSED="org.interlis2.validator.dirused";
+	/** Name of the config file, that controls the model specific validation.
+	 */
 	public static final String SETTING_CONFIGFILE = "org.interlis2.validator.configfile";
+	/** Name of the log file that receives the validation results.
+	 */
 	public static final String SETTING_LOGFILE = "org.interlis2.validator.log";
+	/** Name of the data file (XTF format) that receives the validation results.
+	 */
 	public static final String SETTING_XTFLOG = "org.interlis2.validator.xtflog";
+	/** Placeholder, that will be replaced by the folder of the current to be validated transfer file. 
+	 * @see #SETTING_ILIDIRS
+	 */
 	public static final String ITF_DIR="%ITF_DIR";
+	/** Placeholder, that will be replaced by the "ilimodels" subfolder of the validator program. 
+	 * @see #SETTING_ILIDIRS
+	 */
 	public static final String JAR_DIR="%JAR_DIR";
 }

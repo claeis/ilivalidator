@@ -7,6 +7,8 @@ import org.interlis2.validator.gui.MainFrame;
 import ch.ehi.basics.logging.EhiLogger;
 import ch.ehi.basics.settings.Settings;
 
+/** Main program and commandline interface of ilivalidator.
+ */
 public class Main {
 
 	/** name of application as shown to user.
@@ -15,6 +17,8 @@ public class Main {
 	/** name of jar file.
 	 */
 	public static final String APP_JAR="ilivalidator.jar";
+	/** version of application.
+	 */
 	private static String version=null;
 	/** main program entry.
 	 * @param args command line arguments.
@@ -115,7 +119,12 @@ public class Main {
 		}
 		
 	}
+	/** Name of file with program settings. Only used by GUI, not used by commandline version.
+	 */
 	private final static String SETTINGS_FILE = System.getProperty("user.home") + "/.ilivalidator";
+	/** Reads program settings.
+	 * @param settings Program configuration as read from file.
+	 */
 	public static void readSettings(Settings settings)
 	{
 		java.io.File file=new java.io.File(SETTINGS_FILE);
@@ -127,6 +136,9 @@ public class Main {
 			EhiLogger.logError("failed to load settings from file "+SETTINGS_FILE,ex);
 		}
 	}
+	/** Writes program settings.
+	 * @param settings Program configuration to write.
+	 */
 	public static void writeSettings(Settings settings)
 	{
 		java.io.File file=new java.io.File(SETTINGS_FILE);
@@ -136,27 +148,32 @@ public class Main {
 			EhiLogger.logError("failed to settings settings to file "+SETTINGS_FILE,ex);
 		}
 	}
+	
+	/** Prints program version.
+	 */
 	protected static void printVersion ()
 	{
 	  System.err.println(APP_NAME+", Version "+getVersion());
 	  System.err.println("  Developed by Eisenhut Informatik AG, CH-3400 Burgdorf");
 	}
 
-
+	/** Prints program description.
+	 */
 	protected static void printDescription ()
 	{
 	  System.err.println("DESCRIPTION");
 	  System.err.println("  Validates an INTERLIS transfer file.");
 	}
 
-
+	/** Prints program usage.
+	 */
 	protected static void printUsage()
 	{
 	  System.err.println ("USAGE");
 	  System.err.println("  java -jar "+APP_JAR+" [Options] in.xtf");
 	}
-	/** get version of program.
-	 * @return version e.g. "ili2ld-1.0.0"
+	/** Gets version of program.
+	 * @return version e.g. "1.0.0"
 	 */
 	public static String getVersion() {
 		  if(version==null){
@@ -177,6 +194,10 @@ public class Main {
 		  return version;
 	}
 	
+	/** Gets main folder of program.
+	 * 
+	 * @return folder Main folder of program.
+	 */
 	static public String getAppHome()
 	{
 	  String classpath = System.getProperty("java.class.path");

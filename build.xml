@@ -48,6 +48,17 @@
     <javadoc Public="true" Windowtitle="${ant.project.name}" destdir="${build}/javadoc/api">
     	<sourcepath path="src"/>
     	<sourcepath path="gensrc"/>
+      <classpath>
+        <pathelement location="${lib}/antlr.jar"/>
+        <pathelement location="${lib}/ehibasics.jar"/>
+        <pathelement location="${lib}/gson-2.6.2.jar"/>
+        <pathelement location="${lib}/ili2c-core.jar"/>
+        <pathelement location="${lib}/ili2c-tool.jar"/>
+        <pathelement location="${lib}/iox-api.jar"/>
+        <pathelement location="${lib}/iox-ili.jar"/>
+        <pathelement location="${lib}/jts-core-1.14.0.jar"/>
+        <pathelement location="${lib}/toml4j-0.5.1.jar"/>
+      </classpath>
     </javadoc>
   </target>
   
