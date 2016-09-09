@@ -26,33 +26,37 @@ import ch.interlis.iox_j.logging.StdLogger;
 import ch.interlis.iox_j.logging.XtfErrorsLogger;
 import ch.interlis.iox_j.validator.ValidationConfig;
 
-/** High-level API of INTERLIS validator.
- * @see ch.interlis.iox_j.validator.Validator
+/** High-level API of the INTERLIS validator.
+ * For a usage example of this class, see the implementation of class {@link Main}.
+ * For a usage example of the low-level API, see the implementation of {@link #runValidation(String, Settings)}. 
  */
 public class Validator {
 
 	/** main workhorse function.
 	 * @param xtfFilename File to validate.
 	 * @param settings Configuration of program. 
-	 * This is not the TOML file, that controls the model specific validation. 
+	 * This is not the TOML file, that controls the model specific validation.
+	 * @return true if validation succeeds, false if it fails (or any program error). 
 	 * @see #SETTING_CONFIGFILE
 	 * @see #SETTING_LOGFILE
 	 * @see #SETTING_XTFLOG
 	 */
-	public static void runValidation(
+	public static boolean runValidation(
 			String xtfFilename,
 			Settings settings
 		) {
 		if(xtfFilename==null  || xtfFilename.length()==0){
 			EhiLogger.logError("no INTERLIS file given");
-			return;
+			return false;
 		}
 	    String logFilename=settings.getValue(Validator.SETTING_LOGFILE);
 	    String xtflogFilename=settings.getValue(Validator.SETTING_XTFLOG);
 		FileLogger logfile=null;
 		XtfErrorsLogger xtflog=null;
 		StdLogger logStderr=null;
+		boolean ret=false;
 		try{
+			// setup logging of validation results
 			if(logFilename!=null){
 				logfile=new FileLogger(new java.io.File(logFilename));
 				EhiLogger.getInstance().addListener(logfile);
@@ -66,7 +70,7 @@ public class Validator {
 			EhiLogger.getInstance().removeListener(StdListener.getInstance());
 		    String configFilename=settings.getValue(Validator.SETTING_CONFIGFILE);
 
-		    
+		    // give user important info (such as input files or program version)
 			EhiLogger.logState(Main.APP_NAME+"-"+Main.getVersion());
 			EhiLogger.logState("ili2c-"+ch.interlis.ili2c.Ili2c.getVersion());
 			EhiLogger.logState("xtfFile <"+xtfFilename+">");
@@ -78,14 +82,17 @@ public class Validator {
 			TransferDescription td=null;
 			ArrayList<Model> models=null;
 			
+			// find out, which ili model is required
 			File xtfFile=new File(xtfFilename);
 			String model=IoxUtility.getModelFromXtf(xtfFilename);
 			if(model==null){
-				return;
+				return false;
 			}
+			
+			// read ili models
 			td=compileIli(model, null,xtfFile.getAbsoluteFile().getParentFile().getAbsolutePath(),Main.getAppHome(), settings);
 			if(td==null){
-				return;
+				return false;
 			}
 			
 			// process data file
@@ -103,23 +110,26 @@ public class Validator {
 				LogEventFactory errFactory=new LogEventFactory();
 				errFactory.setDataSource(xtfFilename);
 				validator=new ch.interlis.iox_j.validator.Validator(td,modelConfig, errHandler, errFactory, settings);
-				// setup iox reader
+				// setup data reader (ITF or XTF)
 				if(isItfFilename(xtfFilename)){
 					ioxReader=new ItfReader2(new java.io.File(xtfFilename),false);
 					((ItfReader2)ioxReader).setModel(td);		
 				}else{
 					ioxReader=new XtfReader(new java.io.File(xtfFilename));
 				}
-				// loop
+				// loop over data objects
 				IoxEvent event=null;
 				do{
 					event=ioxReader.read();
+					// feed object by object to validator
 					validator.validate(event);
 				}while(!(event instanceof EndTransferEvent));
+				// check for errors
 				if(logStderr.hasSeenErrors()){
 					EhiLogger.logState("...validation failed");
 				}else{
 					EhiLogger.logState("...validation done");
+					ret=true;
 				}
 			}catch(Throwable ex){
 				EhiLogger.logError(ex);
@@ -155,6 +165,7 @@ public class Validator {
 				logStderr=null;
 			}
 		}
+		return ret;
 	}
 	
 	/** Compiles the required Interlis models.
