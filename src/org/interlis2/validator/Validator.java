@@ -37,6 +37,7 @@ public class Validator {
 	 * @param settings Configuration of program. 
 	 * This is not the TOML file, that controls the model specific validation.
 	 * @return true if validation succeeds, false if it fails (or any program error). 
+	 * @see #SETTING_ILIDIRS
 	 * @see #SETTING_CONFIGFILE
 	 * @see #SETTING_LOGFILE
 	 * @see #SETTING_XTFLOG
@@ -48,6 +49,9 @@ public class Validator {
 		if(xtfFilename==null  || xtfFilename.length()==0){
 			EhiLogger.logError("no INTERLIS file given");
 			return false;
+		}
+		if(settings==null){
+			settings=new Settings();
 		}
 	    String logFilename=settings.getValue(Validator.SETTING_LOGFILE);
 	    String xtflogFilename=settings.getValue(Validator.SETTING_XTFLOG);
@@ -185,6 +189,9 @@ public class Validator {
 		}
 		ArrayList modeldirv=new ArrayList();
 		String ilidirs=settings.getValue(Validator.SETTING_ILIDIRS);
+		if(ilidirs==null){
+			ilidirs=Validator.SETTING_DEFAULT_ILIDIRS;
+		}
 	
 		EhiLogger.logState("ilidirs <"+ilidirs+">");
 		String modeldirs[]=ilidirs.split(";");
