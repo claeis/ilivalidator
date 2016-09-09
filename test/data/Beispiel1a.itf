@@ -1,0 +1,19 @@
+SCNT
+////
+MTID INTERLIS1
+MODL Beispiel1
+TOPI Bodenbedeckung
+TABL GebaeudeArt
+OBJE 1 5 @
+OBJE 2 123456 @
+OBJE 3 6 Art_6
+ETAB
+TABL BoFlaechen_Form
+ETAB
+TABL BoFlaechen
+OBJE 4 5.0 @ @ @
+OBJE 5 @ 0 @ @
+ETAB
+ETOP
+EMOD
+ENDE

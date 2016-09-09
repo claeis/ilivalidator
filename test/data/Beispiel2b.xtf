@@ -1,0 +1,47 @@
+<?xml version="1.0" encoding="UTF-8"?><TRANSFER xmlns="http://www.interlis.ch/INTERLIS2.3">
+<HEADERSECTION SENDER="ili2c-4.5.22-20160520" VERSION="2.3"><MODELS><MODEL NAME="Beispiel2" VERSION="2011-12-22" URI="http://interlis.ch"></MODEL></MODELS></HEADERSECTION>
+<DATASECTION>
+<Beispiel2.Bodenbedeckung BID="b1">
+	<Beispiel2.Bodenbedeckung.GebaeudeArt TID="ok1">
+		<Art>5</Art>
+	</Beispiel2.Bodenbedeckung.GebaeudeArt>
+	<Beispiel2.Bodenbedeckung.GebaeudeArt TID="ok2">
+		<Art>123456</Art>
+	</Beispiel2.Bodenbedeckung.GebaeudeArt>
+	<Beispiel2.Bodenbedeckung.GebaeudeArt TID="fail3">
+		<Art></Art>
+	</Beispiel2.Bodenbedeckung.GebaeudeArt>
+	<Beispiel2.Bodenbedeckung.GebaeudeArt TID="fail4">
+		<Art>1234567</Art>
+	</Beispiel2.Bodenbedeckung.GebaeudeArt>
+	<Beispiel2.Bodenbedeckung.GebaeudeArt TID="fail5">
+		<Art>1
+2</Art>
+	</Beispiel2.Bodenbedeckung.GebaeudeArt>
+	<Beispiel2.Bodenbedeckung.GebaeudeArt TID="ok6">
+		<Art>5</Art>
+		<Beschreibung>Art 5
+		newline </Beschreibung>
+	</Beispiel2.Bodenbedeckung.GebaeudeArt>
+	<Beispiel2.Bodenbedeckung.BoFlaechen TID="ok200">
+		<Flaeche>5</Flaeche>
+	</Beispiel2.Bodenbedeckung.BoFlaechen>
+	<Beispiel2.Bodenbedeckung.BoFlaechen TID="fail201">
+		<Flaeche>abc</Flaeche>
+	</Beispiel2.Bodenbedeckung.BoFlaechen>
+	<Beispiel2.Bodenbedeckung.BoFlaechen TID="fail202">
+		<Flaeche>-1.0</Flaeche>
+	</Beispiel2.Bodenbedeckung.BoFlaechen>
+	<Beispiel2.Bodenbedeckung.BoFlaechen TID="fail203">
+		<Flaeche>10001.0</Flaeche>
+	</Beispiel2.Bodenbedeckung.BoFlaechen>
+	<Beispiel2.Bodenbedeckung.BoFlaechen TID="ok204">
+		<Art>Gebaeude</Art>
+	</Beispiel2.Bodenbedeckung.BoFlaechen>
+	<Beispiel2.Bodenbedeckung.BoFlaechen TID="fail205">
+		<Art>FalscheArt</Art>
+	</Beispiel2.Bodenbedeckung.BoFlaechen>
+	
+</Beispiel2.Bodenbedeckung>
+</DATASECTION>
+</TRANSFER>
