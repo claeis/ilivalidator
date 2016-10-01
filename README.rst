@@ -6,7 +6,7 @@ Features
 ========
 - checks INTERLIS 1+2 transfer files
 - enable/disable checks
-- custum error messages
+- custom error messages
 
 License
 =======
