@@ -149,4 +149,15 @@
     <delete dir="${build}"/>
   </target>
 
+  <target depends="init,compile,buildnr" name="fatjar">
+    <delete file="${dist}/${ant.project.name}-${buildnr}.jar" quiet="false"/>
+    <jar destfile="${dist}/${ant.project.name}-${buildnr}.jar" basedir="${build}/classes">
+	    <manifest>
+	      <attribute name="Main-Class" value="org.interlis2.validator.Main"/>
+	    </manifest>
+      <zipgroupfileset dir="libs" includes="*.jar" />
+      <fileset dir="src" includes="**/*.properties"/>
+    </jar>
+  </target>
+
 </project>
