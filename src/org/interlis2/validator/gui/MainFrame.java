@@ -329,10 +329,10 @@ public class MainFrame extends JFrame {
 	public static void main(String xtfFile,Settings settings) {
 		MainFrame frame=new MainFrame();
 		frame.setSettings(settings);
-		EhiLogger.getInstance().addListener(new LogListener(frame));
-		frame.setXtfFile(xtfFile);
 		String logFile=settings.getValue(Validator.SETTING_LOGFILE);
 		frame.setLogFile(logFile);
+		EhiLogger.getInstance().addListener(new LogListener(frame,logFile));
+		frame.setXtfFile(xtfFile);
 		String xtflogFile=settings.getValue(Validator.SETTING_XTFLOG);
 		frame.setXtfLogFile(xtflogFile);
 		String configFile=settings.getValue(Validator.SETTING_CONFIGFILE);

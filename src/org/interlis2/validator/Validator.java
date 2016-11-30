@@ -77,6 +77,7 @@ public class Validator {
 		    // give user important info (such as input files or program version)
 			EhiLogger.logState(Main.APP_NAME+"-"+Main.getVersion());
 			EhiLogger.logState("ili2c-"+ch.interlis.ili2c.Ili2c.getVersion());
+			EhiLogger.logState("iox-ili-"+ch.interlis.iox_j.IoxUtility.getVersion());
 			EhiLogger.logState("xtfFile <"+xtfFilename+">");
 			if(configFilename!=null){
 				EhiLogger.logState("configFile <"+configFilename+">");
