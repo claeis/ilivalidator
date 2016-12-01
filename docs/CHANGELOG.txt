@@ -1,3 +1,13 @@
+ilivalidator 0.4.0 (2016-12-01)
+-------------------------------
+- iox-ili-1.13.4-feature/validator1
+- validate unique constraints
+- validate cardinality
+-
+-
+-
+
+
 ilivalidator 0.3.0 (2016-09-05)
 -------------------------------
 - iox-ili-1.13.2
