@@ -11,8 +11,12 @@ ETAB
 TABL BoFlaechen_Form
 ETAB
 TABL BoFlaechen
-OBJE 4 5.0 @ @ @
-OBJE 5 @ 0 @ @
+OBJE 1 5.0 @ @ @
+OBJE 2 @ 0 @ @
+ETAB
+TABL Gebaeude
+OBJE 1 1 1
+OBJE 2 1 @
 ETAB
 ETOP
 EMOD

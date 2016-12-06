@@ -28,6 +28,12 @@ MODEL Beispiel1
         WITHOUT OVERLAPS > 0.10;
       NO IDENT
     END BoFlaechen;
+    
+    TABLE Gebaeude =
+      Art : -> GebaeudeArt;
+      Flaeche : OPTIONAL -> BoFlaechen;
+      NO IDENT
+    END Gebaeude;
         
   END Bodenbedeckung.
 
