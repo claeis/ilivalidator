@@ -114,14 +114,15 @@ public class Validator {
 				IoxLogging errHandler=new ch.interlis.iox_j.logging.Log2EhiLogger();
 				LogEventFactory errFactory=new LogEventFactory();
 				errFactory.setDataSource(xtfFilename);
-				validator=new ch.interlis.iox_j.validator.Validator(td,modelConfig, errHandler, errFactory, settings);
 				// setup data reader (ITF or XTF)
 				if(isItfFilename(xtfFilename)){
 					ioxReader=new ItfReader2(new java.io.File(xtfFilename),false);
 					((ItfReader2)ioxReader).setModel(td);		
+					settings.setValue(ch.interlis.iox_j.validator.Validator.CONFIG_DO_ITF_OIDPERTABLE, ch.interlis.iox_j.validator.Validator.CONFIG_DO_ITF_OIDPERTABLE_DO);
 				}else{
 					ioxReader=new XtfReader(new java.io.File(xtfFilename));
 				}
+				validator=new ch.interlis.iox_j.validator.Validator(td,modelConfig, errHandler, errFactory, settings);
 				// loop over data objects
 				IoxEvent event=null;
 				do{
