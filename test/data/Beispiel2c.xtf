@@ -1,0 +1,63 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<TRANSFER xmlns="http://www.interlis.ch/INTERLIS2.3">
+	<HEADERSECTION SENDER="ili2pg-3.6.0-20161230" VERSION="2.3">
+		<MODELS>
+			<MODEL NAME="Beispiel2" VERSION="2016-07-08" URI="mailto:ceis@localhost"></MODEL>
+		</MODELS>
+	</HEADERSECTION>
+	<DATASECTION>
+		<Beispiel2.Bodenbedeckung BID="Beispiel2.Bodenbedeckung">
+			<Beispiel2.Bodenbedeckung.GebaeudeArt TID="4">
+				<Art>5</Art>
+			</Beispiel2.Bodenbedeckung.GebaeudeArt>
+			<Beispiel2.Bodenbedeckung.GebaeudeArt TID="5">
+				<Art>123456</Art>
+			</Beispiel2.Bodenbedeckung.GebaeudeArt>
+			<Beispiel2.Bodenbedeckung.GebaeudeArt TID="6">
+				<Art>6</Art>
+				<Beschreibung>Art 6</Beschreibung>
+			</Beispiel2.Bodenbedeckung.GebaeudeArt>
+			<Beispiel2.Bodenbedeckung.BoFlaechen TID="7">
+				<Art>Gebaeude</Art>
+			</Beispiel2.Bodenbedeckung.BoFlaechen>
+			<Beispiel2.Bodenbedeckung.BoFlaechen TID="8">
+				<Flaeche>5.0</Flaeche>
+				<Form>
+					<SURFACE>
+						<BOUNDARY>
+							<POLYLINE>
+								<COORD>
+									<C1>2480110.0</C1>
+									<C2>1060110.0</C2>
+								</COORD>
+								<COORD>
+									<C1>2480110.0</C1>
+									<C2>1060140.0</C2>
+								</COORD>
+								<COORD>
+									<C1>2480120.0</C1>
+									<C2>1060140.0</C2>
+								</COORD>
+								<COORD>
+									<C1>2480120.0</C1>
+									<C2>1060110.0</C2>
+								</COORD>
+								<COORD>
+									<C1>2480110.0</C1>
+									<C2>1060110.0</C2>
+								</COORD>
+							</POLYLINE>
+						</BOUNDARY>
+					</SURFACE>
+				</Form>
+			</Beispiel2.Bodenbedeckung.BoFlaechen>
+			<Beispiel2.Bodenbedeckung.Gebaeude TID="9">
+				<Art REF="4"></Art>
+				<Flaeche REF="8"></Flaeche>
+			</Beispiel2.Bodenbedeckung.Gebaeude>
+			<Beispiel2.Bodenbedeckung.Gebaeude TID="10">
+				<Art REF="4"></Art>
+			</Beispiel2.Bodenbedeckung.Gebaeude>
+		</Beispiel2.Bodenbedeckung>
+	</DATASECTION>
+</TRANSFER>
