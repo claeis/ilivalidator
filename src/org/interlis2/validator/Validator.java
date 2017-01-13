@@ -20,6 +20,7 @@ import ch.interlis.iox.IoxException;
 import ch.interlis.iox.IoxLogging;
 import ch.interlis.iox.IoxReader;
 import ch.interlis.iox_j.IoxUtility;
+import ch.interlis.iox_j.PipelinePool;
 import ch.interlis.iox_j.logging.FileLogger;
 import ch.interlis.iox_j.logging.LogEventFactory;
 import ch.interlis.iox_j.logging.StdLogger;
@@ -113,16 +114,19 @@ public class Validator {
 				}
 				IoxLogging errHandler=new ch.interlis.iox_j.logging.Log2EhiLogger();
 				LogEventFactory errFactory=new LogEventFactory();
+				errFactory.setLogger(errHandler);
 				errFactory.setDataSource(xtfFilename);
+				PipelinePool pool=new PipelinePool();
 				// setup data reader (ITF or XTF)
 				if(isItfFilename(xtfFilename)){
 					ioxReader=new ItfReader2(new java.io.File(xtfFilename),false);
+					((ItfReader2)ioxReader).setIoxDataPool(pool);
 					((ItfReader2)ioxReader).setModel(td);		
 					settings.setValue(ch.interlis.iox_j.validator.Validator.CONFIG_DO_ITF_OIDPERTABLE, ch.interlis.iox_j.validator.Validator.CONFIG_DO_ITF_OIDPERTABLE_DO);
 				}else{
 					ioxReader=new XtfReader(new java.io.File(xtfFilename));
 				}
-				validator=new ch.interlis.iox_j.validator.Validator(td,modelConfig, errHandler, errFactory, settings);
+				validator=new ch.interlis.iox_j.validator.Validator(td,modelConfig, errHandler, errFactory, pool,settings);
 				// loop over data objects
 				IoxEvent event=null;
 				do{
