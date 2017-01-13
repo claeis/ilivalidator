@@ -1,3 +1,22 @@
+ilivalidator 0.7.0 (2016-12-29)
+----------------------------------------------
+- iox-ili-1.13.7-feature/validator1
+- validator: fixed cardinality fault if ili1.0
+- validator: validate POLYLINE topology
+- validator: optimized object pool
+
+ilivalidator 0.6.0 (2016-12-21)
+----------------------------------------------
+- iox-ili-1.13.6-feature/validator1
+- validator: fixed if cardinality is N, show "*" (UNBOUND) is error message 
+- validator: validate mandatory constraint in NOT, OR, AND, DEFINED, UNDEFINED
+- validator: validate mandatory constraint in ==, !=, <>, <, <=, >, >= of attribute and attribute path
+
+ilivalidator 0.5.0 (2016-12-12)
+-------------------------------
+- iox-ili-1.13.5-feature/validator1
+- validator: fixed OID uniqueness per table in ITF
+
 ilivalidator 0.4.0 (2016-12-01)
 -------------------------------
 - iox-ili-1.13.4-feature/validator1
