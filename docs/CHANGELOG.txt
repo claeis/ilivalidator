@@ -1,3 +1,13 @@
+ilivalidator 0.8.0 (2017-01-13)
+----------------------------------------------
+- iox-ili-1.14.0-feature/validator1
+- validator: optimized unique TID/OID check
+- validator: optimized performance
+- validator: added AREA/SURFACE topology validation
+- validator: added switch off existence, mandatory constraints and return warning instead of alert
+- validator: added switch off attribute cardinality and return warning instead of alert
+- validator: added role handling if role is EXTERNAL
+
 ilivalidator 0.7.0 (2016-12-29)
 ----------------------------------------------
 - iox-ili-1.13.7-feature/validator1
