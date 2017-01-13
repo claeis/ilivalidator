@@ -35,6 +35,16 @@ public class ValidatorTest {
 		assertFalse(ret);
 	}
 	@Test
+	public void itfAreaBasicOk() {
+		boolean ret=Validator.runValidation("test/data/Beispiel1c.itf", null);
+		assertTrue(ret);
+	}
+	@Test
+	public void itfAreaOpenFail() {
+		boolean ret=Validator.runValidation("test/data/Beispiel1d.itf", null);
+		assertFalse(ret);
+	}
+	@Test
 	public void xtfOk() {
 		boolean ret=Validator.runValidation("test/data/Beispiel2a.xtf", null);
 		assertTrue(ret);
@@ -56,6 +66,16 @@ public class ValidatorTest {
 		Settings settings=new Settings();
 		settings.setValue(Validator.SETTING_ILIDIRS, Validator.ITF_DIR);
 		boolean ret=Validator.runValidation("test/data/Beispiel2b.xtf", settings);
+		assertFalse(ret);
+	}
+	@Test
+	public void xtfAreaBasicOk() {
+		boolean ret=Validator.runValidation("test/data/Beispiel2c.xtf", null);
+		assertTrue(ret);
+	}
+	@Test
+	public void xtfAreaOpenFail() {
+		boolean ret=Validator.runValidation("test/data/Beispiel2d.xtf", null);
 		assertFalse(ret);
 	}
 	@Test

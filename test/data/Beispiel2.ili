@@ -28,7 +28,20 @@ CONTRACTED MODEL Beispiel2
       Form : AREA WITH (STRAIGHTS, ARCS) VERTEX LKoord
         WITHOUT OVERLAPS > 0.10;
     END BoFlaechen;
-        
+    
+    CLASS Gebaeude =
+    END Gebaeude;
+    
+    ASSOCIATION GebaeudeArt2 =
+      Art -- {1} GebaeudeArt;
+      Gebaeude -<> {0..*} Gebaeude;
+    END GebaeudeArt2;
+    
+    ASSOCIATION GebaeudeFlaeche=
+      Flaeche -- {0..1} BoFlaechen;
+      Gebaeude -<> {0..*} Gebaeude;
+    END GebaeudeFlaeche;
+
   END Bodenbedeckung;
 
 END Beispiel2.
