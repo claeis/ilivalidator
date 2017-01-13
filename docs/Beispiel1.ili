@@ -48,6 +48,7 @@ CONTRACTED MODEL Beispiel1
       !! Gebietseinteilung sind usw.
       !! on/warning/off
       !!@ ilivalid.type = off
+      !!------------------------------------------------------------------
       !! Multiplizitaetpruefung ein/ausschalten bzw. nur als Hinweis.
       !! z.B. ob bei MANDATORY ein Wert vorhanden ist, oder nicht bzw.
       !! bei BAG/LIST ob die entsprechende Anzahl Strukturelemente vorhanden ist
@@ -59,9 +60,9 @@ CONTRACTED MODEL Beispiel1
         andere); !! R2.1, R2.2
       AndereArt : TEXT*6; !! R2.1, R2.2
       AssNr : MANDATORY TEXT*6; !! R2.1, R2.2
-      UNIQUE AssNr;                                    !! R2.3      
+      UNIQUE AssNr;                                    !! R2.3 
+           
       EXISTENCE CONSTRAINT AndereArt REQUIRED IN GebaeudeArt:Art;    !! R2.4
-
       !! Constraint-Pruefung ein/ausschalten bzw. nur als Hinweis.
       !! Pruefen ob die Konsistenzbedingung erfuellt ist oder nicht.
       !! on/warning/off
@@ -84,6 +85,7 @@ CONTRACTED MODEL Beispiel1
       !! ob es von der gewuenschten Klasse ist
       !! on/warning/off
       !!@ ilivalid.target = warning
+      !!------------------------------------------------------------------------
       !! Multiplizitaetpruefung ein/ausschalten bzw. nur als Hinweis.
       !! Pruefen ob die vom Modell geforderte Anzahl Objekte referenziert wird
       !! on/warning/off
