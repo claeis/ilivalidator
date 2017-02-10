@@ -40,13 +40,13 @@ public class Error extends ch.interlis.iom_j.Iom_jObject
   public void setTid(String value) {
     setattrvalue("Tid", value);
   }
-  public final static String tag_TechtId="TechtId";
-  public String getTechtId() {
-    String value=getattrvalue("TechtId");
+  public final static String tag_TechId="TechId";
+  public String getTechId() {
+    String value=getattrvalue("TechId");
     return value;
   }
-  public void setTechtId(String value) {
-    setattrvalue("TechtId", value);
+  public void setTechId(String value) {
+    setattrvalue("TechId", value);
   }
   public final static String tag_UserId="UserId";
   public String getUserId() {

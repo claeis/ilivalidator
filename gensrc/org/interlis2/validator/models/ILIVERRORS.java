@@ -16,11 +16,14 @@ public class ILIVERRORS{
   static public ch.interlis.iom_j.ViewableProperties getIoxMapping()
   {
     ch.interlis.iom_j.ViewableProperties mapping=new ch.interlis.iom_j.ViewableProperties();
+    java.util.HashMap<String,String> nameMap=new java.util.HashMap<String,String>();
+    nameMap.put("IliVErrors.ErrorLog","ErrorLog");
+    nameMap.put("IliVErrors.ErrorLog.Error", "Error");
     mapping.defineClass("IliVErrors.ErrorLog.Error", new String[]{   "Message"
       ,"Type"
       ,"ObjTag"
       ,"Tid"
-      ,"TechtId"
+      ,"TechId"
       ,"UserId"
       ,"IliQName"
       ,"DataSource"
@@ -28,6 +31,7 @@ public class ILIVERRORS{
       ,"Geometry"
       ,"TechDetails"
       });
+    mapping.setXtf24nameMapping(nameMap);
     return mapping;
   }
 }
