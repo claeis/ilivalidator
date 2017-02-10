@@ -1,3 +1,14 @@
+ilivalidator 0.10.0 (2017-02-10)
+-----------------------------
+- iox-ili 1.14.0-feature/validator1
+- validator: optimized unique TID/OID check
+- validator: added functions len, lenM, trim, trimM, isEnumSubVal, inEnumRange, objectCount(ALL),
+			 objectCount(Role), elementCount, myClass, isOfClass, isSubClass, areArea
+- validator: added handling if function is not yet implemented
+- validator: added set constraints
+- validator: added infoLogs and traceLogs
+- validator: added additional constraints
+
 ilivalidator 0.9.0 (2017-01-13)
 ----------------------------------------------
 - iox-ili-1.14.0-feature/validator1
