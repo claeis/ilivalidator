@@ -3,6 +3,7 @@ package org.interlis2.validator;
 import java.io.File;
 import java.util.ArrayList;
 import java.util.HashSet;
+import java.util.Map;
 
 import ch.ehi.basics.logging.EhiLogger;
 import ch.ehi.basics.logging.StdListener;
@@ -25,6 +26,7 @@ import ch.interlis.iox_j.logging.FileLogger;
 import ch.interlis.iox_j.logging.LogEventFactory;
 import ch.interlis.iox_j.logging.StdLogger;
 import ch.interlis.iox_j.logging.XtfErrorsLogger;
+import ch.interlis.iox_j.plugins.PluginLoader;
 import ch.interlis.iox_j.validator.ValidationConfig;
 
 /** High-level API of the INTERLIS validator.
@@ -42,6 +44,7 @@ public class Validator {
 	 * @see #SETTING_CONFIGFILE
 	 * @see #SETTING_LOGFILE
 	 * @see #SETTING_XTFLOG
+	 * @see #SETTING_PLUGINDIR
 	 */
 	public static boolean runValidation(
 			String xtfFilename,
@@ -74,6 +77,7 @@ public class Validator {
 			EhiLogger.getInstance().addListener(logStderr);
 			EhiLogger.getInstance().removeListener(StdListener.getInstance());
 		    String configFilename=settings.getValue(Validator.SETTING_CONFIGFILE);
+		    String pluginFolder=settings.getValue(Validator.SETTING_PLUGINFOLDER);
 
 		    // give user important info (such as input files or program version)
 			EhiLogger.logState(Main.APP_NAME+"-"+Main.getVersion());
@@ -83,6 +87,9 @@ public class Validator {
 			EhiLogger.logState("xtfFile <"+xtfFilename+">");
 			if(configFilename!=null){
 				EhiLogger.logState("configFile <"+configFilename+">");
+			}
+			if(pluginFolder!=null){
+				EhiLogger.logState("pluginFolder <"+pluginFolder+">");
 			}
 		
 			TransferDescription sourceTd=null;
@@ -94,6 +101,14 @@ public class Validator {
 			String model=IoxUtility.getModelFromXtf(xtfFilename);
 			if(model==null){
 				return false;
+			}
+			
+			Map<String,Class> userFunctions=null;
+			if(pluginFolder!=null){
+				PluginLoader loader=new PluginLoader();
+				loader.loadPlugins(new File(pluginFolder));
+				userFunctions=PluginLoader.getInterlisFunctions(loader.getAllPlugins());
+				settings.setTransientObject(ch.interlis.iox_j.validator.Validator.CONFIG_CUSTOM_FUNCTIONS, userFunctions);
 			}
 			
 			// read ili models
@@ -312,6 +327,9 @@ public class Validator {
 	/** Name of the data file (XTF format) that receives the validation results.
 	 */
 	public static final String SETTING_XTFLOG = "org.interlis2.validator.xtflog";
+	/** Name of the folder that contains jar files with plugins.
+	 */
+	public static final String SETTING_PLUGINFOLDER = "org.interlis2.validator.pluginfolder";
 	/** Placeholder, that will be replaced by the folder of the current to be validated transfer file. 
 	 * @see #SETTING_ILIDIRS
 	 */
