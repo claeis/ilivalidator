@@ -26,6 +26,7 @@ public class Main {
 	static public void main(String args[]){
 		Settings settings=new Settings();
 		settings.setValue(Validator.SETTING_ILIDIRS, Validator.SETTING_DEFAULT_ILIDIRS);
+	    settings.setValue(Validator.SETTING_PLUGINFOLDER, getAppHome()+"/plugins");
 		// arguments on export
 		String xtfFile=null;
 		String httpProxyHost = null;
@@ -60,6 +61,10 @@ public class Main {
 			    argi++;
 			    settings.setValue(Validator.SETTING_XTFLOG, args[argi]);
 			    continue;
+			}else if(arg.equals("--plugins")) {
+			    argi++;
+			    settings.setValue(Validator.SETTING_PLUGINFOLDER, args[argi]);
+			    continue;
 			}else if(arg.equals("--proxy")) {
 				    argi++;
 				    settings.setValue(ch.interlis.ili2c.gui.UserSettings.HTTP_PROXY_HOST, args[argi]);
@@ -85,6 +90,7 @@ public class Main {
 				    System.err.println("--log file            text file, that receives validation results.");
 				    System.err.println("--xtflog file         INTERLIS transfer file, that receives validation results.");
 					System.err.println("--modeldir "+settings.getValue(Validator.SETTING_ILIDIRS)+" list of directories/repositories with ili-files.");
+				    System.err.println("--plugins folder      directory with jar files that contain user defined functions.");
 				    System.err.println("--proxy host          proxy server to access model repositories.");
 				    System.err.println("--proxyPort port      proxy port to access model repositories.");
 					System.err.println("--trace               enable trace messages.");
