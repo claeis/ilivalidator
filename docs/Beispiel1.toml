@@ -1,8 +1,13 @@
 ["PARAMETER"]
 # Globale Validator Einstellungen
+#
 # Validierung generell ausschalten
 # on/off
 validation="on"
+
+# Modelle mit zusätzlichen Konsistenzbedingungen.
+# Falls mehrere Zusatzmodelle, die Modellnamen mit Strichpunkt abtrennen.
+additionalModels="Beispiel1Zusatz"
 
 ["Beispiel1.Bodenbedeckung.Gebaeude"]
 # Zusaetzlicher Text fuer die Objektidentifikation fuer alle Fehlermeldung 

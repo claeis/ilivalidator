@@ -46,3 +46,24 @@ CONTRACTED MODEL Beispiel2
 
 END Beispiel2.
 
+MODEL Beispiel2Zusatz
+  AT "mailto:ceis@localhost"
+  VERSION "2016-03-29" =
+  IMPORTS Beispiel2;
+
+
+  VIEW TOPIC BodenbedeckungZusatz =
+  DEPENDS ON Beispiel2.Bodenbedeckung;
+
+
+    VIEW IndustrieGebaeude
+    	PROJECTION OF Beispiel2.Bodenbedeckung.GebaeudeArt;
+    =
+      ALL OF GebaeudeArt;
+      MANDATORY CONSTRAINT INTERLIS.lenM(Beschreibung)==4;
+    END IndustrieGebaeude;
+    
+  END BodenbedeckungZusatz;
+
+END Beispiel2Zusatz.
+

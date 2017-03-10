@@ -1,8 +1,10 @@
 package org.interlis2.validator;
 
 import java.io.File;
+import java.io.FileNotFoundException;
 import java.util.ArrayList;
 import java.util.HashSet;
+import java.util.List;
 
 import ch.ehi.basics.logging.EhiLogger;
 import ch.ehi.basics.logging.StdListener;
@@ -90,14 +92,26 @@ public class Validator {
 			ArrayList<Model> models=null;
 			
 			// find out, which ili model is required
+			List<String> modelnames=new ArrayList<String>();
 			File xtfFile=new File(xtfFilename);
-			String model=IoxUtility.getModelFromXtf(xtfFilename);
-			if(model==null){
-				return false;
+			{
+				String modelnameFromXtf=IoxUtility.getModelFromXtf(xtfFilename);
+				if(modelnameFromXtf==null){
+					return false;
+				}
+				modelnames.add(modelnameFromXtf);
 			}
-			
+			if(configFilename!=null){
+				try {
+					List<String> modelNamesFromConfig=getModelsFromConfigFile(configFilename);
+					modelnames.addAll(modelNamesFromConfig);
+				} catch (FileNotFoundException e) {
+					EhiLogger.logError("config file <"+configFilename+"> not found", e);
+					return false;
+				}
+			}
 			// read ili models
-			td=compileIli(model, null,xtfFile.getAbsoluteFile().getParentFile().getAbsolutePath(),Main.getAppHome(), settings);
+			td=compileIli(modelnames, null,xtfFile.getAbsoluteFile().getParentFile().getAbsolutePath(),Main.getAppHome(), settings);
 			if(td==null){
 				return false;
 			}
@@ -179,6 +193,22 @@ public class Validator {
 		return ret;
 	}
 	
+	private static List<String> getModelsFromConfigFile(String configFilename) throws FileNotFoundException {
+		List<String> ret=new ArrayList<String>();
+		if(configFilename!=null){
+			ValidationConfig modelConfig=new ValidationConfig();
+			modelConfig.mergeConfigFile(new File(configFilename));
+			String additionalModels=modelConfig.getConfigValue(ValidationConfig.PARAMETER, ValidationConfig.ADDITIONAL_MODELS);
+			if(additionalModels!=null){
+				String[] additionalModelv = additionalModels.split(";");
+				for(String additionalModel:additionalModelv){
+					ret.add(additionalModel);
+				}
+			}
+		}
+		return ret;
+	}
+
 	/** Compiles the required Interlis models.
 	 * @param aclass Interlis qualified class name of a required class.
 	 * @param ilifile Interlis model file to read. null if not known.
@@ -188,12 +218,7 @@ public class Validator {
 	 * @return root object of java representation of Interlis model.
 	 * @see #SETTING_ILIDIRS
 	 */
-	public static TransferDescription compileIli(String aclass,File ilifile,String itfDir,String appHome,Settings settings) {
-		String model=null;
-		if(aclass!=null){
-			String names[]=aclass.split("\\.");
-			model=names[0];
-		}
+	public static TransferDescription compileIli(List<String> modelNames,File ilifile,String itfDir,String appHome,Settings settings) {
 		ArrayList modeldirv=new ArrayList();
 		String ilidirs=settings.getValue(Validator.SETTING_ILIDIRS);
 		if(ilidirs==null){
@@ -247,8 +272,8 @@ public class Validator {
 			}
 		}else{
 			ArrayList<String> modelv=new ArrayList<String>();
-			if(model!=null){
-				modelv.add(model);
+			if(modelNames!=null){
+				modelv.addAll(modelNames);
 			}
 			try {
 				//ili2cConfig=ch.interlis.ili2c.ModelScan.getConfig(modeldirv, modelv);

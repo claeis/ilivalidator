@@ -65,6 +65,14 @@ public class ValidatorTest {
 		assertTrue(ret);
 	}
 	@Test
+	public void xtfFailWithAdditionalModel() {
+		Settings settings=new Settings();
+		settings.setValue(Validator.SETTING_ILIDIRS, Validator.ITF_DIR);
+		settings.setValue(Validator.SETTING_CONFIGFILE, "test/data/Beispiel2e.toml");
+		boolean ret=Validator.runValidation("test/data/Beispiel2e.xtf", settings);
+		assertFalse(ret);
+	}
+	@Test
 	public void xtfFail() {
 		boolean ret=Validator.runValidation("test/data/Beispiel2b.xtf", null);
 		assertFalse(ret);
