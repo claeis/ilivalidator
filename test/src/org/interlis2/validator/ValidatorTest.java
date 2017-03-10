@@ -23,6 +23,14 @@ public class ValidatorTest {
 		assertTrue(ret);
 	}
 	@Test
+	public void itfOkWithValidationConfig() {
+		Settings settings=new Settings();
+		settings.setValue(Validator.SETTING_ILIDIRS, Validator.ITF_DIR);
+		settings.setValue(Validator.SETTING_CONFIGFILE, "test/data/Beispiel1e.toml");
+		boolean ret=Validator.runValidation("test/data/Beispiel1e.itf", settings);
+		assertTrue(ret);
+	}
+	@Test
 	public void itfFail() {
 		boolean ret=Validator.runValidation("test/data/Beispiel1b.itf", null);
 		assertFalse(ret);
