@@ -56,6 +56,9 @@ public class Main {
 			}else if(arg.equals("--forceTypeValidation")){
 				argi++;
 				settings.setValue(Validator.SETTING_FORCE_TYPE_VALIDATION,Validator.TRUE);
+			}else if(arg.equals("--disableAreaValidation")){
+				argi++;
+				settings.setValue(Validator.SETTING_DISABLE_AREA_VALIDATION,Validator.TRUE);
 			}else if(arg.equals("--log")) {
 			    argi++;
 			    settings.setValue(Validator.SETTING_LOGFILE, args[argi]);
@@ -90,7 +93,8 @@ public class Main {
 					System.err.println();
 					//System.err.println("--gui                 start GUI.");
 				    System.err.println("--config file         config file to control validation.");
-					System.err.println("--forceTypeValidation  restrict customization of validation related to \"multiplicity\"");
+					System.err.println("--forceTypeValidation  restrict customization of validation related to \"multiplicity\".");
+					System.err.println("--disableAreaValidation  disable AREA validation.");
 				    System.err.println("--log file            text file, that receives validation results.");
 				    System.err.println("--xtflog file         INTERLIS transfer file, that receives validation results.");
 					System.err.println("--modeldir "+settings.getValue(Validator.SETTING_ILIDIRS)+" list of directories/repositories with ili-files.");

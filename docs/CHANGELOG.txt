@@ -1,6 +1,7 @@
 ilivalidator 1.1.0 (2017-04-xx)
 -----------------------------
-- new option --forceTypeValidation (#41)
+- new option --forceTypeValidation
+- new option --disableAreaValidation
 
 ilivalidator 1.0.0 (2017-03-10)
 -----------------------------

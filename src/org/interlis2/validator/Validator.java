@@ -143,6 +143,7 @@ public class Validator {
 					modelConfig.mergeConfigFile(new File(configFilename));
 				}
 				modelConfig.setConfigValue(ValidationConfig.PARAMETER, ValidationConfig.ALLOW_ONLY_MULTIPLICITY_REDUCTION, TRUE.equals(settings.getValue(SETTING_FORCE_TYPE_VALIDATION))?ValidationConfig.ON:null);
+				modelConfig.setConfigValue(ValidationConfig.PARAMETER, ValidationConfig.AREA_OVERLAP_VALIDATION, TRUE.equals(settings.getValue(SETTING_DISABLE_AREA_VALIDATION))?ValidationConfig.OFF:null);
 				IoxLogging errHandler=new ch.interlis.iox_j.logging.Log2EhiLogger();
 				LogEventFactory errFactory=new LogEventFactory();
 				errFactory.setLogger(errHandler);
@@ -350,6 +351,9 @@ public class Validator {
 	/** Restrict customization of validation related to \"multiplicity\". Possible values "true", "false".
 	 */
 	public static final String SETTING_FORCE_TYPE_VALIDATION = "org.interlis2.validator.forcetypevalidation";
+	/** Disable AREA validation. Possible values "true", "false".
+	 */
+	public static final String SETTING_DISABLE_AREA_VALIDATION = "org.interlis2.validator.disableareavalidation";
 	/** Name of the log file that receives the validation results.
 	 */
 	public static final String SETTING_LOGFILE = "org.interlis2.validator.log";
