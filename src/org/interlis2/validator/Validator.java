@@ -142,6 +142,7 @@ public class Validator {
 				if(configFilename!=null){
 					modelConfig.mergeConfigFile(new File(configFilename));
 				}
+				modelConfig.setConfigValue(ValidationConfig.PARAMETER, ValidationConfig.ALLOW_ONLY_MULTIPLICITY_REDUCTION, TRUE.equals(settings.getValue(SETTING_FORCE_TYPE_VALIDATION))?ValidationConfig.ON:null);
 				IoxLogging errHandler=new ch.interlis.iox_j.logging.Log2EhiLogger();
 				LogEventFactory errFactory=new LogEventFactory();
 				errFactory.setLogger(errHandler);
@@ -346,6 +347,9 @@ public class Validator {
 	/** Name of the config file, that controls the model specific validation.
 	 */
 	public static final String SETTING_CONFIGFILE = "org.interlis2.validator.configfile";
+	/** Restrict customization of validation related to \"multiplicity\". Possible values "true", "false".
+	 */
+	public static final String SETTING_FORCE_TYPE_VALIDATION = "org.interlis2.validator.forcetypevalidation";
 	/** Name of the log file that receives the validation results.
 	 */
 	public static final String SETTING_LOGFILE = "org.interlis2.validator.log";
@@ -363,4 +367,6 @@ public class Validator {
 	 * @see #SETTING_ILIDIRS
 	 */
 	public static final String JAR_DIR="%JAR_DIR";
+	public static final String TRUE="true";
+	public static final String FALSE="false";
 }

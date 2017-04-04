@@ -85,6 +85,21 @@ public class ValidatorTest {
 		assertFalse(ret);
 	}
 	@Test
+	public void xtfOkWithValidationConfig() {
+		Settings settings=new Settings();
+		settings.setValue(Validator.SETTING_CONFIGFILE, "test/data/Beispiel2b.toml");
+		boolean ret=Validator.runValidation("test/data/Beispiel2b.xtf", settings);
+		assertTrue(ret);
+	}
+	@Test
+	public void xtfFailForceTypeCheckWithValidationConfig() {
+		Settings settings=new Settings();
+		settings.setValue(Validator.SETTING_FORCE_TYPE_VALIDATION, Validator.TRUE);
+		settings.setValue(Validator.SETTING_CONFIGFILE, "test/data/Beispiel2b.toml");
+		boolean ret=Validator.runValidation("test/data/Beispiel2b.xtf", settings);
+		assertFalse(ret);
+	}
+	@Test
 	public void xtfAreaBasicOk() {
 		boolean ret=Validator.runValidation("test/data/Beispiel2c.xtf", null);
 		assertTrue(ret);

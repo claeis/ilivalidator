@@ -1,0 +1,7 @@
+["Beispiel2.Bodenbedeckung.GebaeudeArt.Art"]
+type="warning"
+multiplicity="warning"
+["Beispiel2.Bodenbedeckung.BoFlaechen.Art"]
+type="warning"
+["Beispiel2.Bodenbedeckung.BoFlaechen.Flaeche"]
+type="warning"
