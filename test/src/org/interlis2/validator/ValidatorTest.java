@@ -95,6 +95,16 @@ public class ValidatorTest {
 		assertFalse(ret);
 	}
 	@Test
+	public void xtfRefOk() {
+		boolean ret=Validator.runValidation("test/data/Beispiel2refOk.xtf", null);
+		assertTrue(ret);
+	}
+	@Test
+	public void xtfRefFail() {
+		boolean ret=Validator.runValidation("test/data/Beispiel2refFail.xtf", null);
+		assertFalse(ret);
+	}
+	@Test
 	public void ili2cFail() {
 		Settings settings=new Settings();
 		settings.setValue(Validator.SETTING_ILIDIRS, "emptyFolder"); // ili2c will not find any ili files there

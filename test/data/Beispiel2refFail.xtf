@@ -1,0 +1,27 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<TRANSFER xmlns="http://www.interlis.ch/INTERLIS2.3">
+	<HEADERSECTION SENDER="ili2pg-3.6.0-20161230" VERSION="2.3">
+		<MODELS>
+			<MODEL NAME="Beispiel2" VERSION="2016-07-08" URI="mailto:ceis@localhost"></MODEL>
+		</MODELS>
+	</HEADERSECTION>
+	<DATASECTION>
+		<Beispiel2.Bodenbedeckung BID="Beispiel2.Bodenbedeckung">
+			<Beispiel2.Bodenbedeckung.GebaeudeArt TID="4">
+				<Art>5</Art>
+			</Beispiel2.Bodenbedeckung.GebaeudeArt>
+			<Beispiel2.Bodenbedeckung.BoFlaechen TID="7">
+				<Art>Gebaeude</Art>
+			</Beispiel2.Bodenbedeckung.BoFlaechen>
+			<Beispiel2.Bodenbedeckung.Gebaeude TID="9">
+				<Art REF="4missing"></Art>
+				<Flaeche REF="7"></Flaeche>
+			</Beispiel2.Bodenbedeckung.Gebaeude>
+		</Beispiel2.Bodenbedeckung>
+		<Beispiel2.GebaeudeRegister BID="Beispiel2.GebaeudeRegister">
+			<Beispiel2.GebaeudeRegister.GebaeudeDetail TID="100">
+				<Gebaeude REF="9"></Gebaeude>
+			</Beispiel2.GebaeudeRegister.GebaeudeDetail>
+		</Beispiel2.GebaeudeRegister>
+	</DATASECTION>
+</TRANSFER>

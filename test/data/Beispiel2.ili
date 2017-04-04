@@ -44,6 +44,19 @@ CONTRACTED MODEL Beispiel2
 
   END Bodenbedeckung;
 
+  TOPIC GebaeudeRegister =
+    DEPENDS ON Bodenbedeckung;
+
+    CLASS GebaeudeDetail =
+    END GebaeudeDetail;
+    
+    ASSOCIATION GebaeudeDetails =
+      Gebaeude (EXTERNAL) -<#> {1} Beispiel2.Bodenbedeckung.Gebaeude;
+      Detail -- {0..1} GebaeudeDetail;
+    END GebaeudeDetails;
+
+  END GebaeudeRegister;
+
 END Beispiel2.
 
 MODEL Beispiel2Zusatz
