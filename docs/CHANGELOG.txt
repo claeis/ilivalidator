@@ -1,3 +1,19 @@
+ilivalidator 1.0.0 (2017-03-10)
+-----------------------------
+- iox-ili 1.14.0-feature/validator1 (2017-03-10)
+- validator: changed API of user defined functions
+- validator: added: validate plausibility constraints
+- validator: added: evaluate user defined functions
+- validator: added: enable user defined error messages
+- validator: added: get message in specific validation if configuration off
+- validator: fixed: unique constraint not checked
+- validator: fixed: custom functions with object collections
+- validator: fixed: missed errors in xtf log file
+- validator: fixed: evaluation of sub-enum constants
+- validator: improved/fixed topology validation
+- validator: optimized: validate external/additional constraint
+- validator: optimized: performance
+
 ilivalidator 0.10.0 (2017-02-10)
 -----------------------------
 - iox-ili 1.14.0-feature/validator1
