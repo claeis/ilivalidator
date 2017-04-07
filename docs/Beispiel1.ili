@@ -37,10 +37,10 @@ CONTRACTED MODEL Beispiel1
     !! Die TID und Zeilennummer erscheint immer, falls vorhanden. keymsg ist 
     !! zusaetzlich (eine Benutzerdefinierte/verständliche Identifikation).
     !! Bei Export aus/Check auf DB ist TID evtl. nicht vorhanden. Bei XML ist Zeilennummer in der Regel nicht hilfreich.
-    !! inkl. Attributwerte in ${}
+    !! inkl. Attributwerte in {}
     !! Fuer irgendeine Sprache bzw. fuer DE
-    !!@ ilivalid.keymsg = "AssNr ${AssNr}"
-    !!@ ilivalid.keymsg_de = "Assekuranz-Nr ${AssNr}"
+    !!@ ilivalid.keymsg = "AssNr {AssNr}"
+    !!@ ilivalid.keymsg_de = "Assekuranz-Nr {AssNr}"
     CLASS Gebaeude =
       !! Datentyppruefung ein/ausschalten bzw. nur als Hinweis.
       !! z.B. ob eine Zahlenwert innerhalb des Bereichs ist, oder ein 
@@ -72,7 +72,7 @@ CONTRACTED MODEL Beispiel1
       !!@ name = c1023
       !! Meldungstext, falls dieses Constraint nicht erfuellt ist. 
       !! Wird ergaenzt um Objektidentifikation und Name des Constraints. 
-      !! Auf DE inkl. Attributwerte in ${}
+      !! Auf DE inkl. Attributwerte in {}
       !!@ ilivalid.msg_de = "AndereArt muss definiert sein"
       MANDATORY CONSTRAINT Art!=#andere OR DEFINED(AndereArt);       !! R2.5
       MANDATORY CONSTRAINT INTERLIS.len(AssNr)>=4;     !! R2.6

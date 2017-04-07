@@ -199,13 +199,13 @@ Metaattribute stehen unmittelbar vor dem Modellelement das sie betreffen und beg
 |                  |  ilivalid.keymsg_de      | zusaetzlich (eine Benutzerdefinierte/verständliche Identifikation).               |
 |                  |                          | Bei Export aus/Check auf DB ist TID evtl. nicht vorhanden. Bei XML                |
 |                  |                          | ist Zeilennummer in der Regel nicht hilfreich.                                    |
-|                  |                          | Inkl. Attributwerte in ${}.                                                       |
+|                  |                          | Inkl. Attributwerte in {}.                                                        |
 |                  |                          | Fuer irgendeine Sprache bzw. fuer DE.                                             |
 |                  |                          |                                                                                   |
 |                  |                          | ::                                                                                |
 |                  |                          |                                                                                   |
-|                  |                          |   !!@ ilivalid.keymsg = "AssNr ${AssNr}"                                          |
-|                  |                          |   !!@ ilivalid.keymsg_de = "Assekuranz-Nr ${AssNr}"                               |
+|                  |                          |   !!@ ilivalid.keymsg = "AssNr {AssNr}"                                           |
+|                  |                          |   !!@ ilivalid.keymsg_de = "Assekuranz-Nr {AssNr}"                                |
 |                  |                          |                                                                                   |
 +------------------+--------------------------+-----------------------------------------------------------------------------------+
 | AttributeDef     | ::                       | Datentyppruefung ein/ausschalten bzw. nur als Hinweis.                            |                    
@@ -261,7 +261,7 @@ Metaattribute stehen unmittelbar vor dem Modellelement das sie betreffen und beg
 +------------------+--------------------------+-----------------------------------------------------------------------------------+
 | ConstraintDef    | ::                       | Meldungstext, falls dieses Constraint nicht erfuellt ist.                         |
 |                  |                          | Wird ergaenzt um Objektidentifikation und Name des Constraints.                   |
-|                  |  ilivalid.msg            | inkl. Attributwerte in ${}                                                        |
+|                  |  ilivalid.msg            | inkl. Attributwerte in {}                                                         |
 |                  |  ilivalid.msg_de         |                                                                                   |
 |                  |                          | ::                                                                                |
 |                  |                          |                                                                                   |

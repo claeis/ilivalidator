@@ -14,10 +14,10 @@ additionalModels="Beispiel1Zusatz"
 # die sich auf ein Objekt der Klasse Beispiel1.Bodenbedeckung.Gebaeude beziehen. 
 # Die TID und Zeilennummer erscheint immer, falls vorhanden. keymsg ist 
 # zusaetzlich (eine Benutzerdefinierte/verständliche Identifikation).
-# inkl. Attributwerte in ${}
+# inkl. Attributwerte in {}
 # Fuer irgendeine Sprache bzw. fuer DE
-keymsg_de="Assekuranz-Nr ${AssNr}"
-keymsg="AssNr ${AssNr}"
+keymsg_de="Assekuranz-Nr {AssNr}"
+keymsg="AssNr {AssNr}"
 
 ["Beispiel1.Bodenbedeckung.Gebaeude.c1023"]
 # Constraint-Pruefung ein/ausschalten bzw. nur als Hinweis.
@@ -26,7 +26,7 @@ keymsg="AssNr ${AssNr}"
 check="warning"
 # Meldungstext, falls dieses Constraint nicht erfuellt ist. 
 # Wird ergaenzt um Objektidentifikation und Name des Constraints. 
-# Auf DE inkl. Attributwerte in ${}
+# Auf DE inkl. Attributwerte in {}
 msg_de="AndereArt muss definiert sein"
 
 ["Beispiel1.Bodenbedeckung.Gebaeude.Art"]
