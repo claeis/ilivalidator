@@ -1,7 +1,11 @@
-ilivalidator 1.1.0 (2017-04-xx)
+ilivalidator 1.1.0 (2017-04-05)
 -----------------------------
-- new option --forceTypeValidation
-- new option --disableAreaValidation
+- iox-ili 1.16.0-master (2017-04-05)
+- validator: fixed: switching constraint check off
+- validator: fixed: role EXTERNAL handling in cardinality and reference
+- validator: optimized: constraint error messages
+- validator: added: new option --forceTypeValidation
+- validator: added: new option --disableAreaValidation
 
 ilivalidator 1.0.0 (2017-03-10)
 -----------------------------
