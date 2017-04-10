@@ -96,7 +96,12 @@
     
 	<fileset dir="${build}/classes" includes="**/*.class"/>
     	<fileset dir="src" includes="**/*.properties"/>
-    </jar>
+    </jar>	
+	<move todir="${dist}"> 
+		<resources>
+			<file file="${projectjar}"/>			
+		</resources>
+	</move>	
   </target>
   
   <target depends="init" name="buildnr">
