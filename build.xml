@@ -6,6 +6,7 @@
   <property name="build" value="${basedir}/build"/>
   <property name="dist" value="${basedir}/dist"/>
   <property name="lib" value="${basedir}/libs"/>
+  <property name="plugins" value="${basedir}/plugins"/>
   <property name="versionfile" value="${src}/org/interlis2/validator/Version.properties"/>
   <property file="user.properties" prefix="user."/>
 
@@ -20,6 +21,7 @@
     <!-- Create the build directory structure used by compile -->
     <mkdir dir="${build}"/>
     <mkdir dir="${dist}"/>
+    <mkdir dir="${plugins}"/>
   </target>
 
   <target depends="init" name="compile">
@@ -38,6 +40,7 @@
         <pathelement location="${lib}/toml4j-0.5.1.jar"/>
       </classpath>
     	<src path="src" />
+    	<src path="pluginsrc" />
     </javac>
   </target>
 
@@ -46,6 +49,7 @@
     <mkdir dir="${build}/javadoc/api"/>
     <javadoc Public="true" Windowtitle="${ant.project.name}" destdir="${build}/javadoc/api">
     	<sourcepath path="src"/>
+    	<sourcepath path="pluginsrc"/>
       <classpath>
         <pathelement location="${lib}/antlr.jar"/>
         <pathelement location="${lib}/ehibasics.jar"/>
@@ -76,6 +80,7 @@
     </propertyfile>
 
     <delete file="${projectjar}" quiet="true"/>
+    <delete file="${plugins}/demoplugin.jar" quiet="true"/>
 
     <jar jarfile="${projectjar}">
 	    <manifest>
@@ -92,8 +97,26 @@
 	      <attribute name="Class-Path" value="libs/antlr.jar libs/ehibasics.jar libs/gson-2.6.2.jar libs/ili2c-core.jar libs/ili2c-tool.jar libs/iox-api.jar libs/iox-ili.jar libs/jts-core-1.14.0.jar libs/toml4j-0.5.1.jar"/>
 	    </manifest>
     
-	<fileset dir="${build}/classes" includes="**/*.class"/>
+	<fileset dir="${build}/classes" includes="**/*.class" excludes="org/interlis2/validator/demo/**/*.class"/>
     	<fileset dir="src" includes="**/*.properties"/>
+    </jar>
+    <jar jarfile="${plugins}/demoplugin.jar">
+	    <manifest>
+	      <!-- attribute name="Built-By" value="${user.name}"/>
+	      <attribute name="Build-Jdk" value="${java.version}"/>
+	      <attribute name="ArtefactId" value="GBDBS"/>
+	      <attribute name="Buildnumber" value=""/>
+	      <attribute name="Description" value="${mf.description}"/>
+	      <attribute name="GroupId" value="${mf.groupid}"/>
+	      <attribute name="Organisazion" value="${mf.organization}"/>
+	      <attribute name="Url" value="${mf.url}"/>
+	      <attribute name="Version" value="${version}"/>
+	      <attribute name="Main-Class" value="org.interlis2.validator.Main"/>
+	      <attribute name="Class-Path" value="libs/antlr.jar libs/ehibasics.jar libs/gson-2.6.2.jar libs/ili2c-core.jar libs/ili2c-tool.jar libs/iox-api.jar libs/iox-ili.jar libs/jts-core-1.14.0.jar libs/toml4j-0.5.1.jar"/>
+	      -->
+	    </manifest>
+    
+	<fileset dir="${build}/classes" includes="org/interlis2/validator/demo/**/*.class"/>
     </jar>
   </target>
   

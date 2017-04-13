@@ -26,7 +26,12 @@ public class Main {
 	static public void main(String args[]){
 		Settings settings=new Settings();
 		settings.setValue(Validator.SETTING_ILIDIRS, Validator.SETTING_DEFAULT_ILIDIRS);
-	    settings.setValue(Validator.SETTING_PLUGINFOLDER, getAppHome()+"/plugins");
+		String appHome=getAppHome();
+		if(appHome!=null){
+		    settings.setValue(Validator.SETTING_PLUGINFOLDER, new java.io.File(appHome,"plugins").getAbsolutePath());
+		}else{
+		    settings.setValue(Validator.SETTING_PLUGINFOLDER, new java.io.File("plugins").getAbsolutePath());
+		}
 		// arguments on export
 		String xtfFile=null;
 		String httpProxyHost = null;

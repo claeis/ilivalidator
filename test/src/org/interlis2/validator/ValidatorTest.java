@@ -65,6 +65,20 @@ public class ValidatorTest {
 		assertTrue(ret);
 	}
 	@Test
+	public void xtfOkWithFunction() {
+		Settings settings=new Settings();
+		settings.setValue(Validator.SETTING_PLUGINFOLDER, new java.io.File("plugins").getAbsolutePath());
+		boolean ret=Validator.runValidation("test/data/Beispiel3ok.xtf", settings);
+		assertTrue(ret);
+	}
+	@Test
+	public void xtfFailWithFunction() {
+		Settings settings=new Settings();
+		settings.setValue(Validator.SETTING_PLUGINFOLDER, new java.io.File("plugins").getAbsolutePath());
+		boolean ret=Validator.runValidation("test/data/Beispiel3fail.xtf", settings);
+		assertFalse(ret);
+	}
+	@Test
 	public void xtfFailWithAdditionalModel() {
 		Settings settings=new Settings();
 		settings.setValue(Validator.SETTING_ILIDIRS, Validator.ITF_DIR);
