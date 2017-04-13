@@ -2,6 +2,9 @@ package org.interlis2.validator.gui;
 
 import java.awt.event.ActionListener;
 import java.awt.event.KeyEvent;
+import java.awt.event.WindowAdapter;
+import java.awt.event.WindowEvent;
+import java.io.File;
 import java.util.ArrayList;
 
 import ch.ehi.basics.logging.EhiLogger;
@@ -10,6 +13,7 @@ import ch.ehi.basics.settings.Settings;
 import ch.ehi.basics.swing.SwingWorker;
 import ch.ehi.basics.tools.StringUtility;
 import ch.interlis.ili2c.gui.RepositoriesDialog;
+import ch.interlis.ili2c.gui.UserSettings;
 
 import javax.swing.JFrame;
 import javax.swing.JMenu;
@@ -84,6 +88,12 @@ public class MainFrame extends JFrame {
 
 		});
 	    menu.add(menuItem);
+        addWindowListener(new WindowAdapter() {
+            public void windowClosing(WindowEvent e) {
+              Main.writeSettings(settings);
+  	    	System.exit(0);
+            }
+          });
 	    
 	}
 	private void saveSettings() {
@@ -373,12 +383,14 @@ public class MainFrame extends JFrame {
 				public void actionPerformed(java.awt.event.ActionEvent e) {    
 					String file=getXtfFile();
 					FileChooser fileDialog =  new FileChooser(file);
+					fileDialog.setCurrentDirectory(new File(getWorkingDirectory()));
 					fileDialog.setDialogTitle(rsrc.getString("MainFrame.xtfFileChooserTitle"));
 					fileDialog.addChoosableFileFilter(new GenericFileFilter(rsrc.getString("MainFrame.xtfFileFilter"),"xtf"));
 					fileDialog.addChoosableFileFilter(new GenericFileFilter(rsrc.getString("MainFrame.itfFileFilter"),"itf"));
 					fileDialog.addChoosableFileFilter(GenericFileFilter.createXmlFilter());
 
 					if (fileDialog.showOpenDialog(MainFrame.this) == FileChooser.APPROVE_OPTION) {
+						setWorkingDirectory(fileDialog.getCurrentDirectory().getAbsolutePath());
 						file=fileDialog.getSelectedFile().getAbsolutePath();
 						setXtfFile(file);
 					}					
@@ -395,11 +407,13 @@ public class MainFrame extends JFrame {
 				public void actionPerformed(java.awt.event.ActionEvent e) {    
 					String file=getLogFile();
 					FileChooser fileDialog =  new FileChooser(file);
+					fileDialog.setCurrentDirectory(new File(getWorkingDirectory()));
 					fileDialog.setDialogTitle(rsrc.getString("MainFrame.logFileChooserTitle"));
 					fileDialog.addChoosableFileFilter(new GenericFileFilter(rsrc.getString("MainFrame.logFileFilter"),"log"));
 					fileDialog.addChoosableFileFilter(new GenericFileFilter(rsrc.getString("MainFrame.txtFileFilter"),"txt"));
 
 					if (fileDialog.showSaveDialog(MainFrame.this) == FileChooser.APPROVE_OPTION) {
+						setWorkingDirectory(fileDialog.getCurrentDirectory().getAbsolutePath());
 						file=fileDialog.getSelectedFile().getAbsolutePath();
 						setLogFile(file);
 					}					
@@ -416,10 +430,12 @@ public class MainFrame extends JFrame {
 				public void actionPerformed(java.awt.event.ActionEvent e) {    
 					String file=getLogFile();
 					FileChooser fileDialog =  new FileChooser(file);
+					fileDialog.setCurrentDirectory(new File(getWorkingDirectory()));
 					fileDialog.setDialogTitle(rsrc.getString("MainFrame.xtflogFileChooserTitle"));
 					fileDialog.addChoosableFileFilter(new GenericFileFilter(rsrc.getString("MainFrame.xtfFileFilter"),"xtf"));
 
 					if (fileDialog.showSaveDialog(MainFrame.this) == FileChooser.APPROVE_OPTION) {
+						setWorkingDirectory(fileDialog.getCurrentDirectory().getAbsolutePath());
 						file=fileDialog.getSelectedFile().getAbsolutePath();
 						setXtfLogFile(file);
 					}					
@@ -436,10 +452,12 @@ public class MainFrame extends JFrame {
 				public void actionPerformed(java.awt.event.ActionEvent e) {    
 					String file=getLogFile();
 					FileChooser fileDialog =  new FileChooser(file);
+					fileDialog.setCurrentDirectory(new File(getWorkingDirectory()));
 					fileDialog.setDialogTitle(rsrc.getString("MainFrame.configFileChooserTitle"));
 					fileDialog.addChoosableFileFilter(new GenericFileFilter(rsrc.getString("MainFrame.configFileFilter"),"toml"));
 
 					if (fileDialog.showSaveDialog(MainFrame.this) == FileChooser.APPROVE_OPTION) {
+						setWorkingDirectory(fileDialog.getCurrentDirectory().getAbsolutePath());
 						file=fileDialog.getSelectedFile().getAbsolutePath();
 						setConfigFile(file);
 					}					
@@ -447,5 +465,15 @@ public class MainFrame extends JFrame {
 			});
 		}
 		return doConfigFileSelBtn;
+	}
+	private java.lang.String getWorkingDirectory() {
+		String wd=settings.getValue(UserSettings.WORKING_DIRECTORY);
+		if(wd==null){
+			wd=new File(".").getAbsolutePath();
+		}
+		return wd;
+	}
+	private void setWorkingDirectory(java.lang.String workingDirectory) {
+		settings.setValue(UserSettings.WORKING_DIRECTORY, workingDirectory);
 	}
 }
