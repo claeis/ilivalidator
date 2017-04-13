@@ -38,7 +38,6 @@
         <pathelement location="${lib}/toml4j-0.5.1.jar"/>
       </classpath>
     	<src path="src" />
-    	<src path="gensrc" />
     </javac>
   </target>
 
@@ -47,7 +46,6 @@
     <mkdir dir="${build}/javadoc/api"/>
     <javadoc Public="true" Windowtitle="${ant.project.name}" destdir="${build}/javadoc/api">
     	<sourcepath path="src"/>
-    	<sourcepath path="gensrc"/>
       <classpath>
         <pathelement location="${lib}/antlr.jar"/>
         <pathelement location="${lib}/ehibasics.jar"/>
