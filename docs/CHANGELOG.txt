@@ -1,6 +1,10 @@
-ilivalidator 1.2.0 (2017-04-xx)
+ilivalidator 1.2.0 (2017-04-19)
 -----------------------------
+- iox-ili 1.18.0 (2017-04-19)
 - keep/save last directory of file selector
+- iox-ili: fixed: missing custom functions should not report an error
+- validator: added: implement UNIQUE (LOCAL)
+- validator: added: implement UNIQUE WHERE expression
 
 ilivalidator 1.1.0 (2017-04-05)
 -----------------------------
