@@ -20,7 +20,7 @@ public class CheckGebaeudeVersicherungsSystemIoxPlugin implements InterlisFuncti
 	}
 
 	@Override
-	public Value evaluate(IomObject mainObj, Value[] actualArguments) {
+	public Value evaluate(String validationKind, String usageScope, IomObject mainObj, Value[] actualArguments) {
 		String value=actualArguments[0].getValue();
 		logger.addEvent(logger.logInfoMsg("evaluate "+getQualifiedIliName()+"(assNr="+value+")"));
 		if(value.startsWith("ok")){
