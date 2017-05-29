@@ -130,10 +130,11 @@ public class Main {
 		}else{
 			if(argi+1==args.length){
 				xtfFile=args[argi];
-				Validator.runValidation(xtfFile,settings);
+				final boolean ok = Validator.runValidation(xtfFile,settings);
+				System.exit(ok ? 0 : 1);
 			}else{
 				EhiLogger.logError(APP_NAME+": wrong number of arguments");
-				return;
+				System.exit(2);
 			}
 		}
 		
