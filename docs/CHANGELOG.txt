@@ -1,6 +1,7 @@
 ilivalidator 1.2.x (2017-05-xx)
 -----------------------------
 - ili2c-4.7.3
+- validator: added: support multiple input files
 
 ilivalidator 1.2.1 (2017-04-20)
 -----------------------------
