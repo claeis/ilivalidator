@@ -1,10 +1,12 @@
 package org.interlis2.validator.gui;
 
+import java.awt.Insets;
 import java.awt.event.ActionListener;
 import java.awt.event.KeyEvent;
 import java.awt.event.WindowAdapter;
 import java.awt.event.WindowEvent;
 import java.io.File;
+import java.lang.reflect.Array;
 import java.util.ArrayList;
 
 import ch.ehi.basics.logging.EhiLogger;
@@ -15,11 +17,14 @@ import ch.ehi.basics.tools.StringUtility;
 import ch.interlis.ili2c.gui.RepositoriesDialog;
 import ch.interlis.ili2c.gui.UserSettings;
 
+import javax.swing.BorderFactory;
 import javax.swing.JFrame;
 import javax.swing.JMenu;
 import javax.swing.JMenuBar;
 import javax.swing.JMenuItem;
 import javax.swing.JOptionPane;
+import javax.swing.JTextField;
+import javax.swing.border.EtchedBorder;
 
 import org.interlis2.validator.Main;
 import org.interlis2.validator.Validator;
@@ -32,7 +37,8 @@ public class MainFrame extends JFrame {
 	private javax.swing.JPanel jContentPane = null;
 
 	private javax.swing.JLabel xtfFileLabel = null;
-	private javax.swing.JTextField xtfFileUi = null;
+	// area to display one file per line in multiple input file validation
+	private javax.swing.JTextArea xtfFileUi = null;
 	private javax.swing.JButton doXtfFileSelBtn = null;
 	
 	private javax.swing.JLabel configFileLabel = null;
@@ -49,6 +55,9 @@ public class MainFrame extends JFrame {
 	
 	private javax.swing.JTextArea logUi = null;
 	private javax.swing.JButton clearlogBtn = null;
+	
+	private String selectedFiles[];
+	
 	public MainFrame() {
 		super();
 		initialize();
@@ -59,6 +68,9 @@ public class MainFrame extends JFrame {
 		this.setDefaultCloseOperation(javax.swing.JFrame.EXIT_ON_CLOSE);
 		this.setName(Main.APP_NAME);
 		this.setTitle(rsrc.getString("MainFrame.Title"));
+		
+		//creates a border, which looks like jtextfield border
+		xtfFileUi.setBorder(new JTextField().getBorder());
 		
 	    //Create the menu bar.
 		JMenuBar menuBar = new JMenuBar();
@@ -136,7 +148,6 @@ public class MainFrame extends JFrame {
 			xtfFileUiConstraints.anchor = java.awt.GridBagConstraints.NORTHWEST;
 			doXtfFileSelBtnConstraints.gridx = 2;
 			doXtfFileSelBtnConstraints.gridy = 0;
-			
 			
 			logFileLabelConstraints.gridx = 0;
 			logFileLabelConstraints.gridy = 1;
@@ -234,9 +245,9 @@ public class MainFrame extends JFrame {
 		}
 		return xtfLogFileLabel;
 	}
-	private javax.swing.JTextField getXtfFileUi() {
+	private javax.swing.JTextArea getXtfFileUi() {
 		if(xtfFileUi == null) {
-			xtfFileUi = new javax.swing.JTextField();
+			xtfFileUi = new javax.swing.JTextArea();
 		}
 		return xtfFileUi;
 	}
@@ -277,11 +288,28 @@ public class MainFrame extends JFrame {
 		}
 		return clearlogBtn;
 	}
-	public String getXtfFile(){
-		return StringUtility.purge(getXtfFileUi().getText());
+	// selected files
+	public String[] getXtfFile(){
+		for(int i=0;i<selectedFiles.length;i++){
+			StringUtility.purge(getXtfFileUi().getText());
+		}
+		return selectedFiles;
 	}
-	public void setXtfFile(String dbhost){
-		getXtfFileUi().setText(dbhost);
+	public void setXtfFile(String[] xtfFileList){
+		this.selectedFiles = xtfFileList;
+		
+		StringBuilder stringBuilder = new StringBuilder();
+		String newLine="";
+		for(int i=0;i<xtfFileList.length;i++){
+			stringBuilder.append(newLine);
+			stringBuilder.append(xtfFileList[i]);
+			newLine = "\n";
+		}
+		if(stringBuilder.toString().equals("null")){
+			getXtfFileUi().setText("");
+		} else {
+			getXtfFileUi().setText(stringBuilder.toString());
+		}
 	}
 	public String getConfigFile(){
 		return StringUtility.purge(getConfigFileUi().getText());
@@ -342,7 +370,9 @@ public class MainFrame extends JFrame {
 		String logFile=settings.getValue(Validator.SETTING_LOGFILE);
 		frame.setLogFile(logFile);
 		EhiLogger.getInstance().addListener(new LogListener(frame,logFile));
-		frame.setXtfFile(xtfFile);
+		String[] xtfFileList = new String[1];
+		xtfFileList[0]=xtfFile;
+		frame.setXtfFile(xtfFileList);
 		String xtflogFile=settings.getValue(Validator.SETTING_XTFLOG);
 		frame.setXtfLogFile(xtflogFile);
 		String configFile=settings.getValue(Validator.SETTING_CONFIGFILE);
@@ -358,12 +388,11 @@ public class MainFrame extends JFrame {
 					SwingWorker worker = new SwingWorker() {
 						public Object construct() {
 							try {
-								Validator.runValidation(
+								Validator.runMultipleFileInputValidation(
 									getXtfFile(),
 									getSettings()
 								);
-							}
-							catch (Exception ex) {
+							} catch (Exception ex) {
 								EhiLogger.logError(rsrc.getString("MainFrame.generalError"),ex);
 							}
 							return null;
@@ -381,19 +410,24 @@ public class MainFrame extends JFrame {
 			doXtfFileSelBtn.setText("...");
 			doXtfFileSelBtn.addActionListener(new java.awt.event.ActionListener() { 
 				public void actionPerformed(java.awt.event.ActionEvent e) {    
-					String file=getXtfFile();
+					String file=getXtfFile().toString();
 					FileChooser fileDialog =  new FileChooser(file);
 					fileDialog.setCurrentDirectory(new File(getWorkingDirectory()));
 					fileDialog.setDialogTitle(rsrc.getString("MainFrame.xtfFileChooserTitle"));
 					fileDialog.addChoosableFileFilter(new GenericFileFilter(rsrc.getString("MainFrame.xtfFileFilter"),"xtf"));
 					fileDialog.addChoosableFileFilter(new GenericFileFilter(rsrc.getString("MainFrame.itfFileFilter"),"itf"));
 					fileDialog.addChoosableFileFilter(GenericFileFilter.createXmlFilter());
+					fileDialog.setMultiSelectionEnabled(true);
 
 					if (fileDialog.showOpenDialog(MainFrame.this) == FileChooser.APPROVE_OPTION) {
 						setWorkingDirectory(fileDialog.getCurrentDirectory().getAbsolutePath());
-						file=fileDialog.getSelectedFile().getAbsolutePath();
-						setXtfFile(file);
-					}					
+						File[] multipleFiles = fileDialog.getSelectedFiles();
+						String[] selectedFiles = new String[multipleFiles.length];
+						for(int i=0;i<multipleFiles.length;i++){
+							selectedFiles[i]=multipleFiles[i].toString();
+						}
+						setXtfFile(selectedFiles);
+					}				
 				}
 			});
 		}

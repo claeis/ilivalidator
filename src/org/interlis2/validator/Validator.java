@@ -17,11 +17,14 @@ import ch.interlis.ili2c.metamodel.Model;
 import ch.interlis.ili2c.metamodel.TransferDescription;
 import ch.interlis.iom_j.itf.ItfReader2;
 import ch.interlis.iom_j.xtf.XtfReader;
+import ch.interlis.iox.EndBasketEvent;
 import ch.interlis.iox.EndTransferEvent;
 import ch.interlis.iox.IoxEvent;
 import ch.interlis.iox.IoxException;
 import ch.interlis.iox.IoxLogging;
 import ch.interlis.iox.IoxReader;
+import ch.interlis.iox.StartBasketEvent;
+import ch.interlis.iox.StartTransferEvent;
 import ch.interlis.iox_j.IoxUtility;
 import ch.interlis.iox_j.PipelinePool;
 import ch.interlis.iox_j.logging.FileLogger;
@@ -210,6 +213,187 @@ public class Validator {
 		return ret;
 	}
 	
+	public static boolean runMultipleFileInputValidation(
+			String xtfFilename[],
+			Settings settings
+		) {
+		if(xtfFilename==null  || xtfFilename.length==0){
+			EhiLogger.logError("no INTERLIS file given");
+			return false;
+		}
+		if(settings==null){
+			settings=new Settings();
+		}
+	    String logFilename=settings.getValue(Validator.SETTING_LOGFILE);
+	    String xtflogFilename=settings.getValue(Validator.SETTING_XTFLOG);
+		FileLogger logfile=null;
+		XtfErrorsLogger xtflog=null;
+		StdLogger logStderr=null;
+		boolean ret=false;
+		try{
+			// setup logging of validation results
+			if(logFilename!=null){
+				logfile=new FileLogger(new java.io.File(logFilename));
+				EhiLogger.getInstance().addListener(logfile);
+			}
+			if(xtflogFilename!=null){
+				xtflog=new XtfErrorsLogger(new java.io.File(xtflogFilename), Main.APP_NAME+"-"+Main.getVersion());
+				EhiLogger.getInstance().addListener(xtflog);
+			}
+			logStderr=new StdLogger(logFilename);
+			EhiLogger.getInstance().addListener(logStderr);
+			EhiLogger.getInstance().removeListener(StdListener.getInstance());
+		    String configFilename=settings.getValue(Validator.SETTING_CONFIGFILE);
+		    String pluginFolder=settings.getValue(Validator.SETTING_PLUGINFOLDER);
+		    
+		    // save filenames of selected files
+		    
+		    
+		    // give user important info (such as input files or program version)
+			EhiLogger.logState(Main.APP_NAME+"-"+Main.getVersion());
+			EhiLogger.logState("ili2c-"+ch.interlis.ili2c.Ili2c.getVersion());
+			EhiLogger.logState("iox-ili-"+ch.interlis.iox_j.IoxUtility.getVersion());
+			EhiLogger.logState("maxMemory "+java.lang.Runtime.getRuntime().maxMemory()/1024L+" KB");
+			for(String xtfFile:xtfFilename){
+				EhiLogger.logState("xtfFile <"+xtfFile+">");
+			}
+			if(configFilename!=null){
+				EhiLogger.logState("configFile <"+configFilename+">");
+			}
+			if(pluginFolder!=null){
+				EhiLogger.logState("pluginFolder <"+pluginFolder+">");
+			}
+		
+			TransferDescription sourceTd=null;
+			TransferDescription td=null;
+			ArrayList<Model> models=null;
+			
+			// find out, which ili model is required
+			List<String> modelnames=new ArrayList<String>();
+			for(String xtfFile:xtfFilename){
+				{
+					String modelnameFromXtf=IoxUtility.getModelFromXtf(xtfFile);
+					if(modelnameFromXtf==null){
+						return false;
+					}
+					modelnames.add(modelnameFromXtf);
+				}
+			}
+			if(configFilename!=null){
+				try {
+					List<String> modelNamesFromConfig=getModelsFromConfigFile(configFilename);
+					modelnames.addAll(modelNamesFromConfig);
+				} catch (FileNotFoundException e) {
+					EhiLogger.logError("config file <"+configFilename+"> not found", e);
+					return false;
+				}
+			}
+			Map<String,Class> userFunctions=null;
+			if(pluginFolder!=null){
+				PluginLoader loader=new PluginLoader();
+				loader.loadPlugins(new File(pluginFolder));
+				userFunctions=PluginLoader.getInterlisFunctions(loader.getAllPlugins());
+				settings.setTransientObject(ch.interlis.iox_j.validator.Validator.CONFIG_CUSTOM_FUNCTIONS, userFunctions);
+			}
+			
+			// read ili models
+			td=compileIli(modelnames, null,new File(xtfFilename[0]).getAbsoluteFile().getParentFile().getAbsolutePath(),Main.getAppHome(), settings);
+			if(td==null){
+				return false;
+			}
+			
+			// process data file
+			EhiLogger.logState("validate data...");
+			ch.interlis.iox_j.validator.Validator validator=null;
+			try{
+				// setup log output
+				ValidationConfig modelConfig=new ValidationConfig();
+				modelConfig.mergeIliMetaAttrs(td);
+				if(configFilename!=null){
+					modelConfig.mergeConfigFile(new File(configFilename));
+				}
+				modelConfig.setConfigValue(ValidationConfig.PARAMETER, ValidationConfig.ALLOW_ONLY_MULTIPLICITY_REDUCTION, TRUE.equals(settings.getValue(SETTING_FORCE_TYPE_VALIDATION))?ValidationConfig.ON:null);
+				modelConfig.setConfigValue(ValidationConfig.PARAMETER, ValidationConfig.AREA_OVERLAP_VALIDATION, TRUE.equals(settings.getValue(SETTING_DISABLE_AREA_VALIDATION))?ValidationConfig.OFF:null);
+				IoxLogging errHandler=new ch.interlis.iox_j.logging.Log2EhiLogger();
+				LogEventFactory errFactory=new LogEventFactory();
+				errFactory.setLogger(errHandler);
+				PipelinePool pool=new PipelinePool();
+				validator=new ch.interlis.iox_j.validator.Validator(td,modelConfig, errHandler, errFactory, pool,settings);
+				validator.validate(new ch.interlis.iox_j.StartTransferEvent());
+				// loop over data objects
+				for(String xtfFile:xtfFilename){
+					// setup data reader (ITF or XTF)
+					IoxReader ioxReader=null;
+					if(isItfFilename(xtfFile)){
+						ioxReader=new ItfReader2(new java.io.File(xtfFile),false);
+						((ItfReader2)ioxReader).setIoxDataPool(pool);
+						((ItfReader2)ioxReader).setModel(td);		
+						settings.setValue(ch.interlis.iox_j.validator.Validator.CONFIG_DO_ITF_OIDPERTABLE, ch.interlis.iox_j.validator.Validator.CONFIG_DO_ITF_OIDPERTABLE_DO);
+					}else{
+						ioxReader=new XtfReader(new java.io.File(xtfFile));
+					}
+					errFactory.setDataSource(xtfFile);
+					
+					try{
+						IoxEvent event=null;
+						do{
+							event=ioxReader.read();
+							// feed object by object to validator
+							if(event instanceof StartTransferEvent){
+							}else if(event instanceof EndTransferEvent){
+								// skip it here; send it to validator outside of loop over files
+							}else{
+								validator.validate(event);
+							}
+						}while(!(event instanceof EndTransferEvent));
+					}finally{
+						if(ioxReader!=null){
+							try {
+								ioxReader.close();
+							} catch (IoxException e) {
+								EhiLogger.logError(e);
+							}
+							ioxReader=null;
+						}
+					}
+				}
+				validator.validate(new ch.interlis.iox_j.EndTransferEvent());
+				// check for errors
+				if(logStderr.hasSeenErrors()){
+					EhiLogger.logState("...validation failed");
+				}else{
+					EhiLogger.logState("...validation done");
+					ret=true;
+				}
+			}catch(Throwable ex){
+				EhiLogger.logError(ex);
+				EhiLogger.logState("...validation failed");
+			}finally{
+				if(validator!=null){
+					validator.close();
+					validator=null;
+				}
+			}
+		}finally{
+			if(xtflog!=null){
+				xtflog.close();
+				EhiLogger.getInstance().removeListener(xtflog);
+				xtflog=null;
+			}
+			if(logfile!=null){
+				logfile.close();
+				EhiLogger.getInstance().removeListener(logfile);
+				logfile=null;
+			}
+			if(logStderr!=null){
+				EhiLogger.getInstance().addListener(StdListener.getInstance());
+				EhiLogger.getInstance().removeListener(logStderr);
+				logStderr=null;
+			}
+		}
+		return ret;
+	}
+	
 	private static List<String> getModelsFromConfigFile(String configFilename) throws FileNotFoundException {
 		List<String> ret=new ArrayList<String>();
 		if(configFilename!=null){
@@ -329,8 +513,6 @@ public class Validator {
 		}
 		return false;
 	}
-
-
 	/** Default path with folders of Interlis model files.
 	 * @see #SETTING_ILIDIRS
 	 */

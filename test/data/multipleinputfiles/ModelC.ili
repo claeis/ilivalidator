@@ -1,0 +1,15 @@
+INTERLIS 2.3;
+
+CONTRACTED MODEL ModelC AT "mailto:ceis@localhost" VERSION "2016-07-08" =
+
+  TOPIC TopicA =
+    
+    CLASS ClassD =
+		attr1 : TEXT*10;
+		attr2 : 0 .. 100;
+		UNIQUE attr1, attr2;
+	END ClassD;
+    
+  END TopicA;
+
+END ModelC.

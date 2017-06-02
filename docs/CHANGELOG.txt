@@ -1,3 +1,7 @@
+ilivalidator 1.3.0 (2017-06-XX)
+-----------------------------
+- validator: added: support multiple input files
+
 ilivalidator 1.2.1 (2017-04-20)
 -----------------------------
 - iox-ili 1.18.1 (2017-04-20)
