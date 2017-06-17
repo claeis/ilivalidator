@@ -14,8 +14,6 @@ import ch.ehi.basics.view.*;
 import ch.ehi.basics.settings.Settings;
 import ch.ehi.basics.swing.SwingWorker;
 import ch.ehi.basics.tools.StringUtility;
-import ch.interlis.ili2c.gui.RepositoriesDialog;
-import ch.interlis.ili2c.gui.UserSettings;
 
 import javax.swing.BorderFactory;
 import javax.swing.JFrame;
@@ -82,11 +80,11 @@ public class MainFrame extends JFrame {
 	    JMenuItem menuItem = new JMenuItem(rsrc.getString("MainFrame.ModelRepositoriesMenuItem"));
 		menuItem.addActionListener(new ActionListener(){
 			public void actionPerformed(java.awt.event.ActionEvent e){
-				RepositoriesDialog dlg=new RepositoriesDialog(MainFrame.this);
+				ch.interlis.ili2c.gui.RepositoriesDialog dlg=new ch.interlis.ili2c.gui.RepositoriesDialog(MainFrame.this);
 				dlg.setIlidirs(settings.getValue(Validator.SETTING_ILIDIRS));
 				dlg.setHttpProxyHost(settings.getValue(ch.interlis.ili2c.gui.UserSettings.HTTP_PROXY_HOST));
 				dlg.setHttpProxyPort(settings.getValue(ch.interlis.ili2c.gui.UserSettings.HTTP_PROXY_PORT));
-				if(dlg.showDialog()==RepositoriesDialog.OK_OPTION){
+				if(dlg.showDialog()==ch.interlis.ili2c.gui.RepositoriesDialog.OK_OPTION){
 					String ilidirs=dlg.getIlidirs();
 					if(ilidirs==null){
 						ilidirs=Validator.SETTING_DEFAULT_ILIDIRS;
@@ -102,7 +100,7 @@ public class MainFrame extends JFrame {
 	    menu.add(menuItem);
         addWindowListener(new WindowAdapter() {
             public void windowClosing(WindowEvent e) {
-              Main.writeSettings(settings);
+              saveSettings();
   	    	System.exit(0);
             }
           });
@@ -110,6 +108,7 @@ public class MainFrame extends JFrame {
 	}
 	private void saveSettings() {
 		Settings toSave=new Settings();
+		toSave.setValue(ch.interlis.ili2c.gui.UserSettings.WORKING_DIRECTORY,settings.getValue(ch.interlis.ili2c.gui.UserSettings.WORKING_DIRECTORY));
 		toSave.setValue(Validator.SETTING_ILIDIRS,settings.getValue(Validator.SETTING_ILIDIRS));
 		toSave.setValue(ch.interlis.ili2c.gui.UserSettings.HTTP_PROXY_HOST,settings.getValue(ch.interlis.ili2c.gui.UserSettings.HTTP_PROXY_HOST));
 		toSave.setValue(ch.interlis.ili2c.gui.UserSettings.HTTP_PROXY_PORT,settings.getValue(ch.interlis.ili2c.gui.UserSettings.HTTP_PROXY_PORT));
@@ -332,11 +331,20 @@ public class MainFrame extends JFrame {
 	public Settings getSettings()
 	{
 		String logFile=getLogFile();
-		settings.setValue(Validator.SETTING_LOGFILE,logFile);
 		String xtflogFile=getXtfLogFile();
-		settings.setValue(Validator.SETTING_XTFLOG,xtflogFile);
 		String configFile=getConfigFile();
+		String workingDir=settings.getValue(ch.interlis.ili2c.gui.UserSettings.WORKING_DIRECTORY);
+		String proxyHost=settings.getValue(ch.interlis.ili2c.gui.UserSettings.HTTP_PROXY_HOST);
+		String proxyPort=settings.getValue(ch.interlis.ili2c.gui.UserSettings.HTTP_PROXY_PORT);
+		
+		Settings settings=new Settings();
+		
+		settings.setValue(ch.interlis.ili2c.gui.UserSettings.WORKING_DIRECTORY,workingDir);
+		settings.setValue(Validator.SETTING_LOGFILE,logFile);
+		settings.setValue(Validator.SETTING_XTFLOG,xtflogFile);
 		settings.setValue(Validator.SETTING_CONFIGFILE,configFile);
+		settings.setValue(ch.interlis.ili2c.gui.UserSettings.HTTP_PROXY_HOST,proxyHost);
+		settings.setValue(ch.interlis.ili2c.gui.UserSettings.HTTP_PROXY_PORT,proxyPort);
 		return settings;
 	}
 	public void setSettings(Settings settings)
@@ -490,7 +498,7 @@ public class MainFrame extends JFrame {
 					fileDialog.setDialogTitle(rsrc.getString("MainFrame.configFileChooserTitle"));
 					fileDialog.addChoosableFileFilter(new GenericFileFilter(rsrc.getString("MainFrame.configFileFilter"),"toml"));
 
-					if (fileDialog.showSaveDialog(MainFrame.this) == FileChooser.APPROVE_OPTION) {
+					if (fileDialog.showOpenDialog(MainFrame.this) == FileChooser.APPROVE_OPTION) {
 						setWorkingDirectory(fileDialog.getCurrentDirectory().getAbsolutePath());
 						file=fileDialog.getSelectedFile().getAbsolutePath();
 						setConfigFile(file);
@@ -501,13 +509,13 @@ public class MainFrame extends JFrame {
 		return doConfigFileSelBtn;
 	}
 	private java.lang.String getWorkingDirectory() {
-		String wd=settings.getValue(UserSettings.WORKING_DIRECTORY);
+		String wd=settings.getValue(ch.interlis.ili2c.gui.UserSettings.WORKING_DIRECTORY);
 		if(wd==null){
 			wd=new File(".").getAbsolutePath();
 		}
 		return wd;
 	}
 	private void setWorkingDirectory(java.lang.String workingDirectory) {
-		settings.setValue(UserSettings.WORKING_DIRECTORY, workingDirectory);
+		settings.setValue(ch.interlis.ili2c.gui.UserSettings.WORKING_DIRECTORY, workingDirectory);
 	}
 }
