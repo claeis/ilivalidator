@@ -15,6 +15,7 @@ import ch.interlis.ili2c.Ili2cException;
 import ch.interlis.ili2c.Ili2cFailure;
 import ch.interlis.ili2c.metamodel.Model;
 import ch.interlis.ili2c.metamodel.TransferDescription;
+import ch.interlis.iom_j.itf.ItfReader;
 import ch.interlis.iom_j.itf.ItfReader2;
 import ch.interlis.iom_j.xtf.XtfReader;
 import ch.interlis.iox.EndBasketEvent;
@@ -114,6 +115,8 @@ public class Validator {
 			TransferDescription td=null;
 			ArrayList<Model> models=null;
 			
+			boolean skipPolygonBuilding=ch.interlis.iox_j.validator.Validator.CONFIG_DO_ITF_LINETABLES_DO.equals(settings.getValue(ch.interlis.iox_j.validator.Validator.CONFIG_DO_ITF_LINETABLES));
+			
 			// find out, which ili model is required
 			List<String> modelnames=new ArrayList<String>();
 			for(String xtfFile:xtfFilename){
@@ -172,9 +175,14 @@ public class Validator {
 					// setup data reader (ITF or XTF)
 					IoxReader ioxReader=null;
 					if(isItfFilename(xtfFile)){
-						ioxReader=new ItfReader2(new java.io.File(xtfFile),false);
-						((ItfReader2)ioxReader).setIoxDataPool(pool);
-						((ItfReader2)ioxReader).setModel(td);		
+						if(skipPolygonBuilding){
+							ioxReader=new ItfReader(new java.io.File(xtfFile));
+							((ItfReader)ioxReader).setModel(td);		
+						}else{
+							ioxReader=new ItfReader2(new java.io.File(xtfFile),false);
+							((ItfReader2)ioxReader).setIoxDataPool(pool);
+							((ItfReader2)ioxReader).setModel(td);		
+						}
 					}else{
 						ioxReader=new XtfReader(new java.io.File(xtfFile));
 					}

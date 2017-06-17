@@ -2,6 +2,7 @@ ilivalidator 1.3.0 (2017-06-xx)
 -----------------------------
 - ili2c-4.7.3
 - added: support multiple input files
+- added: --skipPolygonBuilding (only ITF)
 - fixed: wrong error message "doItfOidPerTable!=false"
 
 ilivalidator 1.2.1 (2017-04-20)

@@ -53,37 +53,30 @@ public class Main {
 			}else if(arg.equals("--modeldir")){
 				argi++;
 				settings.setValue(Validator.SETTING_ILIDIRS, args[argi]);
-				continue;
 			}else if(arg.equals("--config")) {
 			    argi++;
 			    settings.setValue(Validator.SETTING_CONFIGFILE, args[argi]);
-			    continue;
 			}else if(arg.equals("--forceTypeValidation")){
-				argi++;
 				settings.setValue(Validator.SETTING_FORCE_TYPE_VALIDATION,Validator.TRUE);
 			}else if(arg.equals("--disableAreaValidation")){
-				argi++;
 				settings.setValue(Validator.SETTING_DISABLE_AREA_VALIDATION,Validator.TRUE);
+			}else if(arg.equals("--skipPolygonBuilding")){
+				settings.setValue(ch.interlis.iox_j.validator.Validator.CONFIG_DO_ITF_LINETABLES, ch.interlis.iox_j.validator.Validator.CONFIG_DO_ITF_LINETABLES_DO);
 			}else if(arg.equals("--log")) {
 			    argi++;
 			    settings.setValue(Validator.SETTING_LOGFILE, args[argi]);
-			    continue;
 			}else if(arg.equals("--xtflog")) {
 			    argi++;
 			    settings.setValue(Validator.SETTING_XTFLOG, args[argi]);
-			    continue;
 			}else if(arg.equals("--plugins")) {
 			    argi++;
 			    settings.setValue(Validator.SETTING_PLUGINFOLDER, args[argi]);
-			    continue;
 			}else if(arg.equals("--proxy")) {
 				    argi++;
 				    settings.setValue(ch.interlis.ili2c.gui.UserSettings.HTTP_PROXY_HOST, args[argi]);
-				    continue;
 			}else if(arg.equals("--proxyPort")) {
 				    argi++;
 				    settings.setValue(ch.interlis.ili2c.gui.UserSettings.HTTP_PROXY_PORT, args[argi]);
-				    continue;
 			}else if(arg.equals("--version")){
 				printVersion();
 				return;
@@ -100,6 +93,7 @@ public class Main {
 				    System.err.println("--config file         config file to control validation.");
 					System.err.println("--forceTypeValidation  restrict customization of validation related to \"multiplicity\".");
 					System.err.println("--disableAreaValidation  disable AREA validation.");
+					System.err.println("--skipPolygonBuilding skip polygon building (only ITF).");
 				    System.err.println("--log file            text file, that receives validation results.");
 				    System.err.println("--xtflog file         INTERLIS transfer file, that receives validation results.");
 					System.err.println("--modeldir "+settings.getValue(Validator.SETTING_ILIDIRS)+" list of directories/repositories with ili-files.");
