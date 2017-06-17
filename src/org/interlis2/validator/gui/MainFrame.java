@@ -388,7 +388,7 @@ public class MainFrame extends JFrame {
 					SwingWorker worker = new SwingWorker() {
 						public Object construct() {
 							try {
-								Validator.runMultipleFileInputValidation(
+								Validator.runValidation(
 									getXtfFile(),
 									getSettings()
 								);

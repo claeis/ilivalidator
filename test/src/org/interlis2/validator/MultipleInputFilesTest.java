@@ -13,7 +13,7 @@ public class MultipleInputFilesTest {
 		String[] listOfFiles = new String[2];
 		listOfFiles[0]="test/data/multipleinputfiles/TestFileC.xtf";
 		listOfFiles[1]="test/data/multipleinputfiles/TestFileC2.xtf";
-		boolean ret=Validator.runMultipleFileInputValidation(listOfFiles, null);
+		boolean ret=Validator.runValidation(listOfFiles, null);
 		assertTrue(ret);
 	}
 	
@@ -24,7 +24,7 @@ public class MultipleInputFilesTest {
 		String[] listOfFiles = new String[2];
 		listOfFiles[0]="test/data/multipleinputfiles/TestFileC2.xtf";
 		listOfFiles[1]="test/data/multipleinputfiles/TestFileC3.xtf";
-		boolean ret=Validator.runMultipleFileInputValidation(listOfFiles, null);
+		boolean ret=Validator.runValidation(listOfFiles, null);
 		assertFalse(ret);
 	}
 }
