@@ -60,6 +60,8 @@ public class Main {
 				settings.setValue(Validator.SETTING_FORCE_TYPE_VALIDATION,Validator.TRUE);
 			}else if(arg.equals("--disableAreaValidation")){
 				settings.setValue(Validator.SETTING_DISABLE_AREA_VALIDATION,Validator.TRUE);
+			}else if(arg.equals("--multiplicityOff")){
+				settings.setValue(Validator.SETTING_MULTIPLICITY_VALIDATION,ch.interlis.iox_j.validator.ValidationConfig.OFF);
 			}else if(arg.equals("--skipPolygonBuilding")){
 				settings.setValue(ch.interlis.iox_j.validator.Validator.CONFIG_DO_ITF_LINETABLES, ch.interlis.iox_j.validator.Validator.CONFIG_DO_ITF_LINETABLES_DO);
 			}else if(arg.equals("--log")) {
@@ -93,6 +95,7 @@ public class Main {
 				    System.err.println("--config file         config file to control validation.");
 					System.err.println("--forceTypeValidation  restrict customization of validation related to \"multiplicity\".");
 					System.err.println("--disableAreaValidation  disable AREA validation.");
+					System.err.println("--multiplicityOff     disable all multiplicity validation.");
 					System.err.println("--skipPolygonBuilding skip polygon building (only ITF).");
 				    System.err.println("--log file            text file, that receives validation results.");
 				    System.err.println("--xtflog file         INTERLIS transfer file, that receives validation results.");

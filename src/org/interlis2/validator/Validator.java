@@ -164,6 +164,11 @@ public class Validator {
 				}
 				modelConfig.setConfigValue(ValidationConfig.PARAMETER, ValidationConfig.ALLOW_ONLY_MULTIPLICITY_REDUCTION, TRUE.equals(settings.getValue(SETTING_FORCE_TYPE_VALIDATION))?ValidationConfig.ON:null);
 				modelConfig.setConfigValue(ValidationConfig.PARAMETER, ValidationConfig.AREA_OVERLAP_VALIDATION, TRUE.equals(settings.getValue(SETTING_DISABLE_AREA_VALIDATION))?ValidationConfig.OFF:null);
+				String globalMultiplicity=settings.getValue(SETTING_MULTIPLICITY_VALIDATION);
+				if(globalMultiplicity!=null){
+					modelConfig.setConfigValue(ValidationConfig.PARAMETER, ValidationConfig.MULTIPLICITY, globalMultiplicity);
+				}
+				
 				IoxLogging errHandler=new ch.interlis.iox_j.logging.Log2EhiLogger();
 				LogEventFactory errFactory=new LogEventFactory();
 				errFactory.setLogger(errHandler);
@@ -382,6 +387,9 @@ public class Validator {
 	/** Restrict customization of validation related to \"multiplicity\". Possible values "true", "false".
 	 */
 	public static final String SETTING_FORCE_TYPE_VALIDATION = "org.interlis2.validator.forcetypevalidation";
+	/** Global setting for multiplicity validation. Possible values "on", "warning", "off". Default "on".
+	 */
+	public static final String SETTING_MULTIPLICITY_VALIDATION = null;
 	/** Disable AREA validation. Possible values "true", "false".
 	 */
 	public static final String SETTING_DISABLE_AREA_VALIDATION = "org.interlis2.validator.disableareavalidation";
