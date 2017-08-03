@@ -285,17 +285,17 @@ public class Validator {
 		HashSet ilifiledirs=new HashSet();
 		for(int modeli=0;modeli<modeldirs.length;modeli++){
 			String m=modeldirs[modeli];
-			if(m.equals(Validator.ITF_DIR)){
-				m=itfDir;
+			if(m.contains(Validator.ITF_DIR)){
+				m=m.replace(ITF_DIR, itfDir);
 				if(m!=null && m.length()>0){
 					if(!modeldirv.contains(m)){
 						modeldirv.add(m);				
 					}
 				}
-			}else if(m.equals(Validator.JAR_DIR)){
-				m=appHome;
+			}else if(m.contains(Validator.JAR_DIR)){
+				m=m.replace(JAR_DIR,appHome);
 				if(m!=null){
-					m=new java.io.File(m,"ilimodels").getAbsolutePath();
+					m=new java.io.File(m).getAbsolutePath();
 				}
 				if(m!=null && m.length()>0){
 					modeldirv.add(m);				
@@ -370,7 +370,7 @@ public class Validator {
 	/** Default path with folders of Interlis model files.
 	 * @see #SETTING_ILIDIRS
 	 */
-	public static final String SETTING_DEFAULT_ILIDIRS = Validator.ITF_DIR+";http://models.interlis.ch/;"+Validator.JAR_DIR;
+	public static final String SETTING_DEFAULT_ILIDIRS = Validator.ITF_DIR+";http://models.interlis.ch/;"+Validator.JAR_DIR+"/ilimodels";
 	/** Path with folders of Interlis model files. Multiple entries are separated by semicolon (';'). 
 	 * Might contain "http:" URLs which should contain model repositories. 
 	 * Might include placeholders ITF_DIR or JAR_DIR. 
@@ -406,7 +406,7 @@ public class Validator {
 	 * @see #SETTING_ILIDIRS
 	 */
 	public static final String ITF_DIR="%ITF_DIR";
-	/** Placeholder, that will be replaced by the "ilimodels" subfolder of the validator program. 
+	/** Placeholder, that will be replaced by the folder of the validator program. 
 	 * @see #SETTING_ILIDIRS
 	 */
 	public static final String JAR_DIR="%JAR_DIR";
