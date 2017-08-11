@@ -2,6 +2,7 @@ ilivalidator 1.4.0 (2017-08-xx)
 -----------------------------
 - changed default --modeldir to %ITF_DIR;http://models.interlis.ch/;%JAR_DIR/ilimodels
 - set value of %JAR_DIR to folder of ilivalidator.jar 
+- added: new option to assume all objects are known to the validator
 
 ilivalidator 1.3.0 (2017-06-17)
 -----------------------------
