@@ -164,6 +164,7 @@ public class Validator {
 				}
 				modelConfig.setConfigValue(ValidationConfig.PARAMETER, ValidationConfig.ALLOW_ONLY_MULTIPLICITY_REDUCTION, TRUE.equals(settings.getValue(SETTING_FORCE_TYPE_VALIDATION))?ValidationConfig.ON:null);
 				modelConfig.setConfigValue(ValidationConfig.PARAMETER, ValidationConfig.AREA_OVERLAP_VALIDATION, TRUE.equals(settings.getValue(SETTING_DISABLE_AREA_VALIDATION))?ValidationConfig.OFF:null);
+				modelConfig.setConfigValue(ValidationConfig.PARAMETER, ValidationConfig.ALL_OBJECTS_ACCESSIBLE, settings.getValue(SETTING_ALL_OBJECTS_ACCESSIBLE));
 				String globalMultiplicity=settings.getValue(SETTING_MULTIPLICITY_VALIDATION);
 				if(globalMultiplicity!=null){
 					modelConfig.setConfigValue(ValidationConfig.PARAMETER, ValidationConfig.MULTIPLICITY, globalMultiplicity);
@@ -293,7 +294,9 @@ public class Validator {
 					}
 				}
 			}else if(m.contains(Validator.JAR_DIR)){
-				m=m.replace(JAR_DIR,appHome);
+				if(appHome!=null){
+					m=m.replace(JAR_DIR,appHome);
+				}
 				if(m!=null){
 					m=new java.io.File(m).getAbsolutePath();
 				}
@@ -396,6 +399,9 @@ public class Validator {
 	/** Name of the log file that receives the validation results.
 	 */
 	public static final String SETTING_LOGFILE = "org.interlis2.validator.log";
+	/** Assume that all objects are known to the validator. "true", "false". Default "false".
+	 */
+	public static final String SETTING_ALL_OBJECTS_ACCESSIBLE = "org.interlis2.validator.allobjectsaccessible";
 	/** Name of the data file (XTF format) that receives the validation results.
 	 */
 	public static final String SETTING_XTFLOG = "org.interlis2.validator.xtflog";
@@ -410,6 +416,6 @@ public class Validator {
 	 * @see #SETTING_ILIDIRS
 	 */
 	public static final String JAR_DIR="%JAR_DIR";
-	public static final String TRUE="true";
-	public static final String FALSE="false";
+	public static final String TRUE=ValidationConfig.TRUE;
+	public static final String FALSE=ValidationConfig.FALSE;
 }

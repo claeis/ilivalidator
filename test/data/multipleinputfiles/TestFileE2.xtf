@@ -1,0 +1,15 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<TRANSFER xmlns="http://www.interlis.ch/INTERLIS2.3">
+	<HEADERSECTION SENDER="ili2pg-3.6.0-20161230" VERSION="2.3">
+		<MODELS>
+			<MODEL NAME="ModelE" VERSION="2016-07-08" URI="mailto:ceis@localhost"></MODEL>
+		</MODELS>
+	</HEADERSECTION>
+	<DATASECTION>
+		<ModelE.GebaeudeRegister BID="ModelE.GebaeudeRegister">
+			<ModelE.GebaeudeRegister.GebaeudeDetail TID="101">
+				<Gebaeude REF="10"></Gebaeude> <!-- ok, reference object does not need to be in same file -->
+			</ModelE.GebaeudeRegister.GebaeudeDetail>
+		</ModelE.GebaeudeRegister>
+	</DATASECTION>
+</TRANSFER>

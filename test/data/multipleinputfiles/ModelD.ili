@@ -1,0 +1,20 @@
+INTERLIS 2.3;
+
+CONTRACTED MODEL ModelD AT "mailto:ceis@localhost" VERSION "2016-07-08" =
+	TOPIC Bodenbedeckung =
+    	CLASS Gebaeude =
+    	END Gebaeude;
+  	END Bodenbedeckung;
+
+  	TOPIC GebaeudeRegister =
+    	DEPENDS ON Bodenbedeckung;
+
+    	CLASS GebaeudeDetail =
+    	END GebaeudeDetail;
+    
+    	ASSOCIATION GebaeudeDetails =
+      		Gebaeude (EXTERNAL) -<#> {1} ModelD.Bodenbedeckung.Gebaeude;
+      		Detail -- {0..1} GebaeudeDetail;
+    	END GebaeudeDetails;
+  	END GebaeudeRegister;
+END ModelD.

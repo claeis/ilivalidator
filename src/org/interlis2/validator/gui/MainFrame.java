@@ -2,6 +2,7 @@ package org.interlis2.validator.gui;
 
 import java.awt.Insets;
 import java.awt.event.ActionListener;
+import java.awt.event.ItemEvent;
 import java.awt.event.KeyEvent;
 import java.awt.event.WindowAdapter;
 import java.awt.event.WindowEvent;
@@ -37,6 +38,7 @@ public class MainFrame extends JFrame {
 	private javax.swing.JLabel xtfFileLabel = null;
 	// area to display one file per line in multiple input file validation
 	private javax.swing.JTextArea xtfFileUi = null;
+	private javax.swing.JCheckBox allObjectsAccessible = null;
 	private javax.swing.JButton doXtfFileSelBtn = null;
 	
 	private javax.swing.JLabel configFileLabel = null;
@@ -110,6 +112,7 @@ public class MainFrame extends JFrame {
 		Settings toSave=new Settings();
 		toSave.setValue(ch.interlis.ili2c.gui.UserSettings.WORKING_DIRECTORY,settings.getValue(ch.interlis.ili2c.gui.UserSettings.WORKING_DIRECTORY));
 		toSave.setValue(Validator.SETTING_ILIDIRS,settings.getValue(Validator.SETTING_ILIDIRS));
+		toSave.setValue(Validator.SETTING_ALL_OBJECTS_ACCESSIBLE,settings.getValue(Validator.SETTING_ALL_OBJECTS_ACCESSIBLE));
 		toSave.setValue(ch.interlis.ili2c.gui.UserSettings.HTTP_PROXY_HOST,settings.getValue(ch.interlis.ili2c.gui.UserSettings.HTTP_PROXY_HOST));
 		toSave.setValue(ch.interlis.ili2c.gui.UserSettings.HTTP_PROXY_PORT,settings.getValue(ch.interlis.ili2c.gui.UserSettings.HTTP_PROXY_PORT));
 		Main.writeSettings(toSave);
@@ -119,6 +122,7 @@ public class MainFrame extends JFrame {
 			jContentPane = new javax.swing.JPanel();
 			java.awt.GridBagConstraints xtfFileLabelConstraints = new java.awt.GridBagConstraints();
 			java.awt.GridBagConstraints xtfFileUiConstraints = new java.awt.GridBagConstraints();
+			java.awt.GridBagConstraints allObjectsAccessibleConstraints = new java.awt.GridBagConstraints();
 			java.awt.GridBagConstraints doXtfFileSelBtnConstraints = new java.awt.GridBagConstraints();
 
 			java.awt.GridBagConstraints logFileLabelConstraints = new java.awt.GridBagConstraints();
@@ -145,41 +149,44 @@ public class MainFrame extends JFrame {
 			xtfFileUiConstraints.gridx = 1;
 			xtfFileUiConstraints.gridy = 0;
 			xtfFileUiConstraints.anchor = java.awt.GridBagConstraints.NORTHWEST;
+			allObjectsAccessibleConstraints.gridx = 1;
+			allObjectsAccessibleConstraints.gridy = 1;
+			allObjectsAccessibleConstraints.anchor = java.awt.GridBagConstraints.NORTHWEST;
 			doXtfFileSelBtnConstraints.gridx = 2;
 			doXtfFileSelBtnConstraints.gridy = 0;
 			
 			logFileLabelConstraints.gridx = 0;
-			logFileLabelConstraints.gridy = 1;
+			logFileLabelConstraints.gridy = 2;
 			logFileLabelConstraints.anchor = java.awt.GridBagConstraints.NORTHWEST;
 			logFileUiConstraints.weightx = 1.0;
 			logFileUiConstraints.fill = java.awt.GridBagConstraints.HORIZONTAL;
 			logFileUiConstraints.gridx = 1;
-			logFileUiConstraints.gridy = 1;
+			logFileUiConstraints.gridy = 2;
 			logFileUiConstraints.anchor = java.awt.GridBagConstraints.NORTHWEST;
 			doLogFileSelBtnConstraints.gridx = 2;
-			doLogFileSelBtnConstraints.gridy = 1;
+			doLogFileSelBtnConstraints.gridy = 2;
 
 			xtfLogFileLabelConstraints.gridx = 0;
-			xtfLogFileLabelConstraints.gridy = 2;
+			xtfLogFileLabelConstraints.gridy = 3;
 			xtfLogFileLabelConstraints.anchor = java.awt.GridBagConstraints.NORTHWEST;
 			xtfLogFileUiConstraints.weightx = 1.0;
 			xtfLogFileUiConstraints.fill = java.awt.GridBagConstraints.HORIZONTAL;
 			xtfLogFileUiConstraints.gridx = 1;
-			xtfLogFileUiConstraints.gridy = 2;
+			xtfLogFileUiConstraints.gridy = 3;
 			xtfLogFileUiConstraints.anchor = java.awt.GridBagConstraints.NORTHWEST;
 			doXtfLogFileSelBtnConstraints.gridx = 2;
-			doXtfLogFileSelBtnConstraints.gridy = 2;
+			doXtfLogFileSelBtnConstraints.gridy = 3;
 			
 			configFileLabelConstraints.gridx = 0;
-			configFileLabelConstraints.gridy = 3;
+			configFileLabelConstraints.gridy = 4;
 			configFileLabelConstraints.anchor = java.awt.GridBagConstraints.NORTHWEST;
 			configFileUiConstraints.weightx = 1.0;
 			configFileUiConstraints.fill = java.awt.GridBagConstraints.HORIZONTAL;
 			configFileUiConstraints.gridx = 1;
-			configFileUiConstraints.gridy = 3;
+			configFileUiConstraints.gridy = 4;
 			configFileUiConstraints.anchor = java.awt.GridBagConstraints.NORTHWEST;
 			doConfigFileSelBtnConstraints.gridx = 2;
-			doConfigFileSelBtnConstraints.gridy = 3;
+			doConfigFileSelBtnConstraints.gridy = 4;
 			
 			logPaneConstraints.weightx = 1.0;
 			logPaneConstraints.weighty = 1.0;
@@ -212,6 +219,7 @@ public class MainFrame extends JFrame {
 			
 			jContentPane.add(getJScrollPane(), logPaneConstraints);
 			jContentPane.add(getClearlogBtn(), clearlogBtnConstraints);
+			jContentPane.add(getAllObjectsAccessible(), allObjectsAccessibleConstraints);
 			jContentPane.add(getDoValidateBtn(), doValidateConstraints);
 		}
 		return jContentPane;
@@ -287,6 +295,25 @@ public class MainFrame extends JFrame {
 		}
 		return clearlogBtn;
 	}
+	private javax.swing.JCheckBox getAllObjectsAccessible() {
+		if(allObjectsAccessible == null) {
+			allObjectsAccessible = new javax.swing.JCheckBox();
+			allObjectsAccessible.setText(rsrc.getString("MainFrame.allObjectsAccessible"));
+			allObjectsAccessible.addItemListener(new java.awt.event.ItemListener() {
+				@Override
+				public void itemStateChanged(ItemEvent e){
+					if(e.getStateChange()==1){
+						// checkbox is selected
+						settings.setValue(Validator.SETTING_ALL_OBJECTS_ACCESSIBLE, Validator.TRUE);
+					}else{
+						// checkbox is deselected
+						settings.setValue(Validator.SETTING_ALL_OBJECTS_ACCESSIBLE, Validator.FALSE);
+					}
+				}
+			});
+		}
+		return allObjectsAccessible;
+	}
 	// selected files
 	public String[] getXtfFile(){
 		for(int i=0;i<selectedFiles.length;i++){
@@ -313,6 +340,13 @@ public class MainFrame extends JFrame {
 	public String getConfigFile(){
 		return StringUtility.purge(getConfigFileUi().getText());
 	}
+	public String getObjectsAccessible(){
+		String allObjectsAccessible=settings.getValue(Validator.SETTING_ALL_OBJECTS_ACCESSIBLE);
+		if(allObjectsAccessible==null){
+			allObjectsAccessible=Validator.FALSE;
+		}
+		return allObjectsAccessible;
+	}
 	public void setConfigFile(String dbhost){
 		getConfigFileUi().setText(dbhost);
 	}
@@ -333,6 +367,7 @@ public class MainFrame extends JFrame {
 		String logFile=getLogFile();
 		String xtflogFile=getXtfLogFile();
 		String configFile=getConfigFile();
+		String objectsAccess=getObjectsAccessible();
 		String workingDir=settings.getValue(ch.interlis.ili2c.gui.UserSettings.WORKING_DIRECTORY);
 		String proxyHost=settings.getValue(ch.interlis.ili2c.gui.UserSettings.HTTP_PROXY_HOST);
 		String proxyPort=settings.getValue(ch.interlis.ili2c.gui.UserSettings.HTTP_PROXY_PORT);
@@ -343,6 +378,7 @@ public class MainFrame extends JFrame {
 		settings.setValue(Validator.SETTING_LOGFILE,logFile);
 		settings.setValue(Validator.SETTING_XTFLOG,xtflogFile);
 		settings.setValue(Validator.SETTING_CONFIGFILE,configFile);
+		settings.setValue(Validator.SETTING_ALL_OBJECTS_ACCESSIBLE,objectsAccess);
 		settings.setValue(ch.interlis.ili2c.gui.UserSettings.HTTP_PROXY_HOST,proxyHost);
 		settings.setValue(ch.interlis.ili2c.gui.UserSettings.HTTP_PROXY_PORT,proxyPort);
 		return settings;
