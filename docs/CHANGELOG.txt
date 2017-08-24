@@ -1,8 +1,15 @@
-ilivalidator 1.4.0 (2017-08-xx)
+ilivalidator 1.4.0 (2017-08-24)
 -----------------------------
 - changed default --modeldir to %ITF_DIR;http://models.interlis.ch/;%JAR_DIR/ilimodels
-- set value of %JAR_DIR to folder of ilivalidator.jar 
+- set value of %JAR_DIR to folder of ilivalidator.jar
 - added: new option to assume all objects are known to the validator
+- added: iox-ili 1.19.6 (2017-08-24)
+- fixed TranslateToOrigin: failed if dest attribute name equals source attrname
+- fixed TranslateToTranslation: failed if dest attribute name equals source attrname
+- added CsvReader
+- added GmlReader
+- added Xtf24Reader
+- added addGenericReader
 
 ilivalidator 1.3.0 (2017-06-17)
 -----------------------------
