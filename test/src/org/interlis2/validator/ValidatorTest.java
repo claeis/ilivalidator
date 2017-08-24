@@ -15,6 +15,19 @@ public class ValidatorTest {
 		boolean ret=Validator.runValidation("test/data/Beispiel1a.itf", null);
 		assertTrue(ret);
 	}
+	
+	@Test
+	public void itfReader2Ok() {
+		boolean ret=Validator.runValidation("test/data/ItfReader2/SurfaceBasic.itf", null);
+		assertTrue(ret);
+	}
+	
+	@Test
+	public void xtfReaderOk() {
+		boolean ret=Validator.runValidation("test/data/Xtf23Reader/SimpleCoord23a.xtf", null);
+		assertTrue(ret);
+	}
+	
 	@Test
 	public void itfOkWithSettings() {
 		Settings settings=new Settings();

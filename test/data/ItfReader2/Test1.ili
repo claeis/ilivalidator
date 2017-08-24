@@ -1,0 +1,80 @@
+TRANSFER Test1;
+
+  DOMAIN
+    LKoord = COORD2 100.00 100.00
+                    300.00 300.00;
+
+MODEL Test1
+
+  TOPIC TopicA =
+    TABLE TableA =
+      Form: OPTIONAL SURFACE WITH (STRAIGHTS, ARCS) VERTEX LKoord
+                 WITHOUT OVERLAPS > 0.10;
+      NO IDENT
+    END TableA;
+  END TopicA.
+
+  TOPIC TopicB =
+    TABLE TableB =
+      Form: OPTIONAL AREA WITH (STRAIGHTS, ARCS) VERTEX LKoord
+                 WITHOUT OVERLAPS > 0.10;
+      NO IDENT
+    END TableB;
+  END TopicB.
+
+  TOPIC TopicC =
+    TABLE TableC =
+      Form: SURFACE WITH (STRAIGHTS, ARCS) VERTEX LKoord
+                 WITHOUT OVERLAPS > 0.10;
+      NO IDENT
+    END TableC;
+    TABLE TableC0 =
+      dy: OPTIONAL TEXT*3;
+      NO IDENT
+    END TableC0;
+  END TopicC.
+
+  TOPIC TopicD =
+    TABLE TableD0 =
+      dy: OPTIONAL TEXT*3;
+      NO IDENT
+    END TableD0;
+    TABLE TableD =
+      Form: AREA WITH (STRAIGHTS, ARCS) VERTEX LKoord
+                 WITHOUT OVERLAPS > 0.10;
+      NO IDENT
+    END TableD;
+  END TopicD.
+
+  TOPIC TopicE =
+    TABLE TableE0 =
+      Form: SURFACE WITH (STRAIGHTS, ARCS) VERTEX LKoord
+                 WITHOUT OVERLAPS > 0.10;
+      NO IDENT
+    END TableE0;
+    TABLE TableE =
+      Form: AREA WITH (STRAIGHTS, ARCS) VERTEX LKoord
+                 WITHOUT OVERLAPS > 0.10;
+      NO IDENT
+    END TableE;
+  END TopicE.
+  
+  TOPIC TopicF =
+    OPTIONAL TABLE TableF0 =
+      dy: OPTIONAL TEXT*3;
+      NO IDENT
+    END TableF0;
+    OPTIONAL TABLE TableF1 =
+      dy: OPTIONAL TEXT*3;
+      NO IDENT
+    END TableF1;
+  END TopicF.
+  
+END Test1.
+
+FORMAT FREE;
+CODE BLANK = DEFAULT, UNDEFINED = DEFAULT, CONTINUE = DEFAULT;
+TID = ANY;
+
+END.
+

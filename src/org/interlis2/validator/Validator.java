@@ -15,8 +15,11 @@ import ch.interlis.ili2c.Ili2cException;
 import ch.interlis.ili2c.Ili2cFailure;
 import ch.interlis.ili2c.metamodel.Model;
 import ch.interlis.ili2c.metamodel.TransferDescription;
+import ch.interlis.iom_j.csv.CsvReader;
+import ch.interlis.iom_j.iligml.Iligml20Reader;
 import ch.interlis.iom_j.itf.ItfReader;
 import ch.interlis.iom_j.itf.ItfReader2;
+import ch.interlis.iom_j.xtf.Xtf24Reader;
 import ch.interlis.iom_j.xtf.XtfReader;
 import ch.interlis.iox.EndBasketEvent;
 import ch.interlis.iox.EndTransferEvent;
@@ -33,6 +36,7 @@ import ch.interlis.iox_j.logging.LogEventFactory;
 import ch.interlis.iox_j.logging.StdLogger;
 import ch.interlis.iox_j.logging.XtfErrorsLogger;
 import ch.interlis.iox_j.plugins.PluginLoader;
+import ch.interlis.iox_j.utility.ReaderFactory;
 import ch.interlis.iox_j.validator.ValidationConfig;
 
 /** High-level API of the INTERLIS validator.
@@ -64,10 +68,10 @@ public class Validator {
 	}
 	
 	public static boolean runValidation(
-			String xtfFilename[],
+			String dataFiles[],
 			Settings settings
 		) {
-		if(xtfFilename==null  || xtfFilename.length==0){
+		if(dataFiles==null  || dataFiles.length==0){
 			EhiLogger.logError("no INTERLIS file given");
 			return false;
 		}
@@ -101,7 +105,7 @@ public class Validator {
 			EhiLogger.logState("ili2c-"+ch.interlis.ili2c.Ili2c.getVersion());
 			EhiLogger.logState("iox-ili-"+ch.interlis.iox_j.IoxUtility.getVersion());
 			EhiLogger.logState("maxMemory "+java.lang.Runtime.getRuntime().maxMemory()/1024L+" KB");
-			for(String xtfFile:xtfFilename){
+			for(String xtfFile:dataFiles){
 				EhiLogger.logState("xtfFile <"+xtfFile+">");
 			}
 			if(configFilename!=null){
@@ -119,13 +123,13 @@ public class Validator {
 			
 			// find out, which ili model is required
 			List<String> modelnames=new ArrayList<String>();
-			for(String xtfFile:xtfFilename){
-				String modelnameFromXtf=IoxUtility.getModelFromXtf(xtfFile);
-				if(modelnameFromXtf==null){
+			for(String dataFile:dataFiles){
+				ArrayList<String> modelnameFromFile=ch.interlis.iox_j.utility.IoxUtility.getModels(new java.io.File(dataFile));
+				if(modelnameFromFile==null){
 					return false;
 				}
-				modelnames.add(modelnameFromXtf);
-				if(isItfFilename(xtfFile)){
+				modelnames.addAll(modelnameFromFile);
+				if(isItfFilename(dataFile)){
 					settings.setValue(ch.interlis.iox_j.validator.Validator.CONFIG_DO_ITF_OIDPERTABLE, ch.interlis.iox_j.validator.Validator.CONFIG_DO_ITF_OIDPERTABLE_DO);
 				}
 			}
@@ -147,7 +151,7 @@ public class Validator {
 			}
 			
 			// read ili models
-			td=compileIli(modelnames, null,new File(xtfFilename[0]).getAbsoluteFile().getParentFile().getAbsolutePath(),Main.getAppHome(), settings);
+			td=compileIli(modelnames, null,new File(dataFiles[0]).getAbsoluteFile().getParentFile().getAbsolutePath(),Main.getAppHome(), settings);
 			if(td==null){
 				return false;
 			}
@@ -177,22 +181,32 @@ public class Validator {
 				validator=new ch.interlis.iox_j.validator.Validator(td,modelConfig, errHandler, errFactory, pool,settings);
 				validator.setAutoSecondPass(false);
 				// loop over data objects
-				for(String xtfFile:xtfFilename){
+				for(String filename:dataFiles){
 					// setup data reader (ITF or XTF)
 					IoxReader ioxReader=null;
-					if(isItfFilename(xtfFile)){
+					ioxReader=new ReaderFactory().open(new java.io.File(filename), errFactory);
+					if(ioxReader instanceof ItfReader || ioxReader instanceof ItfReader2){
 						if(skipPolygonBuilding){
-							ioxReader=new ItfReader(new java.io.File(xtfFile));
-							((ItfReader)ioxReader).setModel(td);		
+							ioxReader=new ItfReader(new java.io.File(filename));
+							((ItfReader) ioxReader).setModel(td);
 						}else{
-							ioxReader=new ItfReader2(new java.io.File(xtfFile),false);
+							ioxReader=new ItfReader2(new java.io.File(filename),false);
 							((ItfReader2)ioxReader).setIoxDataPool(pool);
-							((ItfReader2)ioxReader).setModel(td);		
+							((ItfReader2)ioxReader).setModel(td);	
 						}
-					}else{
-						ioxReader=new XtfReader(new java.io.File(xtfFile));
+					}else if(ioxReader instanceof XtfReader){
+						ioxReader=new XtfReader(new java.io.File(filename));
+					}else if(ioxReader instanceof Xtf24Reader){
+						ioxReader=new Xtf24Reader(new java.io.File(filename));
+						((Xtf24Reader) ioxReader).setModel(td);
+					}else if(ioxReader instanceof Iligml20Reader){
+						ioxReader=new Iligml20Reader(new java.io.File(filename));
+						((Iligml20Reader) ioxReader).setModel(td);
+					}else if(ioxReader instanceof CsvReader){
+						ioxReader=new CsvReader(new java.io.File(filename));
+						((CsvReader) ioxReader).setModel(td);
 					}
-					errFactory.setDataSource(xtfFile);
+					errFactory.setDataSource(filename);
 					
 					try{
 						IoxEvent event=null;
@@ -229,6 +243,8 @@ public class Validator {
 					validator=null;
 				}
 			}
+		} catch (IoxException e) {
+			EhiLogger.logError(e);
 		}finally{
 			if(xtflog!=null){
 				xtflog.close();
