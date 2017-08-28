@@ -29,6 +29,7 @@ import ch.interlis.iox.IoxLogging;
 import ch.interlis.iox.IoxReader;
 import ch.interlis.iox.StartBasketEvent;
 import ch.interlis.iox.StartTransferEvent;
+import ch.interlis.iox_j.IoxIliReader;
 import ch.interlis.iox_j.IoxUtility;
 import ch.interlis.iox_j.PipelinePool;
 import ch.interlis.iox_j.logging.FileLogger;
@@ -184,28 +185,14 @@ public class Validator {
 				for(String filename:dataFiles){
 					// setup data reader (ITF or XTF)
 					IoxReader ioxReader=null;
-					ioxReader=new ReaderFactory().open(new java.io.File(filename), errFactory);
-					if(ioxReader instanceof ItfReader || ioxReader instanceof ItfReader2){
-						if(skipPolygonBuilding){
-							ioxReader=new ItfReader(new java.io.File(filename));
-							((ItfReader) ioxReader).setModel(td);
-						}else{
-							ioxReader=new ItfReader2(new java.io.File(filename),false);
-							((ItfReader2)ioxReader).setIoxDataPool(pool);
-							((ItfReader2)ioxReader).setModel(td);	
-						}
-					}else if(ioxReader instanceof XtfReader){
-						ioxReader=new XtfReader(new java.io.File(filename));
-					}else if(ioxReader instanceof Xtf24Reader){
-						ioxReader=new Xtf24Reader(new java.io.File(filename));
-						((Xtf24Reader) ioxReader).setModel(td);
-					}else if(ioxReader instanceof Iligml20Reader){
-						ioxReader=new Iligml20Reader(new java.io.File(filename));
-						((Iligml20Reader) ioxReader).setModel(td);
-					}else if(ioxReader instanceof CsvReader){
-						ioxReader=new CsvReader(new java.io.File(filename));
-						((CsvReader) ioxReader).setModel(td);
+					ioxReader=new ReaderFactory().createReader(new java.io.File(filename), errFactory);
+					if(ioxReader instanceof ItfReader2 && skipPolygonBuilding){
+						ioxReader=new ItfReader(new java.io.File(filename));
 					}
+					if(ioxReader instanceof IoxIliReader){
+						((IoxIliReader) ioxReader).setModel(td);	
+					}
+					
 					errFactory.setDataSource(filename);
 					
 					try{
