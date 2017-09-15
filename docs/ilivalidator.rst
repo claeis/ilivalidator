@@ -14,6 +14,7 @@ Es bestehen u.a. folgende Konfigurationsmöglichkeiten:
 - eigene Fehlermeldungen inkl. Attributwerte zu definieren
 - zusätzliche Bedingung zu definieren
 - zusätzliche INTERLIS-Funktionen zu implementieren
+- modellnamen zu setzen
 
 Laufzeitanforderungen
 ---------------------
@@ -84,6 +85,14 @@ ausgewählt und die Validierung gestartet werden kann.
 
 ``java -jar ilivalidator.jar``
 
+Fall 6
+~~~~~~
+
+Es wird eine INTERLIS 2-Datei validiert/geprüft. Wobei spezifische Modelle gesetzt werden.
+Dazu wird der Pfad zu den spezifischen Modellen gesetzt.
+
+``java -jar ilivalidator.jar --models modelname1;modelname2 --modeldir path/to/data path/to/data.csv``
+
 
 Referenz
 ========
@@ -113,6 +122,9 @@ Optionen:
 |                               |                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                            |
 +-------------------------------+--------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------+
 | ``--disableAreaValidation``   | Schaltet die AREA Topologieprüfung aus.                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                    |
+|                               |                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                            |
++-------------------------------+--------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------+
+| ``--models modelnames``   	| Setzt spezifische Modellnamen, welche sich innerhalb von ili-Dateien befinden. Mehrere Modellnamen können durch Semikolon ‚;‘ getrennt werden. Das Setzen des Pfades, der zu den Modellen führt, muss mittels '--modeldir path' angegeben werden.                                                                                                                                                                                                                                                                                          |
 |                               |                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                            |
 +-------------------------------+--------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------+
 | --modeldir path               | Dateipfade, die Modell-Dateien (ili-Dateien) enthalten. Mehrere Pfade können durch Semikolon ‚;‘ getrennt werden. Es sind auch URLs von Modell-Repositories möglich. Default ist                                                                                                                                                                                                                                                                                                                                                           |

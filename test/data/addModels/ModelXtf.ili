@@ -1,0 +1,9 @@
+INTERLIS 2.3;
+
+CONTRACTED MODEL ModelXtf AT "mailto:ceis@localhost" VERSION "2016-07-08" =
+  TOPIC Topic1 =
+    CLASS Class1 =
+		Art1 : 0 .. 100;
+	END Class1;
+  END Topic1;
+END ModelXtf.

@@ -1,0 +1,11 @@
+INTERLIS 2.3;
+
+MODEL ModelCsv (de) AT "mailto:ceis@localhost" VERSION "20170703" =
+	TOPIC Topic1 =
+		CLASS Class1 =
+			attr1 : TEXT*40;
+			attr2 : TEXT*40;
+			attr3 : TEXT*40;
+		END Class1;
+	END Topic1;
+END ModelCsv.

@@ -41,6 +41,10 @@ public class MainFrame extends JFrame {
 	private javax.swing.JCheckBox allObjectsAccessible = null;
 	private javax.swing.JButton doXtfFileSelBtn = null;
 	
+	private javax.swing.JLabel modelNamesLabel = null;
+	// textfield to display model names
+	private javax.swing.JTextField modelNamesUi = null;
+	
 	private javax.swing.JLabel configFileLabel = null;
 	private javax.swing.JTextField configFileUi = null;
 	private javax.swing.JButton doConfigFileSelBtn = null;
@@ -56,7 +60,6 @@ public class MainFrame extends JFrame {
 	private javax.swing.JTextArea logUi = null;
 	private javax.swing.JButton clearlogBtn = null;
 	
-	private String selectedFiles[];
 	
 	public MainFrame() {
 		super();
@@ -112,6 +115,7 @@ public class MainFrame extends JFrame {
 		Settings toSave=new Settings();
 		toSave.setValue(ch.interlis.ili2c.gui.UserSettings.WORKING_DIRECTORY,settings.getValue(ch.interlis.ili2c.gui.UserSettings.WORKING_DIRECTORY));
 		toSave.setValue(Validator.SETTING_ILIDIRS,settings.getValue(Validator.SETTING_ILIDIRS));
+		toSave.setValue(Validator.SETTING_MODELNAMES,settings.getValue(Validator.SETTING_MODELNAMES));
 		toSave.setValue(Validator.SETTING_ALL_OBJECTS_ACCESSIBLE,settings.getValue(Validator.SETTING_ALL_OBJECTS_ACCESSIBLE));
 		toSave.setValue(ch.interlis.ili2c.gui.UserSettings.HTTP_PROXY_HOST,settings.getValue(ch.interlis.ili2c.gui.UserSettings.HTTP_PROXY_HOST));
 		toSave.setValue(ch.interlis.ili2c.gui.UserSettings.HTTP_PROXY_PORT,settings.getValue(ch.interlis.ili2c.gui.UserSettings.HTTP_PROXY_PORT));
@@ -124,6 +128,9 @@ public class MainFrame extends JFrame {
 			java.awt.GridBagConstraints xtfFileUiConstraints = new java.awt.GridBagConstraints();
 			java.awt.GridBagConstraints allObjectsAccessibleConstraints = new java.awt.GridBagConstraints();
 			java.awt.GridBagConstraints doXtfFileSelBtnConstraints = new java.awt.GridBagConstraints();
+			
+			java.awt.GridBagConstraints modelNamesLabelConstraints = new java.awt.GridBagConstraints();
+			java.awt.GridBagConstraints modelNamesUiConstraints = new java.awt.GridBagConstraints();
 
 			java.awt.GridBagConstraints logFileLabelConstraints = new java.awt.GridBagConstraints();
 			java.awt.GridBagConstraints logFileUiConstraints = new java.awt.GridBagConstraints();
@@ -155,38 +162,48 @@ public class MainFrame extends JFrame {
 			doXtfFileSelBtnConstraints.gridx = 2;
 			doXtfFileSelBtnConstraints.gridy = 0;
 			
+			modelNamesLabelConstraints.gridx = 0;
+			modelNamesLabelConstraints.gridy = 2;
+			modelNamesLabelConstraints.anchor = java.awt.GridBagConstraints.NORTHWEST;
+			modelNamesUiConstraints.weighty = 0.3;
+			modelNamesUiConstraints.weightx = 1.0;
+			modelNamesUiConstraints.fill = java.awt.GridBagConstraints.HORIZONTAL;
+			modelNamesUiConstraints.gridx = 1;
+			modelNamesUiConstraints.gridy = 2;
+			modelNamesUiConstraints.anchor = java.awt.GridBagConstraints.NORTHWEST;
+			
 			logFileLabelConstraints.gridx = 0;
-			logFileLabelConstraints.gridy = 2;
+			logFileLabelConstraints.gridy = 3;
 			logFileLabelConstraints.anchor = java.awt.GridBagConstraints.NORTHWEST;
 			logFileUiConstraints.weightx = 1.0;
 			logFileUiConstraints.fill = java.awt.GridBagConstraints.HORIZONTAL;
 			logFileUiConstraints.gridx = 1;
-			logFileUiConstraints.gridy = 2;
+			logFileUiConstraints.gridy = 3;
 			logFileUiConstraints.anchor = java.awt.GridBagConstraints.NORTHWEST;
 			doLogFileSelBtnConstraints.gridx = 2;
-			doLogFileSelBtnConstraints.gridy = 2;
+			doLogFileSelBtnConstraints.gridy = 3;
 
 			xtfLogFileLabelConstraints.gridx = 0;
-			xtfLogFileLabelConstraints.gridy = 3;
+			xtfLogFileLabelConstraints.gridy = 4;
 			xtfLogFileLabelConstraints.anchor = java.awt.GridBagConstraints.NORTHWEST;
 			xtfLogFileUiConstraints.weightx = 1.0;
 			xtfLogFileUiConstraints.fill = java.awt.GridBagConstraints.HORIZONTAL;
 			xtfLogFileUiConstraints.gridx = 1;
-			xtfLogFileUiConstraints.gridy = 3;
+			xtfLogFileUiConstraints.gridy = 4;
 			xtfLogFileUiConstraints.anchor = java.awt.GridBagConstraints.NORTHWEST;
 			doXtfLogFileSelBtnConstraints.gridx = 2;
-			doXtfLogFileSelBtnConstraints.gridy = 3;
+			doXtfLogFileSelBtnConstraints.gridy = 4;
 			
 			configFileLabelConstraints.gridx = 0;
-			configFileLabelConstraints.gridy = 4;
+			configFileLabelConstraints.gridy = 5;
 			configFileLabelConstraints.anchor = java.awt.GridBagConstraints.NORTHWEST;
 			configFileUiConstraints.weightx = 1.0;
 			configFileUiConstraints.fill = java.awt.GridBagConstraints.HORIZONTAL;
 			configFileUiConstraints.gridx = 1;
-			configFileUiConstraints.gridy = 4;
+			configFileUiConstraints.gridy = 5;
 			configFileUiConstraints.anchor = java.awt.GridBagConstraints.NORTHWEST;
 			doConfigFileSelBtnConstraints.gridx = 2;
-			doConfigFileSelBtnConstraints.gridy = 4;
+			doConfigFileSelBtnConstraints.gridy = 5;
 			
 			logPaneConstraints.weightx = 1.0;
 			logPaneConstraints.weighty = 1.0;
@@ -204,6 +221,9 @@ public class MainFrame extends JFrame {
 			jContentPane.add(getXtfFileLabel(), xtfFileLabelConstraints);
 			jContentPane.add(getXtfFileUi(), xtfFileUiConstraints);
 			jContentPane.add(getDoXtfFileSelBtn(), doXtfFileSelBtnConstraints);
+			
+			jContentPane.add(getModelNamesLabel(), modelNamesLabelConstraints);
+			jContentPane.add(getModelNamesUi(), modelNamesUiConstraints);
 			
 			jContentPane.add(getLogFileLabel(), logFileLabelConstraints);
 			jContentPane.add(getLogFileUi(), logFileUiConstraints);
@@ -231,6 +251,13 @@ public class MainFrame extends JFrame {
 		}
 		return xtfFileLabel;
 	}
+	private javax.swing.JLabel getModelNamesLabel() {
+		if(modelNamesLabel == null) {
+			modelNamesLabel = new javax.swing.JLabel();
+			modelNamesLabel.setText(rsrc.getString("MainFrame.modelNamesLabel"));
+		}
+		return modelNamesLabel;
+	}
 	private javax.swing.JLabel getConfigFileLabel() {
 		if(configFileLabel == null) {
 			configFileLabel = new javax.swing.JLabel();
@@ -257,6 +284,12 @@ public class MainFrame extends JFrame {
 			xtfFileUi = new javax.swing.JTextArea();
 		}
 		return xtfFileUi;
+	}
+	private javax.swing.JTextField getModelNamesUi() {
+		if(modelNamesUi == null) {
+			modelNamesUi = new javax.swing.JTextField();
+		}
+		return modelNamesUi;
 	}
 	private javax.swing.JTextField getConfigFileUi() {
 		if(configFileUi == null) {
@@ -315,28 +348,30 @@ public class MainFrame extends JFrame {
 		return allObjectsAccessible;
 	}
 	// selected files
-	public String[] getXtfFile(){
-		for(int i=0;i<selectedFiles.length;i++){
-			StringUtility.purge(getXtfFileUi().getText());
-		}
-		return selectedFiles;
+	public String getXtfFile(){
+		return StringUtility.purge(getXtfFileUi().getText());
 	}
 	public void setXtfFile(String[] xtfFileList){
-		this.selectedFiles = xtfFileList;
-		
 		StringBuilder stringBuilder = new StringBuilder();
 		String newLine="";
 		for(int i=0;i<xtfFileList.length;i++){
-			stringBuilder.append(newLine);
-			stringBuilder.append(xtfFileList[i]);
-			newLine = "\n";
+			if(xtfFileList[i]!=null) {
+				stringBuilder.append(newLine);
+				stringBuilder.append(xtfFileList[i]);
+				newLine = "\n";
+			}
 		}
-		if(stringBuilder.toString().equals("null")){
-			getXtfFileUi().setText("");
-		} else {
-			getXtfFileUi().setText(stringBuilder.toString());
-		}
+		getXtfFileUi().setText(stringBuilder.toString());
 	}
+	// selected model names
+	public String getModelNames() {
+		return StringUtility.purge(getModelNamesUi().getText());
+	}
+	
+	public void setModelNames(String modelNames){
+		getModelNamesUi().setText(modelNames);
+	}
+	
 	public String getConfigFile(){
 		return StringUtility.purge(getConfigFileUi().getText());
 	}
@@ -367,6 +402,7 @@ public class MainFrame extends JFrame {
 		String logFile=getLogFile();
 		String xtflogFile=getXtfLogFile();
 		String configFile=getConfigFile();
+		String modelNames=getModelNames();
 		String objectsAccess=getObjectsAccessible();
 		String workingDir=settings.getValue(ch.interlis.ili2c.gui.UserSettings.WORKING_DIRECTORY);
 		String proxyHost=settings.getValue(ch.interlis.ili2c.gui.UserSettings.HTTP_PROXY_HOST);
@@ -377,6 +413,7 @@ public class MainFrame extends JFrame {
 		settings.setValue(ch.interlis.ili2c.gui.UserSettings.WORKING_DIRECTORY,workingDir);
 		settings.setValue(Validator.SETTING_LOGFILE,logFile);
 		settings.setValue(Validator.SETTING_XTFLOG,xtflogFile);
+		settings.setValue(Validator.SETTING_MODELNAMES,modelNames);
 		settings.setValue(Validator.SETTING_CONFIGFILE,configFile);
 		settings.setValue(Validator.SETTING_ALL_OBJECTS_ACCESSIBLE,objectsAccess);
 		settings.setValue(ch.interlis.ili2c.gui.UserSettings.HTTP_PROXY_HOST,proxyHost);
@@ -417,6 +454,8 @@ public class MainFrame extends JFrame {
 		String[] xtfFileList = new String[1];
 		xtfFileList[0]=xtfFile;
 		frame.setXtfFile(xtfFileList);
+		String modelList=settings.getValue(Validator.SETTING_MODELNAMES);
+		frame.setModelNames(modelList);
 		String xtflogFile=settings.getValue(Validator.SETTING_XTFLOG);
 		frame.setXtfLogFile(xtflogFile);
 		String configFile=settings.getValue(Validator.SETTING_CONFIGFILE);
@@ -454,7 +493,7 @@ public class MainFrame extends JFrame {
 			doXtfFileSelBtn.setText("...");
 			doXtfFileSelBtn.addActionListener(new java.awt.event.ActionListener() { 
 				public void actionPerformed(java.awt.event.ActionEvent e) {    
-					String file=getXtfFile().toString();
+					String file=getXtfFile();
 					FileChooser fileDialog =  new FileChooser(file);
 					fileDialog.setCurrentDirectory(new File(getWorkingDirectory()));
 					fileDialog.setDialogTitle(rsrc.getString("MainFrame.xtfFileChooserTitle"));

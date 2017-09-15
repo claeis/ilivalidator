@@ -50,6 +50,9 @@ public class Main {
 			}else if(arg.equals("--gui")){
 				readSettings(settings);
 				doGui=true;
+			}else if(arg.equals("--models")){
+				argi++;
+				settings.setValue(Validator.SETTING_MODELNAMES, args[argi]);
 			}else if(arg.equals("--modeldir")){
 				argi++;
 				settings.setValue(Validator.SETTING_ILIDIRS, args[argi]);
@@ -102,7 +105,8 @@ public class Main {
 					System.err.println("--skipPolygonBuilding skip polygon building (only ITF).");
 				    System.err.println("--log file            text file, that receives validation results.");
 				    System.err.println("--xtflog file         INTERLIS transfer file, that receives validation results.");
-					System.err.println("--modeldir "+settings.getValue(Validator.SETTING_ILIDIRS)+" list of directories/repositories with ili-files.");
+				    System.err.println("--models model		  user sets certain models, separated by a semicolon.");
+					System.err.println("--modeldir "+Validator.SETTING_DEFAULT_ILIDIRS+" list of directories/repositories with ili-files.");
 				    System.err.println("--plugins folder      directory with jar files that contain user defined functions.");
 				    System.err.println("--proxy host          proxy server to access model repositories.");
 				    System.err.println("--proxyPort port      proxy port to access model repositories.");

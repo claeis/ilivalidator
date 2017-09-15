@@ -47,10 +47,11 @@ import ch.interlis.iox_j.validator.ValidationConfig;
 public class Validator {
 
 	/** main workhorse function.
-	 * @param xtfFilename File to validate.
+	 * @param dataFilename File to validate.
 	 * @param settings Configuration of program. 
 	 * This is not the TOML file, that controls the model specific validation.
 	 * @return true if validation succeeds, false if it fails (or any program error). 
+	 * @see #SETTING_MODELNAMES
 	 * @see #SETTING_ILIDIRS
 	 * @see #SETTING_CONFIGFILE
 	 * @see #SETTING_LOGFILE
@@ -58,14 +59,14 @@ public class Validator {
 	 * @see #SETTING_PLUGINDIR
 	 */
 	public static boolean runValidation(
-			String xtfFilename,
+			String dataFilename,
 			Settings settings
 		) {
-		if(xtfFilename==null  || xtfFilename.length()==0){
+		if(dataFilename==null  || dataFilename.length()==0){
 			EhiLogger.logError("no INTERLIS file given");
 			return false;
 		}
-		return runValidation(new String[]{xtfFilename},settings);
+		return runValidation(new String[]{dataFilename},settings);
 	}
 	
 	public static boolean runValidation(
@@ -99,6 +100,7 @@ public class Validator {
 			EhiLogger.getInstance().addListener(logStderr);
 			EhiLogger.getInstance().removeListener(StdListener.getInstance());
 		    String configFilename=settings.getValue(Validator.SETTING_CONFIGFILE);
+		    String modelNames=settings.getValue(Validator.SETTING_MODELNAMES);
 		    String pluginFolder=settings.getValue(Validator.SETTING_PLUGINFOLDER);
 		    		    
 		    // give user important info (such as input files or program version)
@@ -106,11 +108,14 @@ public class Validator {
 			EhiLogger.logState("ili2c-"+ch.interlis.ili2c.Ili2c.getVersion());
 			EhiLogger.logState("iox-ili-"+ch.interlis.iox_j.IoxUtility.getVersion());
 			EhiLogger.logState("maxMemory "+java.lang.Runtime.getRuntime().maxMemory()/1024L+" KB");
-			for(String xtfFile:dataFiles){
-				EhiLogger.logState("xtfFile <"+xtfFile+">");
+			for(String dataFile:dataFiles){
+				EhiLogger.logState("dataFile <"+dataFile+">");
 			}
 			if(configFilename!=null){
 				EhiLogger.logState("configFile <"+configFilename+">");
+			}
+			if(modelNames!=null){
+				EhiLogger.logState("modelNames <"+modelNames+">");
 			}
 			if(pluginFolder!=null){
 				EhiLogger.logState("pluginFolder <"+pluginFolder+">");
@@ -118,18 +123,26 @@ public class Validator {
 		
 			TransferDescription sourceTd=null;
 			TransferDescription td=null;
-			ArrayList<Model> models=null;
 			
 			boolean skipPolygonBuilding=ch.interlis.iox_j.validator.Validator.CONFIG_DO_ITF_LINETABLES_DO.equals(settings.getValue(ch.interlis.iox_j.validator.Validator.CONFIG_DO_ITF_LINETABLES));
 			
-			// find out, which ili model is required
+			// specified model names
 			List<String> modelnames=new ArrayList<String>();
-			for(String dataFile:dataFiles){
-				ArrayList<String> modelnameFromFile=ch.interlis.iox_j.utility.IoxUtility.getModels(new java.io.File(dataFile));
-				if(modelnameFromFile==null){
-					return false;
+			if(settings.getValue(Validator.SETTING_MODELNAMES)!=null) {
+				String specifiedModelNames=settings.getValue(Validator.SETTING_MODELNAMES);
+				List<String> modelNameList=getSpecifiedModelNames(specifiedModelNames);
+				modelnames.addAll(modelNameList);
+			}else {
+				// find out, which ili model is required
+				for(String dataFile:dataFiles){
+					List<String> modelnameFromFile=ch.interlis.iox_j.IoxUtility.getModels(new java.io.File(dataFile));
+					if(modelnameFromFile==null){
+						return false;
+					}
+					modelnames.addAll(modelnameFromFile);
 				}
-				modelnames.addAll(modelnameFromFile);
+			}
+			for(String dataFile:dataFiles){
 				if(isItfFilename(dataFile)){
 					settings.setValue(ch.interlis.iox_j.validator.Validator.CONFIG_DO_ITF_OIDPERTABLE, ch.interlis.iox_j.validator.Validator.CONFIG_DO_ITF_OIDPERTABLE_DO);
 				}
@@ -267,6 +280,17 @@ public class Validator {
 		}
 		return ret;
 	}
+	
+	private static List<String> getSpecifiedModelNames(String modelNames) {
+		List<String> ret=new ArrayList<String>();
+		if(modelNames!=null){
+			String[] modelNameList = modelNames.split(";");
+			for(String modelName:modelNameList){
+				ret.add(modelName);
+			}
+		}
+		return ret;
+	}
 
 	/** Compiles the required Interlis models.
 	 * @param aclass Interlis qualified class name of a required class.
@@ -384,6 +408,9 @@ public class Validator {
 	 * @see #JAR_DIR
 	 */
 	public static final String SETTING_ILIDIRS="org.interlis2.validator.ilidirs";
+	/** model names. Multiple model names are separated by semicolon (';'). 
+	 */
+	public static final String SETTING_MODELNAMES="org.interlis2.validator.modelNames";
 	/** Last used folder in the GUI.
 	 */
 	public static final String SETTING_DIRUSED="org.interlis2.validator.dirused";
