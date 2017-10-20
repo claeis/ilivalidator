@@ -67,6 +67,8 @@ public class Main {
 				settings.setValue(Validator.SETTING_MULTIPLICITY_VALIDATION,ch.interlis.iox_j.validator.ValidationConfig.OFF);
 			}else if(arg.equals("--allObjectsAccessible")){
 				settings.setValue(Validator.SETTING_ALL_OBJECTS_ACCESSIBLE,Validator.TRUE);
+			}else if(arg.equals("--allowItfAreaHoles")){
+				settings.setValue(Validator.SETTING_ALLOW_ITF_AREA_HOLES,Validator.TRUE);
 			}else if(arg.equals("--skipPolygonBuilding")){
 				settings.setValue(ch.interlis.iox_j.validator.Validator.CONFIG_DO_ITF_LINETABLES, ch.interlis.iox_j.validator.Validator.CONFIG_DO_ITF_LINETABLES_DO);
 			}else if(arg.equals("--log")) {
@@ -103,6 +105,7 @@ public class Main {
 					System.err.println("--allObjectsAccessible  assume that all objects are known to the validator.");
 					System.err.println("--multiplicityOff     disable all multiplicity validation.");
 					System.err.println("--skipPolygonBuilding skip polygon building (only ITF).");
+					System.err.println("--allowItfAreaHoles   allow empty holes (unassigned inner boundaries) in ITF AREA attributes.");
 				    System.err.println("--log file            text file, that receives validation results.");
 				    System.err.println("--xtflog file         INTERLIS transfer file, that receives validation results.");
 				    System.err.println("--models model		  user sets certain models, separated by a semicolon.");
