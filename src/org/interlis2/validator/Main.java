@@ -1,16 +1,13 @@
 package org.interlis2.validator;
 
-import java.util.Iterator;
-
 import org.interlis2.validator.gui.MainFrame;
-
 import ch.ehi.basics.logging.EhiLogger;
 import ch.ehi.basics.settings.Settings;
 
 /** Main program and commandline interface of ilivalidator.
  */
 public class Main {
-
+	
 	/** name of application as shown to user.
 	 */
 	public static final String APP_NAME="ilivalidator";
@@ -33,10 +30,11 @@ public class Main {
 		    settings.setValue(Validator.SETTING_PLUGINFOLDER, new java.io.File("plugins").getAbsolutePath());
 		}
 		// arguments on export
-		String xtfFile=null;
+		String[] xtfFile=null;
 		String httpProxyHost = null;
 		String httpProxyPort = null;
 		if(args.length==0){
+			xtfFile=new String[0];
 			readSettings(settings);
 			MainFrame.main(xtfFile,settings);
 			return;
@@ -122,18 +120,17 @@ public class Main {
 				break;
 			}
 		}
+		int dataFileCount=args.length-argi;
 		if(doGui){
-			if(argi<args.length){
-				xtfFile=args[argi];
-				argi++;
-			}
-			if(argi<args.length){
+			if(dataFileCount>0) {
+				xtfFile = getDataFiles(args, argi, dataFileCount);
+			}else {
 				EhiLogger.logAdaption(APP_NAME+": wrong number of arguments; ignored");
 			}
 			MainFrame.main(xtfFile,settings);
 		}else{
-			if(argi+1==args.length){
-				xtfFile=args[argi];
+			if(dataFileCount>0) {
+				xtfFile = getDataFiles(args, argi, dataFileCount);
 				final boolean ok = Validator.runValidation(xtfFile,settings);
 				System.exit(ok ? 0 : 1);
 			}else{
@@ -142,6 +139,17 @@ public class Main {
 			}
 		}
 		
+	}
+	private static String[] getDataFiles(String[] args, int argi, int dataFileCount) {
+		String[] xtfFile;
+		xtfFile=new String[dataFileCount];
+		int fileCount=0;
+		while(argi<args.length){
+			xtfFile[fileCount]=args[argi];
+			fileCount+=1;
+			argi++;
+		}
+		return xtfFile;
 	}
 	/** Name of file with program settings. Only used by GUI, not used by commandline version.
 	 */

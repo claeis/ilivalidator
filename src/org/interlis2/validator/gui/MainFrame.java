@@ -9,6 +9,8 @@ import java.awt.event.WindowEvent;
 import java.io.File;
 import java.lang.reflect.Array;
 import java.util.ArrayList;
+import java.util.Collections;
+import java.util.List;
 
 import ch.ehi.basics.logging.EhiLogger;
 import ch.ehi.basics.view.*;
@@ -348,8 +350,23 @@ public class MainFrame extends JFrame {
 		return allObjectsAccessible;
 	}
 	// selected files
-	public String getXtfFile(){
-		return StringUtility.purge(getXtfFileUi().getText());
+	public String[] getXtfFile(){
+		String fileTextInUi=getXtfFileUi().getText();
+		String[] files=splitFilenames(fileTextInUi);
+		return files;
+	}
+	public static String[] splitFilenames(String uiContent) {
+		String[] dataFileParts=uiContent.split("\n");
+		List<String> trimmedFileParts=new ArrayList<String>();
+		for(String fileText:dataFileParts) {
+			String trimmedText=fileText.trim();
+			String retText=trimmedText.replace("\n", "");
+			if(retText!=null && !retText.isEmpty() && retText.toString().length()>0) {
+				trimmedFileParts.add(retText);
+			}
+		}
+		String[] partArr = trimmedFileParts.toArray(new String[0]);
+		return partArr;
 	}
 	public void setXtfFile(String[] xtfFileList){
 		StringBuilder stringBuilder = new StringBuilder();
@@ -445,22 +462,20 @@ public class MainFrame extends JFrame {
 		}
 		return jScrollPane;
 	}
-	public static void main(String xtfFile,Settings settings) {
-		MainFrame frame=new MainFrame();
-		frame.setSettings(settings);
-		String logFile=settings.getValue(Validator.SETTING_LOGFILE);
-		frame.setLogFile(logFile);
-		EhiLogger.getInstance().addListener(new LogListener(frame,logFile));
-		String[] xtfFileList = new String[1];
-		xtfFileList[0]=xtfFile;
-		frame.setXtfFile(xtfFileList);
-		String modelList=settings.getValue(Validator.SETTING_MODELNAMES);
-		frame.setModelNames(modelList);
-		String xtflogFile=settings.getValue(Validator.SETTING_XTFLOG);
-		frame.setXtfLogFile(xtflogFile);
-		String configFile=settings.getValue(Validator.SETTING_CONFIGFILE);
-		frame.setConfigFile(configFile);
-		frame.show();
+	public static void main(String[] xtfFile,Settings settings) {
+			MainFrame frame=new MainFrame();
+			frame.setSettings(settings);
+			String logFile=settings.getValue(Validator.SETTING_LOGFILE);
+			frame.setLogFile(logFile);
+			EhiLogger.getInstance().addListener(new LogListener(frame,logFile));
+			frame.setXtfFile(xtfFile);
+			String modelList=settings.getValue(Validator.SETTING_MODELNAMES);
+			frame.setModelNames(modelList);
+			String xtflogFile=settings.getValue(Validator.SETTING_XTFLOG);
+			frame.setXtfLogFile(xtflogFile);
+			String configFile=settings.getValue(Validator.SETTING_CONFIGFILE);
+			frame.setConfigFile(configFile);
+			frame.show();
 	}
 	private javax.swing.JButton getDoValidateBtn() {
 		if(doValidateBtn == null) {
@@ -471,10 +486,7 @@ public class MainFrame extends JFrame {
 					SwingWorker worker = new SwingWorker() {
 						public Object construct() {
 							try {
-								Validator.runValidation(
-									getXtfFile(),
-									getSettings()
-								);
+								Validator.runValidation(getXtfFile(),getSettings());
 							} catch (Exception ex) {
 								EhiLogger.logError(rsrc.getString("MainFrame.generalError"),ex);
 							}
@@ -493,8 +505,8 @@ public class MainFrame extends JFrame {
 			doXtfFileSelBtn.setText("...");
 			doXtfFileSelBtn.addActionListener(new java.awt.event.ActionListener() { 
 				public void actionPerformed(java.awt.event.ActionEvent e) {    
-					String file=getXtfFile();
-					FileChooser fileDialog =  new FileChooser(file);
+					String[] files=getXtfFile();
+					FileChooser fileDialog =  new FileChooser(files.toString());
 					fileDialog.setCurrentDirectory(new File(getWorkingDirectory()));
 					fileDialog.setDialogTitle(rsrc.getString("MainFrame.xtfFileChooserTitle"));
 					fileDialog.addChoosableFileFilter(new GenericFileFilter(rsrc.getString("MainFrame.xtfFileFilter"),"xtf"));
