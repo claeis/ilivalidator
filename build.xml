@@ -1,5 +1,5 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<project basedir="." default="jar" name="ilivalidator">
+<project basedir="." default="jar" name="ilivalidator" xmlns:artifact="antlib:org.apache.maven.artifact.ant">
 
   <!-- set global properties for this build -->
   <property name="src" value="${basedir}/src"/>
@@ -9,6 +9,9 @@
   <property name="plugins" value="${basedir}/plugins"/>
   <property name="versionfile" value="${src}/org/interlis2/validator/Version.properties"/>
   <property file="user.properties" prefix="user."/>
+  <property name="groupId" value="ch.interlis"/>
+  <property name="artifactId" value="${ant.project.name}"/>
+  <property name="release" value=""/>
 
   <property name="python" value="${user.python}"/>
   <property name="pythonhome" value="${user.pythonhome}"/>
@@ -23,11 +26,33 @@
     <mkdir dir="${dist}"/>
     <mkdir dir="${plugins}"/>
   </target>
+  <target depends="init,buildnr" name="pom">
+  	<artifact:pom id="mypomE" groupId="${groupId}" artifactId="${artifactId}" version="${buildnr}" name="ehibasics">
+			<artifact:dependency groupId="ch.interlis" artifactId="ili2c-tool" version="4.7.4"/>
+			<artifact:dependency groupId="ch.interlis" artifactId="iox-ili" version="1.19.8"/>
+	  </artifact:pom>
+	  <artifact:writepom pomRefId="mypomE" file="build/pom.xml"/>
+	<artifact:pom id="mypom" file="build/pom.xml" />
+  </target>
+  <target depends="init,pom" name="install">
+	  <artifact:install file="ilivalidator.jar">
+		<artifact:pom refid="mypom"/>
+	  </artifact:install>
+  </target>
+  <target depends="init,pom" name="deploy">
+	  <artifact:install-provider artifactId="wagon-ftp" version="3.0.0"/>
+  <artifact:deploy file="ilivalidator.jar">
+    <remoteRepository url="ftp://ftp.interlis.ch">
+    	<authentication username="${user.repos_usr}" password="${user.repos_pwd}"/>
+    </remoteRepository>
+    <pom refid="mypom"/>
+  </artifact:deploy>    
+  </target>
 
   <target depends="init" name="compile">
     <!-- Compile the java code from ${src} into ${build}/classes -->
     <mkdir dir="${build}/classes"/>
-    <javac destdir="${build}/classes" includes="**/*.java" excludes="**/test/*.java"  source="1.6" target="1.6">
+    <javac destdir="${build}/classes" includes="**/*.java" excludes="**/test/*.java"  source="1.6" target="1.6" debug="true" debuglevel="lines">
       <classpath>
         <pathelement location="${lib}/antlr.jar"/>
         <pathelement location="${lib}/ehibasics.jar"/>
@@ -122,7 +147,10 @@
   
   <target depends="init" name="buildnr">
     <property file="${versionfile}" prefix="buildnr."/>
-    <property name="buildnr" value="${buildnr.versionMajor}.${buildnr.versionMinor}.${buildnr.versionMicro}"/>
+    <condition property="SNAPSHOT" value="" else="-SNAPSHOT">
+       <length string="${release}" trim="true" when="greater" length="0"/>
+    </condition>
+    <property name="buildnr" value="${buildnr.versionMajor}.${buildnr.versionMinor}.${buildnr.versionMicro}${SNAPSHOT}"/>
     <!-- <property name="buildnr" value="${DSTAMP}"/> -->
   </target>
 

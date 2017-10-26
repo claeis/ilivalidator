@@ -7,7 +7,11 @@ import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
 
+import org.interlis2.validator.impl.ErrorTracker;
+
+import ch.ehi.basics.logging.AbstractStdListener;
 import ch.ehi.basics.logging.EhiLogger;
+import ch.ehi.basics.logging.LogListener;
 import ch.ehi.basics.logging.StdListener;
 import ch.ehi.basics.settings.Settings;
 import ch.interlis.ili2c.Ili2c;
@@ -84,7 +88,7 @@ public class Validator {
 	    String xtflogFilename=settings.getValue(Validator.SETTING_XTFLOG);
 		FileLogger logfile=null;
 		XtfErrorsLogger xtflog=null;
-		StdLogger logStderr=null;
+		AbstractStdListener logStderr=null;
 		boolean ret=false;
 		try{
 			// setup logging of validation results
@@ -96,9 +100,14 @@ public class Validator {
 				xtflog=new XtfErrorsLogger(new java.io.File(xtflogFilename), Main.APP_NAME+"-"+Main.getVersion());
 				EhiLogger.getInstance().addListener(xtflog);
 			}
-			logStderr=new StdLogger(logFilename);
-			EhiLogger.getInstance().addListener(logStderr);
-			EhiLogger.getInstance().removeListener(StdListener.getInstance());
+			if(!TRUE.equals(settings.getValue(SETTING_DISABLE_STD_LOGGER))) {
+				logStderr=new StdLogger(logFilename);
+				EhiLogger.getInstance().addListener(logStderr);
+				EhiLogger.getInstance().removeListener(StdListener.getInstance());
+			}else {
+				logStderr=new ErrorTracker();
+				EhiLogger.getInstance().addListener(logStderr);
+			}
 		    String configFilename=settings.getValue(Validator.SETTING_CONFIGFILE);
 		    String modelNames=settings.getValue(Validator.SETTING_MODELNAMES);
 		    String pluginFolder=settings.getValue(Validator.SETTING_PLUGINFOLDER);
@@ -183,6 +192,7 @@ public class Validator {
 				modelConfig.setConfigValue(ValidationConfig.PARAMETER, ValidationConfig.ALLOW_ONLY_MULTIPLICITY_REDUCTION, TRUE.equals(settings.getValue(SETTING_FORCE_TYPE_VALIDATION))?ValidationConfig.ON:null);
 				modelConfig.setConfigValue(ValidationConfig.PARAMETER, ValidationConfig.AREA_OVERLAP_VALIDATION, TRUE.equals(settings.getValue(SETTING_DISABLE_AREA_VALIDATION))?ValidationConfig.OFF:null);
 				modelConfig.setConfigValue(ValidationConfig.PARAMETER, ValidationConfig.ALL_OBJECTS_ACCESSIBLE, settings.getValue(SETTING_ALL_OBJECTS_ACCESSIBLE));
+				boolean allowItfAreaHoles=TRUE.equals(settings.getValue(SETTING_ALLOW_ITF_AREA_HOLES));
 				String globalMultiplicity=settings.getValue(SETTING_MULTIPLICITY_VALIDATION);
 				if(globalMultiplicity!=null){
 					modelConfig.setConfigValue(ValidationConfig.PARAMETER, ValidationConfig.MULTIPLICITY, globalMultiplicity);
@@ -201,6 +211,9 @@ public class Validator {
 					ioxReader=new ReaderFactory().createReader(new java.io.File(filename), errFactory);
 					if(ioxReader instanceof ItfReader2 && skipPolygonBuilding){
 						ioxReader=new ItfReader(new java.io.File(filename));
+					}
+					if(ioxReader instanceof ItfReader2){
+						((ItfReader2) ioxReader).setAllowItfAreaHoles(allowItfAreaHoles);
 					}
 					if(ioxReader instanceof IoxIliReader){
 						((IoxIliReader) ioxReader).setModel(td);	
@@ -426,12 +439,18 @@ public class Validator {
 	/** Disable AREA validation. Possible values "true", "false".
 	 */
 	public static final String SETTING_DISABLE_AREA_VALIDATION = "org.interlis2.validator.disableareavalidation";
+	/** Disable AREA validation. Possible values "true", "false".
+	 */
+	public static final String SETTING_DISABLE_STD_LOGGER = "org.interlis2.validator.disablestdlogger";
 	/** Name of the log file that receives the validation results.
 	 */
 	public static final String SETTING_LOGFILE = "org.interlis2.validator.log";
 	/** Assume that all objects are known to the validator. "true", "false". Default "false".
 	 */
 	public static final String SETTING_ALL_OBJECTS_ACCESSIBLE = "org.interlis2.validator.allobjectsaccessible";
+	/** Assume that all objects are known to the validator. "true", "false". Default "false".
+	 */
+	public static final String SETTING_ALLOW_ITF_AREA_HOLES = "org.interlis2.validator.allowitfareaholes";
 	/** Name of the data file (XTF format) that receives the validation results.
 	 */
 	public static final String SETTING_XTFLOG = "org.interlis2.validator.xtflog";
