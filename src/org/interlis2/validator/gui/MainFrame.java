@@ -355,8 +355,15 @@ public class MainFrame extends JFrame {
 		String[] files=splitFilenames(fileTextInUi);
 		return files;
 	}
-	public static String[] splitFilenames(String uiContent) {
-		String[] dataFileParts=uiContent.split("\n");
+	/** unterteilt den mehrzeiligen String in einzelne Zeilen. 
+	 * Leerzeilen werden nicht ins Resultat uebernommen.
+	 * Leerzeichen am Anfang und Ende der einzelnen Zeilen werden entfernt.
+	 * Leerzeichen innerhlab der Zeile werden nicht veraendert.
+	 * @param lines der mehrzeilige String
+	 * @return das array der einzelnen Zeilen
+	 */
+	public static String[] splitFilenames(String lines) {
+		String[] dataFileParts=lines.split("\n");
 		List<String> trimmedFileParts=new ArrayList<String>();
 		for(String fileText:dataFileParts) {
 			String trimmedText=fileText.trim();
@@ -505,8 +512,7 @@ public class MainFrame extends JFrame {
 			doXtfFileSelBtn.setText("...");
 			doXtfFileSelBtn.addActionListener(new java.awt.event.ActionListener() { 
 				public void actionPerformed(java.awt.event.ActionEvent e) {    
-					String[] files=getXtfFile();
-					FileChooser fileDialog =  new FileChooser(files.toString());
+					FileChooser fileDialog =  new FileChooser();
 					fileDialog.setCurrentDirectory(new File(getWorkingDirectory()));
 					fileDialog.setDialogTitle(rsrc.getString("MainFrame.xtfFileChooserTitle"));
 					fileDialog.addChoosableFileFilter(new GenericFileFilter(rsrc.getString("MainFrame.xtfFileFilter"),"xtf"));
@@ -519,7 +525,7 @@ public class MainFrame extends JFrame {
 						File[] multipleFiles = fileDialog.getSelectedFiles();
 						String[] selectedFiles = new String[multipleFiles.length];
 						for(int i=0;i<multipleFiles.length;i++){
-							selectedFiles[i]=multipleFiles[i].toString();
+							selectedFiles[i]=multipleFiles[i].getAbsolutePath();
 						}
 						setXtfFile(selectedFiles);
 					}				
