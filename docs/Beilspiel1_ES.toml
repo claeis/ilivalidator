@@ -1,0 +1,55 @@
+["PARAMETER"]
+# Configuracion global del validador
+#
+# Desactivar la validacion en general
+# on/off
+validation="on"
+
+# Modelos con condiciones de consistencia adicionales.
+# Si hay varios modelos adicionales, separe los nombres del modelo con punto y coma.
+additionalModels="Beispiel1Zusatz"
+
+["Beispiel1.Bodenbedeckung.Gebaeude"]
+
+  clase Example1.Covering.Guilding.
+
+# Texto adicional para la identificacion de objetos para todos los mensajes 
+# de error relacionados con un objeto de la clase Beispiel1.Bodenbedeckung.Gebaeude. 
+# El TID y el numero de linea siempre aparecen, si los hay. keymsg es adicional 
+# (identificacion entendible para el usuario).
+# inclusive valore de atributos en {}
+# para cualquier idioma, respectivamente para DE
+keymsg_de="Assekuranz-Nr {AssNr}"
+keymsg="AssNr {AssNr}"
+
+["Beispiel1.Bodenbedeckung.Gebaeude.c1023"]
+# Comprobación de restriccion activada / desactivada o solo como informacion.
+# Validar si la condicion de connsistencia esta cumplida o no.
+# on/warning/off
+check="warning"
+# Texto de mensaje, si este constraint no es cumplido. 
+# Agregado con identificación del objeto y nombre de la restriccion. 
+# En DE inclusive valores de atributos en {}
+msg_de="AndereArt muss definiert sein"
+
+["Beispiel1.Bodenbedeckung.Gebaeude.Art"]
+# Validacion de multiplicidad on/off respectivamente solo como informacion.
+# por ejemplo si con MANDATORY existe un valor o no respectivamente
+# con BAG/LIST si el numero correspondiente de elementos de estructura esta disponible.
+# on/warning/off
+multiplicity="warning"
+# Activar / desactivar la validacion de tipos de datos o solo como informacion.
+# por ejemplo si un valor numérico está dentro del rango, o un valor
+# enumerado coincide con el modelo, o si las areas son una zonificacion etc.
+# on/warning/off
+type="off"
+
+["Beispiel1.Bodenbedeckung.GebaeudeFlaeche.Gebaeude"]
+# Validacion de multiplicidad on/off respectivamente solo como informacion.
+# Validar si se hace referencia al número de objetos requeridos por el modelo
+# on/warning/off
+multiplicity="off"
+# Activar / desactivar la validacion del objeto meta o solo como informacion.
+# Compruebe si el objeto al que se hace referencia existe y si es de la clase deseada
+# on/warning/off
+target="warning"
