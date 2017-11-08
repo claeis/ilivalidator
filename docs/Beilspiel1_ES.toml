@@ -11,8 +11,6 @@ additionalModels="Beispiel1Zusatz"
 
 ["Beispiel1.Bodenbedeckung.Gebaeude"]
 
-  clase Example1.Covering.Guilding.
-
 # Texto adicional para la identificacion de objetos para todos los mensajes 
 # de error relacionados con un objeto de la clase Beispiel1.Bodenbedeckung.Gebaeude. 
 # El TID y el numero de linea siempre aparecen, si los hay. keymsg es adicional 
