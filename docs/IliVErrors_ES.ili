@@ -5,9 +5,10 @@ INTERLIS 2.3;
 !! (carga como una capa).
 
 
-MODEL IliVErrors_ES
+MODEL IliVErrors_ES (es)
   AT "mailto:ceis@localhost"
-  VERSION "2016-06-10" =
+  VERSION "2016-06-10" 
+  TRANSLATION OF IliVErrors ["2016-06-10"] = 
 
   TOPIC ErrorLog =
 
@@ -33,4 +34,4 @@ MODEL IliVErrors_ES
     
   END ErrorLog;
 
-END IliVErrors.
+END IliVErrors_ES.

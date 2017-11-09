@@ -287,7 +287,7 @@ Los meta-atributos están ubicados inmediatamente antes del elemento del modelo 
 
 Modelo IliVErrors
 -----------------
-`IliVErrors_es.ili`_
+`IliVErrors_ES.ili`_
 
-.. _IliVErrors_es.ili: IliVErrors_es.ili
+.. _IliVErrors_ES.ili: IliVErrors_ES.ili
 
