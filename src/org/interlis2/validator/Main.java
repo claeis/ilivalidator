@@ -213,17 +213,10 @@ public class Main {
 	public static String getVersion() {
 		  if(version==null){
 		java.util.ResourceBundle resVersion = java.util.ResourceBundle.getBundle(ch.ehi.basics.i18n.ResourceBundle.class2qpackageName(Main.class)+".Version");
-			// Major version numbers identify significant functional changes.
-			// Minor version numbers identify smaller extensions to the functionality.
-			// Micro versions are even finer grained versions.
 			StringBuffer ret=new StringBuffer(20);
-		ret.append(resVersion.getString("versionMajor"));
-			ret.append('.');
-		ret.append(resVersion.getString("versionMinor"));
-			ret.append('.');
-		ret.append(resVersion.getString("versionMicro"));
+		ret.append(resVersion.getString("version"));
 			ret.append('-');
-		ret.append(resVersion.getString("versionDate"));
+		ret.append(resVersion.getString("versionCommit"));
 			version=ret.toString();
 		  }
 		  return version;
