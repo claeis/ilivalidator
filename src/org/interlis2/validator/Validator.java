@@ -214,7 +214,7 @@ public class Validator {
 				for(String filename:dataFiles){
 					// setup data reader (ITF or XTF)
 					IoxReader ioxReader=null;
-					ioxReader = createReader(filename, td,errFactory);
+					ioxReader = createReader(filename, td,errFactory,settings);
 					
 					errFactory.setDataSource(filename);
 					
@@ -277,7 +277,7 @@ public class Validator {
 
 	/** template method to allow for any other IoxReader
 	 */
-	protected IoxReader createReader(String filename, TransferDescription td,LogEventFactory errFactory) throws IoxException {
+	protected IoxReader createReader(String filename, TransferDescription td,LogEventFactory errFactory,Settings settings) throws IoxException {
 		IoxReader ioxReader=new ReaderFactory().createReader(new java.io.File(filename), errFactory);
 		if(ioxReader instanceof ItfReader2 && skipPolygonBuilding){
 			ioxReader=new ItfReader(new java.io.File(filename));
