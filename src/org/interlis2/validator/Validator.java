@@ -46,22 +46,10 @@ import ch.interlis.iox_j.validator.ValidationConfig;
 
 /** High-level API of the INTERLIS validator.
  * For a usage example of this class, see the implementation of class {@link Main}.
- * For a usage example of the low-level API, see the implementation of {@link #runValidation(String, Settings)}. 
+ * For a usage example of the low-level API, see the implementation of {@link #validate(String, Settings)}. 
  */
 public class Validator {
-
-	/** main workhorse function.
-	 * @param dataFilename File to validate.
-	 * @param settings Configuration of program. 
-	 * This is not the TOML file, that controls the model specific validation.
-	 * @return true if validation succeeds, false if it fails (or any program error). 
-	 * @see #SETTING_MODELNAMES
-	 * @see #SETTING_ILIDIRS
-	 * @see #SETTING_CONFIGFILE
-	 * @see #SETTING_LOGFILE
-	 * @see #SETTING_XTFLOG
-	 * @see #SETTING_PLUGINDIR
-	 */
+	
 	public static boolean runValidation(
 			String dataFilename,
 			Settings settings
@@ -74,6 +62,24 @@ public class Validator {
 	}
 	
 	public static boolean runValidation(
+			String dataFiles[],
+			Settings settings
+		) {
+		return new Validator().validate(dataFiles,settings);
+	}
+	/** main workhorse function.
+	 * @param dataFilename File to validate.
+	 * @param settings Configuration of program. 
+	 * This is not the TOML file, that controls the model specific validation.
+	 * @return true if validation succeeds, false if it fails (or any program error). 
+	 * @see #SETTING_MODELNAMES
+	 * @see #SETTING_ILIDIRS
+	 * @see #SETTING_CONFIGFILE
+	 * @see #SETTING_LOGFILE
+	 * @see #SETTING_XTFLOG
+	 * @see #SETTING_PLUGINDIR
+	 */
+	public boolean validate(
 			String dataFiles[],
 			Settings settings
 		) {
@@ -133,7 +139,7 @@ public class Validator {
 			TransferDescription sourceTd=null;
 			TransferDescription td=null;
 			
-			boolean skipPolygonBuilding=ch.interlis.iox_j.validator.Validator.CONFIG_DO_ITF_LINETABLES_DO.equals(settings.getValue(ch.interlis.iox_j.validator.Validator.CONFIG_DO_ITF_LINETABLES));
+			skipPolygonBuilding = ch.interlis.iox_j.validator.Validator.CONFIG_DO_ITF_LINETABLES_DO.equals(settings.getValue(ch.interlis.iox_j.validator.Validator.CONFIG_DO_ITF_LINETABLES));
 			
 			// specified model names
 			List<String> modelnames=new ArrayList<String>();
@@ -192,7 +198,7 @@ public class Validator {
 				modelConfig.setConfigValue(ValidationConfig.PARAMETER, ValidationConfig.ALLOW_ONLY_MULTIPLICITY_REDUCTION, TRUE.equals(settings.getValue(SETTING_FORCE_TYPE_VALIDATION))?ValidationConfig.ON:null);
 				modelConfig.setConfigValue(ValidationConfig.PARAMETER, ValidationConfig.AREA_OVERLAP_VALIDATION, TRUE.equals(settings.getValue(SETTING_DISABLE_AREA_VALIDATION))?ValidationConfig.OFF:null);
 				modelConfig.setConfigValue(ValidationConfig.PARAMETER, ValidationConfig.ALL_OBJECTS_ACCESSIBLE, settings.getValue(SETTING_ALL_OBJECTS_ACCESSIBLE));
-				boolean allowItfAreaHoles=TRUE.equals(settings.getValue(SETTING_ALLOW_ITF_AREA_HOLES));
+				allowItfAreaHoles = TRUE.equals(settings.getValue(SETTING_ALLOW_ITF_AREA_HOLES));
 				String globalMultiplicity=settings.getValue(SETTING_MULTIPLICITY_VALIDATION);
 				if(globalMultiplicity!=null){
 					modelConfig.setConfigValue(ValidationConfig.PARAMETER, ValidationConfig.MULTIPLICITY, globalMultiplicity);
@@ -208,16 +214,7 @@ public class Validator {
 				for(String filename:dataFiles){
 					// setup data reader (ITF or XTF)
 					IoxReader ioxReader=null;
-					ioxReader=new ReaderFactory().createReader(new java.io.File(filename), errFactory);
-					if(ioxReader instanceof ItfReader2 && skipPolygonBuilding){
-						ioxReader=new ItfReader(new java.io.File(filename));
-					}
-					if(ioxReader instanceof ItfReader2){
-						((ItfReader2) ioxReader).setAllowItfAreaHoles(allowItfAreaHoles);
-					}
-					if(ioxReader instanceof IoxIliReader){
-						((IoxIliReader) ioxReader).setModel(td);	
-					}
+					ioxReader = createReader(filename, td,errFactory);
 					
 					errFactory.setDataSource(filename);
 					
@@ -276,6 +273,22 @@ public class Validator {
 			}
 		}
 		return ret;
+	}
+
+	/** template method to allow for any other IoxReader
+	 */
+	protected IoxReader createReader(String filename, TransferDescription td,LogEventFactory errFactory) throws IoxException {
+		IoxReader ioxReader=new ReaderFactory().createReader(new java.io.File(filename), errFactory);
+		if(ioxReader instanceof ItfReader2 && skipPolygonBuilding){
+			ioxReader=new ItfReader(new java.io.File(filename));
+		}
+		if(ioxReader instanceof ItfReader2){
+			((ItfReader2) ioxReader).setAllowItfAreaHoles(allowItfAreaHoles);
+		}
+		if(ioxReader instanceof IoxIliReader){
+			((IoxIliReader) ioxReader).setModel(td);	
+		}
+		return ioxReader;
 	}
 	
 	private static List<String> getModelsFromConfigFile(String configFilename) throws FileNotFoundException {
@@ -467,4 +480,6 @@ public class Validator {
 	public static final String JAR_DIR="%JAR_DIR";
 	public static final String TRUE=ValidationConfig.TRUE;
 	public static final String FALSE=ValidationConfig.FALSE;
+	private boolean skipPolygonBuilding;
+	private boolean allowItfAreaHoles;
 }

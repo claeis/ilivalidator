@@ -1,3 +1,7 @@
+ilivalidator 1.6.0 (2017-10-20)
+-----------------------------
+- added createReader() template method to high level API
+
 ilivalidator 1.5.0 (2017-10-20)
 -----------------------------
 - added: --allowItfAreaHoles (only ITF)
