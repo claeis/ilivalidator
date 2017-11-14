@@ -68,7 +68,7 @@ sourceSets {
             srcDirs = ['test/src','pluginsrc']
         }
         resources {
-            srcDirs = ['test/data']
+            srcDirs = ['test/data','plugins']
         }
     }
 }
