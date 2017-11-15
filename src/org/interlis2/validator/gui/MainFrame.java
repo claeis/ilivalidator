@@ -44,7 +44,6 @@ public class MainFrame extends JFrame {
 	private javax.swing.JButton doXtfFileSelBtn = null;
 	
 	private javax.swing.JLabel modelNamesLabel = null;
-	// textfield to display model names
 	private javax.swing.JTextField modelNamesUi = null;
 	
 	private javax.swing.JLabel configFileLabel = null;
@@ -150,75 +149,85 @@ public class MainFrame extends JFrame {
 			java.awt.GridBagConstraints logPaneConstraints = new java.awt.GridBagConstraints();
 			java.awt.GridBagConstraints doValidateConstraints = new java.awt.GridBagConstraints();
 			
+			// row 0
 			xtfFileLabelConstraints.gridx = 0;
 			xtfFileLabelConstraints.gridy = 0;
 			xtfFileLabelConstraints.anchor = java.awt.GridBagConstraints.NORTHWEST;
-			xtfFileUiConstraints.weightx = 1.0;
 			xtfFileUiConstraints.fill = java.awt.GridBagConstraints.HORIZONTAL;
+			xtfFileUiConstraints.weightx = 1.0;
 			xtfFileUiConstraints.gridx = 1;
 			xtfFileUiConstraints.gridy = 0;
 			xtfFileUiConstraints.anchor = java.awt.GridBagConstraints.NORTHWEST;
-			allObjectsAccessibleConstraints.gridx = 1;
-			allObjectsAccessibleConstraints.gridy = 1;
-			allObjectsAccessibleConstraints.anchor = java.awt.GridBagConstraints.NORTHWEST;
 			doXtfFileSelBtnConstraints.gridx = 2;
 			doXtfFileSelBtnConstraints.gridy = 0;
 			
+			// row 1
+			allObjectsAccessibleConstraints.gridx = 1;
+			allObjectsAccessibleConstraints.gridy = 1;
+			allObjectsAccessibleConstraints.anchor = java.awt.GridBagConstraints.NORTHWEST;
+			
+			// row 2
 			modelNamesLabelConstraints.gridx = 0;
 			modelNamesLabelConstraints.gridy = 2;
 			modelNamesLabelConstraints.anchor = java.awt.GridBagConstraints.NORTHWEST;
-			modelNamesUiConstraints.weighty = 0.3;
-			modelNamesUiConstraints.weightx = 1.0;
 			modelNamesUiConstraints.fill = java.awt.GridBagConstraints.HORIZONTAL;
+			modelNamesUiConstraints.weightx = 1.0;
 			modelNamesUiConstraints.gridx = 1;
 			modelNamesUiConstraints.gridy = 2;
 			modelNamesUiConstraints.anchor = java.awt.GridBagConstraints.NORTHWEST;
 			
+			// row 3
 			logFileLabelConstraints.gridx = 0;
 			logFileLabelConstraints.gridy = 3;
 			logFileLabelConstraints.anchor = java.awt.GridBagConstraints.NORTHWEST;
-			logFileUiConstraints.weightx = 1.0;
 			logFileUiConstraints.fill = java.awt.GridBagConstraints.HORIZONTAL;
+			logFileUiConstraints.weightx = 1.0;
 			logFileUiConstraints.gridx = 1;
 			logFileUiConstraints.gridy = 3;
 			logFileUiConstraints.anchor = java.awt.GridBagConstraints.NORTHWEST;
 			doLogFileSelBtnConstraints.gridx = 2;
 			doLogFileSelBtnConstraints.gridy = 3;
-
+			
+			// row 4
 			xtfLogFileLabelConstraints.gridx = 0;
 			xtfLogFileLabelConstraints.gridy = 4;
 			xtfLogFileLabelConstraints.anchor = java.awt.GridBagConstraints.NORTHWEST;
-			xtfLogFileUiConstraints.weightx = 1.0;
 			xtfLogFileUiConstraints.fill = java.awt.GridBagConstraints.HORIZONTAL;
+			xtfLogFileUiConstraints.weightx = 1.0;
 			xtfLogFileUiConstraints.gridx = 1;
 			xtfLogFileUiConstraints.gridy = 4;
 			xtfLogFileUiConstraints.anchor = java.awt.GridBagConstraints.NORTHWEST;
 			doXtfLogFileSelBtnConstraints.gridx = 2;
 			doXtfLogFileSelBtnConstraints.gridy = 4;
 			
+			// row 5
 			configFileLabelConstraints.gridx = 0;
 			configFileLabelConstraints.gridy = 5;
 			configFileLabelConstraints.anchor = java.awt.GridBagConstraints.NORTHWEST;
-			configFileUiConstraints.weightx = 1.0;
 			configFileUiConstraints.fill = java.awt.GridBagConstraints.HORIZONTAL;
+			configFileUiConstraints.weightx = 1.0;
 			configFileUiConstraints.gridx = 1;
 			configFileUiConstraints.gridy = 5;
 			configFileUiConstraints.anchor = java.awt.GridBagConstraints.NORTHWEST;
 			doConfigFileSelBtnConstraints.gridx = 2;
 			doConfigFileSelBtnConstraints.gridy = 5;
 			
+			// row 6
+			logPaneConstraints.fill = java.awt.GridBagConstraints.BOTH;
 			logPaneConstraints.weightx = 1.0;
 			logPaneConstraints.weighty = 1.0;
-			logPaneConstraints.fill = java.awt.GridBagConstraints.BOTH;
 			logPaneConstraints.gridx = 0;
-			logPaneConstraints.gridy = 12;
+			logPaneConstraints.gridy = 6;
 			logPaneConstraints.gridheight = 2;
 			logPaneConstraints.gridwidth = 2;
-			doValidateConstraints.gridy = 12;
+			doValidateConstraints.gridy = 6;
 			doValidateConstraints.gridx = 2;
+			
+			// row 7
 			clearlogBtnConstraints.gridx = 2;
-			clearlogBtnConstraints.gridy = 13;
+			clearlogBtnConstraints.gridy = 7;
 			clearlogBtnConstraints.anchor = java.awt.GridBagConstraints.NORTH;
+			
 			jContentPane.setLayout(new java.awt.GridBagLayout());
 			jContentPane.add(getXtfFileLabel(), xtfFileLabelConstraints);
 			jContentPane.add(getXtfFileUi(), xtfFileUiConstraints);
