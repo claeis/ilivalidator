@@ -40,7 +40,7 @@ public class MainFrame extends JFrame {
 	private javax.swing.JLabel xtfFileLabel = null;
 	// area to display one file per line in multiple input file validation
 	private javax.swing.JTextArea xtfFileUi = null;
-	private javax.swing.JCheckBox allObjectsAccessible = null;
+	private javax.swing.JCheckBox allObjectsAccessibleUi = null;
 	private javax.swing.JButton doXtfFileSelBtn = null;
 	
 	private javax.swing.JLabel modelNamesLabel = null;
@@ -98,7 +98,7 @@ public class MainFrame extends JFrame {
 					settings.setValue(Validator.SETTING_ILIDIRS,ilidirs);
 					settings.setValue(ch.interlis.ili2c.gui.UserSettings.HTTP_PROXY_HOST,dlg.getHttpProxyHost());
 					settings.setValue(ch.interlis.ili2c.gui.UserSettings.HTTP_PROXY_PORT,dlg.getHttpProxyPort());
-					saveSettings();
+					saveSettings(settings);
 				}
 			}
 
@@ -106,13 +106,13 @@ public class MainFrame extends JFrame {
 	    menu.add(menuItem);
         addWindowListener(new WindowAdapter() {
             public void windowClosing(WindowEvent e) {
-              saveSettings();
+              saveSettings(getSettings());
   	    	System.exit(0);
             }
           });
 	    
 	}
-	private void saveSettings() {
+	private void saveSettings(Settings settings) {
 		Settings toSave=new Settings();
 		toSave.setValue(ch.interlis.ili2c.gui.UserSettings.WORKING_DIRECTORY,settings.getValue(ch.interlis.ili2c.gui.UserSettings.WORKING_DIRECTORY));
 		toSave.setValue(Validator.SETTING_ILIDIRS,settings.getValue(Validator.SETTING_ILIDIRS));
@@ -250,7 +250,7 @@ public class MainFrame extends JFrame {
 			
 			jContentPane.add(getJScrollPane(), logPaneConstraints);
 			jContentPane.add(getClearlogBtn(), clearlogBtnConstraints);
-			jContentPane.add(getAllObjectsAccessible(), allObjectsAccessibleConstraints);
+			jContentPane.add(getAllObjectsAccessibleUi(), allObjectsAccessibleConstraints);
 			jContentPane.add(getDoValidateBtn(), doValidateConstraints);
 		}
 		return jContentPane;
@@ -339,24 +339,12 @@ public class MainFrame extends JFrame {
 		}
 		return clearlogBtn;
 	}
-	private javax.swing.JCheckBox getAllObjectsAccessible() {
-		if(allObjectsAccessible == null) {
-			allObjectsAccessible = new javax.swing.JCheckBox();
-			allObjectsAccessible.setText(rsrc.getString("MainFrame.allObjectsAccessible"));
-			allObjectsAccessible.addItemListener(new java.awt.event.ItemListener() {
-				@Override
-				public void itemStateChanged(ItemEvent e){
-					if(e.getStateChange()==1){
-						// checkbox is selected
-						settings.setValue(Validator.SETTING_ALL_OBJECTS_ACCESSIBLE, Validator.TRUE);
-					}else{
-						// checkbox is deselected
-						settings.setValue(Validator.SETTING_ALL_OBJECTS_ACCESSIBLE, Validator.FALSE);
-					}
-				}
-			});
+	private javax.swing.JCheckBox getAllObjectsAccessibleUi() {
+		if(allObjectsAccessibleUi == null) {
+			allObjectsAccessibleUi = new javax.swing.JCheckBox();
+			allObjectsAccessibleUi.setText(rsrc.getString("MainFrame.allObjectsAccessible"));
 		}
-		return allObjectsAccessible;
+		return allObjectsAccessibleUi;
 	}
 	// selected files
 	public String[] getXtfFile(){
@@ -408,12 +396,12 @@ public class MainFrame extends JFrame {
 	public String getConfigFile(){
 		return StringUtility.purge(getConfigFileUi().getText());
 	}
-	public String getObjectsAccessible(){
-		String allObjectsAccessible=settings.getValue(Validator.SETTING_ALL_OBJECTS_ACCESSIBLE);
-		if(allObjectsAccessible==null){
-			allObjectsAccessible=Validator.FALSE;
-		}
+	public boolean getObjectsAccessible(){
+		boolean allObjectsAccessible=getAllObjectsAccessibleUi().isSelected();
 		return allObjectsAccessible;
+	}
+	public void setObjectsAccessible(boolean allObjectsAccessible){
+		getAllObjectsAccessibleUi().setSelected(allObjectsAccessible);
 	}
 	public void setConfigFile(String dbhost){
 		getConfigFileUi().setText(dbhost);
@@ -432,26 +420,32 @@ public class MainFrame extends JFrame {
 	}
 	public Settings getSettings()
 	{
+		// get values from UI
 		String logFile=getLogFile();
 		String xtflogFile=getXtfLogFile();
 		String configFile=getConfigFile();
 		String modelNames=getModelNames();
-		String objectsAccess=getObjectsAccessible();
+		String objectsAccess=getObjectsAccessible()?Validator.TRUE:Validator.FALSE;
+		
+		// get some values from current settings
 		String workingDir=settings.getValue(ch.interlis.ili2c.gui.UserSettings.WORKING_DIRECTORY);
 		String proxyHost=settings.getValue(ch.interlis.ili2c.gui.UserSettings.HTTP_PROXY_HOST);
 		String proxyPort=settings.getValue(ch.interlis.ili2c.gui.UserSettings.HTTP_PROXY_PORT);
+		String ilidirs=settings.getValue(Validator.SETTING_ILIDIRS);
+
 		
-		Settings settings=new Settings();
+		Settings newSettings=new Settings();
 		
-		settings.setValue(ch.interlis.ili2c.gui.UserSettings.WORKING_DIRECTORY,workingDir);
-		settings.setValue(Validator.SETTING_LOGFILE,logFile);
-		settings.setValue(Validator.SETTING_XTFLOG,xtflogFile);
-		settings.setValue(Validator.SETTING_MODELNAMES,modelNames);
-		settings.setValue(Validator.SETTING_CONFIGFILE,configFile);
-		settings.setValue(Validator.SETTING_ALL_OBJECTS_ACCESSIBLE,objectsAccess);
-		settings.setValue(ch.interlis.ili2c.gui.UserSettings.HTTP_PROXY_HOST,proxyHost);
-		settings.setValue(ch.interlis.ili2c.gui.UserSettings.HTTP_PROXY_PORT,proxyPort);
-		return settings;
+		newSettings.setValue(ch.interlis.ili2c.gui.UserSettings.WORKING_DIRECTORY,workingDir);
+		newSettings.setValue(Validator.SETTING_LOGFILE,logFile);
+		newSettings.setValue(Validator.SETTING_XTFLOG,xtflogFile);
+		newSettings.setValue(Validator.SETTING_MODELNAMES,modelNames);
+		newSettings.setValue(Validator.SETTING_CONFIGFILE,configFile);
+		newSettings.setValue(Validator.SETTING_ALL_OBJECTS_ACCESSIBLE,objectsAccess);
+		newSettings.setValue(Validator.SETTING_ILIDIRS,ilidirs);
+		newSettings.setValue(ch.interlis.ili2c.gui.UserSettings.HTTP_PROXY_HOST,proxyHost);
+		newSettings.setValue(ch.interlis.ili2c.gui.UserSettings.HTTP_PROXY_PORT,proxyPort);
+		return newSettings;
 	}
 	public void setSettings(Settings settings)
 	{
@@ -491,6 +485,7 @@ public class MainFrame extends JFrame {
 			frame.setXtfLogFile(xtflogFile);
 			String configFile=settings.getValue(Validator.SETTING_CONFIGFILE);
 			frame.setConfigFile(configFile);
+			frame.setObjectsAccessible(Validator.TRUE.equals(settings.getValue(Validator.SETTING_ALL_OBJECTS_ACCESSIBLE)));
 			frame.show();
 	}
 	private javax.swing.JButton getDoValidateBtn() {
