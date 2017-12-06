@@ -2,6 +2,7 @@ ilivalidator 1.6.0 (2017-10-20)
 -----------------------------
 - added createReader() template method to high level API
 - fixed: ilidir setting from GUI not used 
+- added object statistics to log 
 
 ilivalidator 1.5.0 (2017-10-20)
 -----------------------------

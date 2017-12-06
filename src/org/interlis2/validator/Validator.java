@@ -41,6 +41,7 @@ import ch.interlis.iox_j.logging.LogEventFactory;
 import ch.interlis.iox_j.logging.StdLogger;
 import ch.interlis.iox_j.logging.XtfErrorsLogger;
 import ch.interlis.iox_j.plugins.PluginLoader;
+import ch.interlis.iox_j.statistics.IoxStatistics;
 import ch.interlis.iox_j.utility.ReaderFactory;
 import ch.interlis.iox_j.validator.ValidationConfig;
 
@@ -188,6 +189,7 @@ public class Validator {
 			// process data files
 			EhiLogger.logState("validate data...");
 			ch.interlis.iox_j.validator.Validator validator=null;
+			IoxStatistics statistics=null;
 			try{
 				// setup log output
 				ValidationConfig modelConfig=new ValidationConfig();
@@ -210,12 +212,13 @@ public class Validator {
 				PipelinePool pool=new PipelinePool();
 				validator=new ch.interlis.iox_j.validator.Validator(td,modelConfig, errHandler, errFactory, pool,settings);
 				validator.setAutoSecondPass(false);
+				statistics=new IoxStatistics(td,settings);
 				// loop over data objects
 				for(String filename:dataFiles){
 					// setup data reader (ITF or XTF)
 					IoxReader ioxReader=null;
 					ioxReader = createReader(filename, td,errFactory,settings);
-					
+					statistics.setFilename(filename);
 					errFactory.setDataSource(filename);
 					
 					try{
@@ -224,6 +227,7 @@ public class Validator {
 							event=ioxReader.read();
 							// feed object by object to validator
 							validator.validate(event);
+							statistics.add(event);
 						}while(!(event instanceof EndTransferEvent));
 					}finally{
 						if(ioxReader!=null){
@@ -237,6 +241,7 @@ public class Validator {
 					}
 				}
 				validator.doSecondPass();
+				statistics.write2logger();
 				// check for errors
 				if(logStderr.hasSeenErrors()){
 					EhiLogger.logState("...validation failed");
@@ -245,6 +250,9 @@ public class Validator {
 					ret=true;
 				}
 			}catch(Throwable ex){
+				if(statistics!=null) {
+					statistics.write2logger();
+				}
 				EhiLogger.logError(ex);
 				EhiLogger.logState("...validation failed");
 			}finally{
