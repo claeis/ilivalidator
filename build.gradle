@@ -60,7 +60,9 @@ sourceSets {
             srcDirs = ['src','gensrc']
         }
         resources {
-            srcDirs = []
+            srcDir "src"
+            include "**/*.properties"
+            exclude "**/Version.properties"
         }
     }
     test {
@@ -82,6 +84,37 @@ task generateMyResources {
 		versionPropsFile.getParentFile().mkdirs();
 		versionProps.store(versionPropsFile.newWriter(), null);
 	}
+}
+
+task bindist(type: Zip){
+	baseName = project.name
+	destinationDir = file('dist')
+	from jar
+	into('docs'){
+		from files(fileTree("docs").include("LICENSE.*"),"docs/README.txt","docs/CHANGELOG.txt","docs/Beispiel1.ili","docs/Beispiel1.toml","docs/Beispiel1.xtf","docs/IliVErrors.ili","docs/ilivalidator.html")
+	}
+	into('libs'){
+		from configurations.runtimeClasspath
+	}
+	// version = '1.0.6'
+	
+}
+jar {
+  manifest {
+    attributes(
+      "Main-Class": "org.interlis2.validator.Main",
+      "Class-Path": configurations.runtimeClasspath.collect { 'libs/'+it.getName() }.join(' '))
+  }
+}
+artifacts {
+	archives(bindist.archivePath) {
+        type 'zip'
+        classifier 'bindist'
+        builtBy bindist
+    }
+    archives(jar.archivePath){
+    	builtBy jar
+    }
 }
 
 test {
