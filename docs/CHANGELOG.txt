@@ -1,3 +1,8 @@
+ilivalidator 1.7.0 (2018-02-08)
+-----------------------------
+- iox-ili-1.20.2
+- ili2c-4.7.7
+
 ilivalidator 1.6.0 (2017-12-29)
 -----------------------------
 - added createReader() template method to high level API
