@@ -37,5 +37,5 @@ To build a binary distribution, use
     gradle bindist
 
 ## Documentation
-<docs/ilivalidator.rst>
+[docs/ilivalidator.rst](docs/ilivalidator.rst)
 
