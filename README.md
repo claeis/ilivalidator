@@ -14,25 +14,28 @@ ilivalidator is licensed under the LGPL (Lesser GNU Public License).
 
 ## System Requirements
 For the current version of ilivalidator, you will need a JRE (Java Runtime Environment) installed on your system, version 1.6 or later.
-The JRE (Java Runtime Environment) can be downloaded for free from the Website (http://www.java.com/).
+The JRE (Java Runtime Environment) can be downloaded for free from the Website <http://www.java.com/>.
 
 ## Software Download 
-(https://github.com/claeis/ilivalidator/releases)
+<https://github.com/claeis/ilivalidator/releases>
 
 ## Installing ilivalidator
-To install ilivalidator, choose a directory and extract the distribution file there. 
+To install the ilivalidator, choose a directory and extract the distribution file there. 
 
 ## Running ilivalidator
-ilivalidator can be started with
+The ilivalidator can be started with
 
-java -jar ilivalidator.jar [options] file.xtf
+    java -jar ilivalidator.jar [options] file.xtf
 
 ## Building from source
-gradle build
+To build the `ilivalidator.jar`, use
+
+    gradle build
 
 To build a binary distribution, use
-gradle bindist
+
+    gradle bindist
 
 ## Documentation
-(docs/ilivalidator.rst)
+<docs/ilivalidator.rst>
 
