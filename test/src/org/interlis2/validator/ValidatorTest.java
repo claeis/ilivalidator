@@ -118,6 +118,13 @@ public class ValidatorTest {
 		boolean ret=Validator.runValidation("test/data/Beispiel2b.xtf", settings);
 		assertTrue(ret);
 	}
+    @Test
+    public void xtfOkWithValidationConfigAllowAreaOverlap() {
+        Settings settings=new Settings();
+        settings.setValue(Validator.SETTING_CONFIGFILE, "test/data/Beispiel2AreaOverlap.toml");
+        boolean ret=Validator.runValidation("test/data/Beispiel2AreaOverlap.xtf", settings);
+        assertTrue(ret);
+    }
 	@Test
 	public void xtfFailForceTypeCheckWithValidationConfig() {
 		Settings settings=new Settings();

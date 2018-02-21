@@ -1,3 +1,7 @@
+LATEST VERSION
+-----------------------------
+- fixed: disableAreaValidation in toml not working
+
 ilivalidator 1.7.0 (2018-02-08)
 -----------------------------
 - iox-ili-1.20.2
