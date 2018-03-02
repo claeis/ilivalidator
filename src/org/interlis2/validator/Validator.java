@@ -118,6 +118,7 @@ public class Validator {
 		    String configFilename=settings.getValue(Validator.SETTING_CONFIGFILE);
 		    String modelNames=settings.getValue(Validator.SETTING_MODELNAMES);
 		    String pluginFolder=settings.getValue(Validator.SETTING_PLUGINFOLDER);
+		    String appHome=settings.getValue(Validator.SETTING_APPHOME);
 		    		    
 		    // give user important info (such as input files or program version)
 			EhiLogger.logState(Main.APP_NAME+"-"+Main.getVersion());
@@ -181,7 +182,7 @@ public class Validator {
 			}
 			
 			// read ili models
-			td=compileIli(modelnames, null,new File(dataFiles[0]).getAbsoluteFile().getParentFile().getAbsolutePath(),Main.getAppHome(), settings);
+			td=compileIli(modelnames, null,new File(dataFiles[0]).getAbsoluteFile().getParentFile().getAbsolutePath(),appHome, settings);
 			if(td==null){
 				return false;
 			}
@@ -360,12 +361,9 @@ public class Validator {
 			}else if(m.contains(Validator.JAR_DIR)){
 				if(appHome!=null){
 					m=m.replace(JAR_DIR,appHome);
-				}
-				if(m!=null){
-					m=new java.io.File(m).getAbsolutePath();
-				}
-				if(m!=null && m.length()>0){
 					modeldirv.add(m);				
+				}else {
+					// ignore it
 				}
 			}else{
 				if(m!=null && m.length()>0){
@@ -448,6 +446,9 @@ public class Validator {
 	/** model names. Multiple model names are separated by semicolon (';'). 
 	 */
 	public static final String SETTING_MODELNAMES="org.interlis2.validator.modelNames";
+	/** appHome the main folder of program.
+	 */
+	public static final String SETTING_APPHOME="org.interlis2.validator.appHome";
 	/** Last used folder in the GUI.
 	 */
 	public static final String SETTING_DIRUSED="org.interlis2.validator.dirused";

@@ -1,5 +1,6 @@
 package org.interlis2.validator;
 
+import java.io.File;
 import org.interlis2.validator.gui.MainFrame;
 import ch.ehi.basics.logging.EhiLogger;
 import ch.ehi.basics.settings.Settings;
@@ -26,6 +27,7 @@ public class Main {
 		String appHome=getAppHome();
 		if(appHome!=null){
 		    settings.setValue(Validator.SETTING_PLUGINFOLDER, new java.io.File(appHome,"plugins").getAbsolutePath());
+		    settings.setValue(Validator.SETTING_APPHOME, appHome);
 		}else{
 		    settings.setValue(Validator.SETTING_PLUGINFOLDER, new java.io.File("plugins").getAbsolutePath());
 		}
@@ -228,12 +230,18 @@ public class Main {
 	 */
 	static public String getAppHome()
 	{
-	  String classpath = System.getProperty("java.class.path");
-	  int index = classpath.toLowerCase().indexOf(APP_JAR);
-	  int start = classpath.lastIndexOf(java.io.File.pathSeparator,index) + 1;
-	  if(index > start)
-	  {
-		  return classpath.substring(start,index - 1);
+	  String[] classpaths = System.getProperty("java.class.path").split(System.getProperty("path.separator"));
+	  for(String classpath:classpaths) {
+		  if(classpath.toLowerCase().endsWith(".jar")) {
+			  File file = new File(classpath);
+			  String jarName=file.getName();
+			  if(jarName.toLowerCase().startsWith(APP_NAME)) {
+				  file=new File(file.getAbsolutePath());
+				  if(file.exists()) {
+					  return file.getParent();
+				  }
+			  }
+		  }
 	  }
 	  return null;
 	}
