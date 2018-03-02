@@ -78,6 +78,22 @@ public class ValidatorTest {
 		assertTrue(ret);
 	}
 	@Test
+	public void xtfInvalidPlaceholderSettingFail() {
+		Settings settings=new Settings();
+		settings.setValue(Validator.SETTING_ILIDIRS, "%ILI_DIR;http://models.interlis.ch/;%JAR_DIR/ilimodels");
+		EhiLogger.getInstance().setTraceFilter(false); 
+		boolean ret=Validator.runValidation("test/data/Beispiel2a.xtf", settings);
+		assertFalse(ret);
+	}
+	@Test
+	public void xtfValidPlaceholderSettingOk() {
+		Settings settings=new Settings();
+		settings.setValue(Validator.SETTING_ILIDIRS, "%ITF_DIR;http://models.interlis.ch/;%JAR_DIR/ilimodels");
+		EhiLogger.getInstance().setTraceFilter(false); 
+		boolean ret=Validator.runValidation("test/data/Beispiel2a.xtf", settings);
+		assertTrue(ret);
+	}
+	@Test
 	public void xtfOkWithFunction() {
 		Settings settings=new Settings();
 		settings.setValue(Validator.SETTING_PLUGINFOLDER, new java.io.File("plugins").getAbsolutePath());
@@ -118,6 +134,13 @@ public class ValidatorTest {
 		boolean ret=Validator.runValidation("test/data/Beispiel2b.xtf", settings);
 		assertTrue(ret);
 	}
+    @Test
+    public void xtfOkWithValidationConfigAllowAreaOverlap() {
+        Settings settings=new Settings();
+        settings.setValue(Validator.SETTING_CONFIGFILE, "test/data/Beispiel2AreaOverlap.toml");
+        boolean ret=Validator.runValidation("test/data/Beispiel2AreaOverlap.xtf", settings);
+        assertTrue(ret);
+    }
 	@Test
 	public void xtfFailForceTypeCheckWithValidationConfig() {
 		Settings settings=new Settings();
