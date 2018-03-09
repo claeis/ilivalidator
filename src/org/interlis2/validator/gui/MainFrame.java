@@ -443,6 +443,7 @@ public class MainFrame extends JFrame {
 		newSettings.setValue(Validator.SETTING_CONFIGFILE,configFile);
 		newSettings.setValue(Validator.SETTING_ALL_OBJECTS_ACCESSIBLE,objectsAccess);
 		newSettings.setValue(Validator.SETTING_ILIDIRS,ilidirs);
+		newSettings.setValue(Validator.SETTING_APPHOME, Main.getAppHome());
 		newSettings.setValue(ch.interlis.ili2c.gui.UserSettings.HTTP_PROXY_HOST,proxyHost);
 		newSettings.setValue(ch.interlis.ili2c.gui.UserSettings.HTTP_PROXY_PORT,proxyPort);
 		return newSettings;
