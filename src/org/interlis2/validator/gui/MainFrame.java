@@ -113,6 +113,7 @@ public class MainFrame extends JFrame {
 	    
 	}
 	private void saveSettings(Settings settings) {
+        // save not all, but only some values 
 		Settings toSave=new Settings();
 		toSave.setValue(ch.interlis.ili2c.gui.UserSettings.WORKING_DIRECTORY,settings.getValue(ch.interlis.ili2c.gui.UserSettings.WORKING_DIRECTORY));
 		toSave.setValue(Validator.SETTING_ILIDIRS,settings.getValue(Validator.SETTING_ILIDIRS));
@@ -427,11 +428,12 @@ public class MainFrame extends JFrame {
 		String modelNames=getModelNames();
 		String objectsAccess=getObjectsAccessible()?Validator.TRUE:Validator.FALSE;
 		
-		// get some values from current settings
+		// keep some values from current settings
 		String workingDir=settings.getValue(ch.interlis.ili2c.gui.UserSettings.WORKING_DIRECTORY);
 		String proxyHost=settings.getValue(ch.interlis.ili2c.gui.UserSettings.HTTP_PROXY_HOST);
 		String proxyPort=settings.getValue(ch.interlis.ili2c.gui.UserSettings.HTTP_PROXY_PORT);
 		String ilidirs=settings.getValue(Validator.SETTING_ILIDIRS);
+        String appHome=settings.getValue(Validator.SETTING_APPHOME);
 
 		
 		Settings newSettings=new Settings();
@@ -443,6 +445,7 @@ public class MainFrame extends JFrame {
 		newSettings.setValue(Validator.SETTING_CONFIGFILE,configFile);
 		newSettings.setValue(Validator.SETTING_ALL_OBJECTS_ACCESSIBLE,objectsAccess);
 		newSettings.setValue(Validator.SETTING_ILIDIRS,ilidirs);
+		newSettings.setValue(Validator.SETTING_APPHOME, appHome);
 		newSettings.setValue(ch.interlis.ili2c.gui.UserSettings.HTTP_PROXY_HOST,proxyHost);
 		newSettings.setValue(ch.interlis.ili2c.gui.UserSettings.HTTP_PROXY_PORT,proxyPort);
 		return newSettings;

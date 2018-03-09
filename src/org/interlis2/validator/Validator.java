@@ -221,7 +221,7 @@ public class Validator {
 				for(String filename:dataFiles){
 					// setup data reader (ITF or XTF)
 					IoxReader ioxReader=null;
-					ioxReader = createReader(filename, td,errFactory,settings);
+					ioxReader = createReader(filename, td,errFactory,settings,pool);
 					statistics.setFilename(filename);
 					errFactory.setDataSource(filename);
 					
@@ -289,13 +289,14 @@ public class Validator {
 
 	/** template method to allow for any other IoxReader
 	 */
-	protected IoxReader createReader(String filename, TransferDescription td,LogEventFactory errFactory,Settings settings) throws IoxException {
+	protected IoxReader createReader(String filename, TransferDescription td,LogEventFactory errFactory,Settings settings,PipelinePool pool) throws IoxException {
 		IoxReader ioxReader=new ReaderFactory().createReader(new java.io.File(filename), errFactory);
 		if(ioxReader instanceof ItfReader2 && skipPolygonBuilding){
 			ioxReader=new ItfReader(new java.io.File(filename));
 		}
 		if(ioxReader instanceof ItfReader2){
 			((ItfReader2) ioxReader).setAllowItfAreaHoles(allowItfAreaHoles);
+		    ((ItfReader2) ioxReader).setIoxDataPool(pool);
 		}
 		if(ioxReader instanceof IoxIliReader){
 			((IoxIliReader) ioxReader).setModel(td);	
@@ -446,7 +447,7 @@ public class Validator {
 	/** model names. Multiple model names are separated by semicolon (';'). 
 	 */
 	public static final String SETTING_MODELNAMES="org.interlis2.validator.modelNames";
-	/** appHome the main folder of program.
+	/** the main folder of program.
 	 */
 	public static final String SETTING_APPHOME="org.interlis2.validator.appHome";
 	/** Last used folder in the GUI.

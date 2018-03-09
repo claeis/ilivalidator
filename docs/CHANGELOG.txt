@@ -1,6 +1,10 @@
 LATEST VERSION
 -----------------------------
-- fixed: disableAreaValidation in toml not working
+
+ilivalidator 1.8.1 (2018-03-09)
+-----------------------------
+- improved performance
+- fixed %JAR_DIR resolution
 
 ilivalidator 1.8.0 (2018-03-02)
 -----------------------------
