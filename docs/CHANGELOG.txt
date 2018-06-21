@@ -1,5 +1,6 @@
 LATEST VERSION
 -----------------------------
+- added: --disableConstraintValidation
 
 ilivalidator 1.8.1 (2018-03-09)
 -----------------------------

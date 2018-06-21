@@ -1,0 +1,59 @@
+INTERLIS 2.3;
+
+CONTRACTED MODEL Constraints AT "mailto:ceis@localhost" VERSION "2016-07-08" =
+	TOPIC TopicA =
+	
+    	CLASS AdditionalConstraint =
+      		attr1 : 0..10;
+			attr2 : 0..10;
+    	END AdditionalConstraint;
+    	
+		CLASS ConditionClass =
+			attr1 : TEXT*10;
+		END ConditionClass;
+		
+		CLASS ExistenceConstraint =
+			attr1 : TEXT*10;
+			EXISTENCE CONSTRAINT attr1 REQUIRED IN Constraints.TopicA.ConditionClass : attr1;
+		END ExistenceConstraint;
+
+		CLASS MandatoryConstraint =
+			attr1 : TEXT*10;
+      		attr2 : TEXT*10;
+			MANDATORY CONSTRAINT
+			attr1 == attr2;
+		END MandatoryConstraint;
+		
+		CLASS PlausibilityConstraint =
+			attr1 : 0..10;
+			attr2 : 0..10;
+			CONSTRAINT >= 90%
+			attr1 < attr2;
+		END PlausibilityConstraint;
+
+		CLASS Class1 =
+			attr1: (a, b, c);
+			SET CONSTRAINT WHERE attr1 == #a : INTERLIS.objectCount(ALL) == 2;
+		END Class1;
+		
+		CLASS UniqueConstraint =
+			attr1 : TEXT*10;
+			UNIQUE attr1;
+		END UniqueConstraint;
+
+	END TopicA;
+END Constraints.
+
+CONTRACTED MODEL AdditionalModelA AT "mailto:ceis@localhost" VERSION "2016-03-29" =
+	IMPORTS Constraints;
+	VIEW TOPIC AdditionalTopicA =
+		DEPENDS ON Constraints.TopicA;
+		VIEW AdditionalClassA
+			PROJECTION OF Constraints.TopicA.AdditionalConstraint;
+			WHERE AdditionalConstraint->attr1==5;
+			=
+			ALL OF AdditionalConstraint;
+			MANDATORY CONSTRAINT attr1 == attr2;
+		END AdditionalClassA;
+	END AdditionalTopicA;
+END AdditionalModelA.
