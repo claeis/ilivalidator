@@ -470,7 +470,6 @@ public class Validator {
 	 */
 	public static final String SETTING_DISABLE_AREA_VALIDATION = "org.interlis2.validator.disableareavalidation";
 	/** Disable constraint validation. Possible values "true", "false".
-	 *  To disable the additional constraint, you need to set a --config file.
 	 */
 	public static final String SETTING_DISABLE_CONSTRAINT_VALIDATION = "org.interlis2.validator.disableconstraintvalidation";
 	/** Disable AREA validation. Possible values "true", "false".

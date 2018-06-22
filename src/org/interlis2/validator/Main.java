@@ -104,7 +104,7 @@ public class Main {
 				    System.err.println("--config file         config file to control validation.");
 					System.err.println("--forceTypeValidation  restrict customization of validation related to \"multiplicity\".");
 					System.err.println("--disableAreaValidation  disable AREA validation.");
-					System.err.println("--disableConstraintValidation  disable constraint validation. To disable the additional constraint, you need to set a --config file.");
+					System.err.println("--disableConstraintValidation  disable constraint validation.");
 					System.err.println("--allObjectsAccessible  assume that all objects are known to the validator.");
 					System.err.println("--multiplicityOff     disable all multiplicity validation.");
 					System.err.println("--skipPolygonBuilding skip polygon building (only ITF).");
