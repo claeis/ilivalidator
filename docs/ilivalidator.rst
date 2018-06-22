@@ -204,8 +204,50 @@ TOML-Konfigurationsdatei
 
 .. _Beispiel1.toml: Beispiel1.toml
 
+TOML-Globale Konfigurationen
+~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
-TODO Doku aus Beispiel1.toml übernehmen
++---------------------------------+-------------------------------------------+-----------------------------------------------------------------------------------+
+| Konfiguration                   | Beispiel                                  | Beschreibung                                                                      |
++=================================+===========================================+===================================================================================+
+| additionalModels                | ["PARAMETER"]                             | "Model1" und "Modell2" sind die Namen der Modelle mit Definitionen von            |
+|                                 | additionalModels="Model1;Modell2"         | zusätzlichen Validierungen (in Form von Interlis Konsistenbedingungen).           |
+|                                 |                                           |                                                                                   |
+|                                 |                                           | Mehrere Zusatzmodelle werden mit einem Strichpunkt ";" getrennt.                  |
+|                                 |                                           |                                                                                   |
++---------------------------------+-------------------------------------------+-----------------------------------------------------------------------------------+
+| validation                      | ["PARAMETER"]                             | "off" schaltet generell alle Prüfungen aus.                                       |
+|                                 | validation="off"                          | Mögliche Einstellungen sind: "off", "on". DEFAULT="on".                           |
+|                                 |                                           |                                                                                   |
++---------------------------------+-------------------------------------------+-----------------------------------------------------------------------------------+
+| areaOverlapValidation           | ["PARAMETER"]                             | "off" schaltet die AREA-Topology Prüfung aus.                                     |
+|                                 | areaOverlapValidation="off"               | Mögliche Einstellungen sind: "off", "on". DEFAULT="on".                           |
+|                                 |                                           |                                                                                   |
++---------------------------------+-------------------------------------------+-----------------------------------------------------------------------------------+
+| constraintValidation            | ["PARAMETER"]                             | "off" schaltet alle Prüfungen von Konsistenzbedingungen aus.                      |
+|                                 | constraintValidation="off"                | Mögliche Einstellungen sind: "off", "on". DEFAULT="on".                           |
+|                                 |                                           |                                                                                   |
++---------------------------------+-------------------------------------------+-----------------------------------------------------------------------------------+
+| defaultGeometryTypeValidation   | ["PARAMETER"]                             | Der Default-Wert für die Datentypprüfung bei Geometrie-Attributen.                |
+|                                 | defaultGeometryTypeValidation="off"       | Mögliche Einstellungen sind: "warning", "off", "on". DEFAULT="on".                |
+|                                 |                                           |                                                                                   |
++---------------------------------+-------------------------------------------+-----------------------------------------------------------------------------------+
+| allowOnlyMultiplicityReduction  | ["PARAMETER"]                             | "true" ignoriert die Konfiguration der Typprüfungen aus der TOML-Datei,           |
+|                                 | allowOnlyMultiplicityReduction="true"     | d.h. es kann nur die Prüfung der Multiplizität konfiguriert werden.               |
+|                                 |                                           | Mögliche Einstellungen sind: "true", "false". DEFAULT="false".                    |
+|                                 |                                           |                                                                                   |
++---------------------------------+-------------------------------------------+-----------------------------------------------------------------------------------+
+| allObjectsAccessible            | ["PARAMETER"]                             | "true" definiert, dass die mitgegebenen Dateien alle                              |
+|                                 | allObjectsAccessible="true"               | Objekte enthalten, d.h. dass alle Referenzen (insb. mit EXTERNAL) auflösbar sind. |
+|                                 |                                           | Wenn allObjectsAccessible false ist, können bei Referenzen mit EXTERNAL           |
+|                                 |                                           | nicht alle Prüfungen durchgeführt werden.                                         |
+|                                 |                                           | Mögliche Einstellungen sind: "true", "false". DEFAULT="false".                    |
+|                                 |                                           |                                                                                   |
++---------------------------------+-------------------------------------------+-----------------------------------------------------------------------------------+
+| multiplicity                    | ["PARAMETER"]                             | "off" schaltet die Multiplizitätsprüfung für alle Attribute und Rollen aus.       |
+|                                 | multiplicity="off"                        | Mögliche Einstellungen sind: "on", "warning", "off". DEFAULT="on".                |
+|                                 |                                           |                                                                                   |
++---------------------------------+-------------------------------------------+-----------------------------------------------------------------------------------+
 
 
 INTERLIS-Metaattribute
