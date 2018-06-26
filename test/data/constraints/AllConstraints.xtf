@@ -1,0 +1,41 @@
+<?xml version="1.0" encoding="UTF-8"?><TRANSFER xmlns="http://www.interlis.ch/INTERLIS2.3">
+<HEADERSECTION SENDER="ili2c-4.5.22-20160520" VERSION="2.3"><MODELS><MODEL NAME="Constraints" VERSION="2011-12-22" URI="http://interlis.ch"></MODEL></MODELS></HEADERSECTION>
+<DATASECTION>
+<Constraints.TopicA BID="b1">
+	<Constraints.TopicA.AdditionalConstraint TID="o1">
+		<attr1>5</attr1>
+		<attr2>6</attr2>
+	</Constraints.TopicA.AdditionalConstraint>
+	<Constraints.TopicA.ConditionClass TID="o4">
+		<attr1>text1</attr1>
+	</Constraints.TopicA.ConditionClass>
+	<Constraints.TopicA.ExistenceConstraint TID="o5">
+		<attr1>text2</attr1>
+	</Constraints.TopicA.ExistenceConstraint>
+	<Constraints.TopicA.MandatoryConstraint TID="o6">
+		<attr1>text1</attr1>
+		<attr2>text2</attr2>
+	</Constraints.TopicA.MandatoryConstraint>
+	<Constraints.TopicA.PlausibilityConstraint TID="o7">
+		<attr1>6</attr1>
+		<attr2>5</attr2>
+	</Constraints.TopicA.PlausibilityConstraint>
+	<Constraints.TopicA.PlausibilityConstraint TID="o8">
+		<attr1>6</attr1>
+		<attr2>5</attr2>
+	</Constraints.TopicA.PlausibilityConstraint>
+	<Constraints.TopicA.Class1 TID="o9">
+		<attr1>a</attr1>
+	</Constraints.TopicA.Class1>
+	<Constraints.TopicA.Class1 TID="o10">
+		<attr1>b</attr1>
+	</Constraints.TopicA.Class1>
+	<Constraints.TopicA.UniqueConstraint TID="o12">
+		<attr1>text1</attr1>
+	</Constraints.TopicA.UniqueConstraint>
+	<Constraints.TopicA.UniqueConstraint TID="o13">
+		<attr1>text1</attr1>
+	</Constraints.TopicA.UniqueConstraint>
+</Constraints.TopicA>
+</DATASECTION>
+</TRANSFER>

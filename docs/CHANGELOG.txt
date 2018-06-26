@@ -1,6 +1,12 @@
 LATEST VERSION
 -----------------------------
 
+ilivalidator 1.9.0 (2018-06-26)
+-----------------------------
+- added: --disableConstraintValidation
+- iox-ili-1.20.5
+- ili2c-4.7.8
+
 ilivalidator 1.8.1 (2018-03-09)
 -----------------------------
 - improved performance

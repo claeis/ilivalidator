@@ -203,6 +203,10 @@ public class Validator {
 				if(disableAreaValidation!=null) {
 	                modelConfig.setConfigValue(ValidationConfig.PARAMETER, ValidationConfig.AREA_OVERLAP_VALIDATION, TRUE.equals(disableAreaValidation)?ValidationConfig.OFF:null);
 				}
+				String disableConstraintValidation = settings.getValue(SETTING_DISABLE_CONSTRAINT_VALIDATION);
+				if(disableConstraintValidation!=null) {
+	                modelConfig.setConfigValue(ValidationConfig.PARAMETER, ValidationConfig.CONSTRAINT_VALIDATION, TRUE.equals(disableConstraintValidation)?ValidationConfig.OFF:null);
+				}
 				modelConfig.setConfigValue(ValidationConfig.PARAMETER, ValidationConfig.ALL_OBJECTS_ACCESSIBLE, settings.getValue(SETTING_ALL_OBJECTS_ACCESSIBLE));
 				allowItfAreaHoles = TRUE.equals(settings.getValue(SETTING_ALLOW_ITF_AREA_HOLES));
 				String globalMultiplicity=settings.getValue(SETTING_MULTIPLICITY_VALIDATION);
@@ -465,6 +469,9 @@ public class Validator {
 	/** Disable AREA validation. Possible values "true", "false".
 	 */
 	public static final String SETTING_DISABLE_AREA_VALIDATION = "org.interlis2.validator.disableareavalidation";
+	/** Disable constraint validation. Possible values "true", "false".
+	 */
+	public static final String SETTING_DISABLE_CONSTRAINT_VALIDATION = "org.interlis2.validator.disableconstraintvalidation";
 	/** Disable AREA validation. Possible values "true", "false".
 	 */
 	public static final String SETTING_DISABLE_STD_LOGGER = "org.interlis2.validator.disablestdlogger";
