@@ -7,7 +7,7 @@ allprojects {
 	targetCompatibility = "1.6"
 }
 
-version '1.9.0'+System.getProperty('release','-SNAPSHOT')
+version '1.9.1'+System.getProperty('release','-SNAPSHOT')
 
 configurations {
     deployerJars
@@ -20,8 +20,8 @@ configurations {
 //}
 
 dependencies {
-    compile group: 'ch.interlis', name: 'iox-ili', version: 'latest.integration'
-    compile group: 'ch.interlis', name: 'ili2c-tool', version: "4.7.7"
+    compile group: 'ch.interlis', name: 'iox-ili', version: '1.20.6'
+    compile group: 'ch.interlis', name: 'ili2c-tool', version: "4.7.8"
     testCompile group: 'junit', name: 'junit', version: '4.12'
     deployerJars "org.apache.maven.wagon:wagon-ftp:3.0.0"
     testRuntime project('demoplugin')
