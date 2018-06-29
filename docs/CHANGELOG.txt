@@ -1,5 +1,6 @@
 LATEST VERSION
 -----------------------------
+- fixed: skip geometry errors in Itf2Reader if defaultGeometryTypeValidation="off"
 
 ilivalidator 1.9.0 (2018-06-26)
 -----------------------------

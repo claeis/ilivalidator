@@ -209,6 +209,7 @@ public class Validator {
 				}
 				modelConfig.setConfigValue(ValidationConfig.PARAMETER, ValidationConfig.ALL_OBJECTS_ACCESSIBLE, settings.getValue(SETTING_ALL_OBJECTS_ACCESSIBLE));
 				allowItfAreaHoles = TRUE.equals(settings.getValue(SETTING_ALLOW_ITF_AREA_HOLES));
+				skipGeometryErrors=ValidationConfig.OFF.equals(modelConfig.getConfigValue(ValidationConfig.PARAMETER, ValidationConfig.DEFAULT_GEOMETRY_TYPE_VALIDATION));
 				String globalMultiplicity=settings.getValue(SETTING_MULTIPLICITY_VALIDATION);
 				if(globalMultiplicity!=null){
 					modelConfig.setConfigValue(ValidationConfig.PARAMETER, ValidationConfig.MULTIPLICITY, globalMultiplicity);
@@ -299,7 +300,8 @@ public class Validator {
 			ioxReader=new ItfReader(new java.io.File(filename));
 		}
 		if(ioxReader instanceof ItfReader2){
-			((ItfReader2) ioxReader).setAllowItfAreaHoles(allowItfAreaHoles);
+			((ItfReader2) ioxReader).setAllowItfAreaHoles(skipGeometryErrors);
+            ((ItfReader2) ioxReader).setAllowItfAreaHoles(allowItfAreaHoles);
 		    ((ItfReader2) ioxReader).setIoxDataPool(pool);
 		}
 		if(ioxReader instanceof IoxIliReader){
@@ -501,5 +503,6 @@ public class Validator {
 	public static final String TRUE=ValidationConfig.TRUE;
 	public static final String FALSE=ValidationConfig.FALSE;
 	private boolean skipPolygonBuilding;
+    private boolean skipGeometryErrors=false;
 	private boolean allowItfAreaHoles;
 }
