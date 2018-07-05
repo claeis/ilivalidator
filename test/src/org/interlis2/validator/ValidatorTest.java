@@ -1,14 +1,13 @@
 package org.interlis2.validator;
 
 import static org.junit.Assert.*;
-
+import java.io.File;
 import org.junit.Test;
-
 import ch.ehi.basics.logging.EhiLogger;
 import ch.ehi.basics.settings.Settings;
 
-
 public class ValidatorTest {
+	private static final String PLUGINPATH_DEMOPLUGIN=new File("demoplugin/build/libs").getAbsolutePath();
 
 	@Test
 	public void itfOk() {
@@ -96,14 +95,14 @@ public class ValidatorTest {
 	@Test
 	public void xtfOkWithFunction() {
 		Settings settings=new Settings();
-		settings.setValue(Validator.SETTING_PLUGINFOLDER, new java.io.File("plugins").getAbsolutePath());
+		settings.setValue(Validator.SETTING_PLUGINFOLDER, PLUGINPATH_DEMOPLUGIN);
 		boolean ret=Validator.runValidation("test/data/Beispiel3ok.xtf", settings);
 		assertTrue(ret);
 	}
 	@Test
 	public void xtfFailWithFunction() {
 		Settings settings=new Settings();
-		settings.setValue(Validator.SETTING_PLUGINFOLDER, new java.io.File("plugins").getAbsolutePath());
+		settings.setValue(Validator.SETTING_PLUGINFOLDER, PLUGINPATH_DEMOPLUGIN);
 		boolean ret=Validator.runValidation("test/data/Beispiel3fail.xtf", settings);
 		assertFalse(ret);
 	}
