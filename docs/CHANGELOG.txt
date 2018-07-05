@@ -1,7 +1,7 @@
 LATEST VERSION
 -----------------------------
 
-ilivalidator 1.9.1 (2018-07-05)
+ilivalidator 1.9.2 (2018-07-05)
 -----------------------------
 - fixed: skip geometry errors in Itf2Reader if defaultGeometryTypeValidation="off"
 - iox-ili-1.20.7

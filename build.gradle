@@ -7,7 +7,7 @@ allprojects {
 	targetCompatibility = "1.6"
 }
 
-version '1.9.1'+System.getProperty('release','-SNAPSHOT')
+version '1.9.2'+System.getProperty('release','-SNAPSHOT')
 
 configurations {
     deployerJars
@@ -115,6 +115,11 @@ jar {
 }
 
 artifacts {
+	archives(bindist.archivePath) {
+        type 'zip'
+        classifier 'bindist'
+        builtBy bindist
+    }
     archives(jar.archivePath){
     	builtBy jar
     }
