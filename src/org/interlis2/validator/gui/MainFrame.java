@@ -26,6 +26,7 @@ import javax.swing.JMenuItem;
 import javax.swing.JOptionPane;
 import javax.swing.JTextField;
 import javax.swing.border.EtchedBorder;
+import javax.swing.filechooser.FileNameExtensionFilter;
 
 import org.interlis2.validator.Main;
 import org.interlis2.validator.Validator;
@@ -519,13 +520,15 @@ public class MainFrame extends JFrame {
 			doXtfFileSelBtn.setText("...");
 			doXtfFileSelBtn.addActionListener(new java.awt.event.ActionListener() { 
 				public void actionPerformed(java.awt.event.ActionEvent e) {    
-					FileChooser fileDialog =  new FileChooser();
-					fileDialog.setCurrentDirectory(new File(getWorkingDirectory()));
-					fileDialog.setDialogTitle(rsrc.getString("MainFrame.xtfFileChooserTitle"));
-					fileDialog.addChoosableFileFilter(new GenericFileFilter(rsrc.getString("MainFrame.xtfFileFilter"),"xtf"));
-					fileDialog.addChoosableFileFilter(new GenericFileFilter(rsrc.getString("MainFrame.itfFileFilter"),"itf"));
-					fileDialog.addChoosableFileFilter(GenericFileFilter.createXmlFilter());
-					fileDialog.setMultiSelectionEnabled(true);
+                    FileChooser fileDialog =  new FileChooser();
+                    fileDialog.setCurrentDirectory(new File(getWorkingDirectory()));
+                    fileDialog.setDialogTitle(rsrc.getString("MainFrame.xtfFileChooserTitle"));
+                    fileDialog.addChoosableFileFilter(new GenericFileFilter(rsrc.getString("MainFrame.itfFileFilter"),"itf"));
+                    fileDialog.addChoosableFileFilter(GenericFileFilter.createXmlFilter());
+                    FileNameExtensionFilter filter = new FileNameExtensionFilter(rsrc.getString("MainFrame.xtfFileFilter"), "xtf", "xml");
+                    fileDialog.setFileFilter(filter);
+                    
+                    fileDialog.setMultiSelectionEnabled(true);
 
 					if (fileDialog.showOpenDialog(MainFrame.this) == FileChooser.APPROVE_OPTION) {
 						setWorkingDirectory(fileDialog.getCurrentDirectory().getAbsolutePath());
