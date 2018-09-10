@@ -1,5 +1,19 @@
 LATEST VERSION
 -----------------------------
+- validate that a BID is different from TIDs
+
+ilivalidator 1.9.3 (2018-09-10)
+-----------------------------
+- validate BID/TID value syntax
+- fixed strange error message if surface line table without reference
+- validate URI datatype
+- fixed wrong line number of first object in a table 
+- support disableRounding
+- fixed validation of number of reference properties
+- fixed quoted parameter names in TOML file
+- add PipelinePool to Settings so that custom functions can use it
+- GUI: improve open fileselector(*.xtf and *.xml together)
+- iox-ili-1.20.9
 
 ilivalidator 1.9.2 (2018-07-05)
 -----------------------------
