@@ -248,6 +248,10 @@ TOML-Globale Konfigurationen
 |                                 | multiplicity="off"                        | Mögliche Einstellungen sind: "on", "warning", "off". DEFAULT="on".                |
 |                                 |                                           |                                                                                   |
 +---------------------------------+-------------------------------------------+-----------------------------------------------------------------------------------+
+| disableRounding                 | ["PARAMETER"]                             | "true" schaltet das Runden vor der Validierung von                                |
+|                                 | disableRounding="true"                    | numerischen Werten aus (inkl. Koordinaten).                                       |
+|                                 |                                           | Mögliche Einstellungen sind: "true", "false". DEFAULT="false".                    |
++---------------------------------+-------------------------------------------+-----------------------------------------------------------------------------------+
 
 
 INTERLIS-Metaattribute
