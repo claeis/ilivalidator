@@ -17,6 +17,7 @@ import ch.ehi.basics.settings.Settings;
 import ch.interlis.ili2c.Ili2c;
 import ch.interlis.ili2c.Ili2cException;
 import ch.interlis.ili2c.Ili2cFailure;
+import ch.interlis.ili2c.gui.UserSettings;
 import ch.interlis.ili2c.metamodel.Model;
 import ch.interlis.ili2c.metamodel.TransferDescription;
 import ch.interlis.iom_j.csv.CsvReader;
@@ -385,13 +386,19 @@ public class Validator {
 		if(ilifile!=null){
 			//ili2cConfig=new ch.interlis.ili2c.config.Configuration();
 			//ili2cConfig.addFileEntry(new ch.interlis.ili2c.config.FileEntry(ilifile.getPath(),ch.interlis.ili2c.config.FileEntryKind.ILIMODELFILE));				
+	        // get/create repository manager
+	        ch.interlis.ilirepository.IliManager repositoryManager = (ch.interlis.ilirepository.IliManager) settings
+	                .getTransientObject(UserSettings.CUSTOM_ILI_MANAGER);
+	        if(repositoryManager==null) {
+	            repositoryManager=new ch.interlis.ilirepository.IliManager();
+	            settings.setTransientObject(UserSettings.CUSTOM_ILI_MANAGER,repositoryManager);
+	        }
 			try {
 				//ili2cConfig=ch.interlis.ili2c.ModelScan.getConfig(modeldirv, modelv);
-				ch.interlis.ilirepository.IliManager modelManager=new ch.interlis.ilirepository.IliManager();
-				modelManager.setRepositories((String[])modeldirv.toArray(new String[]{}));
+				repositoryManager.setRepositories((String[])modeldirv.toArray(new String[]{}));
 				ArrayList<String> ilifiles=new ArrayList<String>();
 				ilifiles.add(ilifile.getPath());
-				ili2cConfig=modelManager.getConfigWithFiles(ilifiles);
+				ili2cConfig=repositoryManager.getConfigWithFiles(ilifiles);
 				ili2cConfig.setGenerateWarnings(false);
 			} catch (Ili2cException ex) {
 				EhiLogger.logError(ex);
