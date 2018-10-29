@@ -2,6 +2,7 @@ package org.interlis2.validator;
 
 import java.io.File;
 import java.io.FileNotFoundException;
+import java.io.IOException;
 import java.util.ArrayList;
 import java.util.HashSet;
 import java.util.List;
@@ -169,8 +170,8 @@ public class Validator {
 				try {
 					List<String> modelNamesFromConfig=getModelsFromConfigFile(configFilename);
 					modelnames.addAll(modelNamesFromConfig);
-				} catch (FileNotFoundException e) {
-					EhiLogger.logError("config file <"+configFilename+"> not found", e);
+				} catch (IOException e) {
+					EhiLogger.logError("failed to read config file <"+configFilename+">", e);
 					return false;
 				}
 			}
@@ -311,7 +312,7 @@ public class Validator {
 		return ioxReader;
 	}
 	
-	private static List<String> getModelsFromConfigFile(String configFilename) throws FileNotFoundException {
+	private static List<String> getModelsFromConfigFile(String configFilename) throws IOException {
 		List<String> ret=new ArrayList<String>();
 		if(configFilename!=null){
 			ValidationConfig modelConfig=new ValidationConfig();
