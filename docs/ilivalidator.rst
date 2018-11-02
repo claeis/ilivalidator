@@ -303,6 +303,18 @@ Metaattribute stehen unmittelbar vor dem Modellelement das sie betreffen und beg
 |                  |                          |                                                                                   |
 |                  |                          |                                                                                   |
 +------------------+--------------------------+-----------------------------------------------------------------------------------+
+| AttributeDef     | ::                       | Bei einem Referenz-Attribut oder Struktur-Attribut definieren, dass nur Objekte   |                    
+|                  |                          | referenziert werden dürfen, die im Behälter mit der                               |
+|                  |  ilivalid.requiredIn     | gegebenen BID vorkommen. Wenn das Metaattribut bei einem Struktur-Attribut        |
+|                  |                          | benutzt wird, muss die Struktur ein Referenzattribut enthalten,                   |
+|                  |                          | und die Restriktion betrifft dann die von diesem                                  |
+|                  |                          | Referenz-Attribut referenzierten Objekte.                                         |
+|                  |                          |                                                                                   |
+|                  |                          | ::                                                                                |
+|                  |                          |                                                                                   |
+|                  |                          |   !!@ ilivalid.requiredIn = bid1                                                  |
+|                  |                          |                                                                                   |
++------------------+--------------------------+-----------------------------------------------------------------------------------+
 | RoleDef          | ::                       | Zielobjekt-Pruefung ein/ausschalten bzw. nur als Hinweis.                         |
 |                  |                          | Prueft ob das referenzierte Objekt vorhanden ist und                              |
 |                  |  ilivalid.target         | ob es von der gewuenschten Klasse ist.                                            |
@@ -320,6 +332,15 @@ Metaattribute stehen unmittelbar vor dem Modellelement das sie betreffen und beg
 |                  |                          | ::                                                                                |
 |                  |                          |                                                                                   |
 |                  |                          |   !!@ ilivalid.multiplicity = off                                                 |
+|                  |                          |                                                                                   |
++------------------+--------------------------+-----------------------------------------------------------------------------------+
+| RoleDef          | ::                       | Bei einer Rolle definieren, dass nur Objekte                                      |                    
+|                  |                          | referenziert werden dürfen, die im Behälter mit der                               |
+|                  |  ilivalid.requiredIn     | gegebenen BID vorkommen.                                                          |
+|                  |                          |                                                                                   |
+|                  |                          | ::                                                                                |
+|                  |                          |                                                                                   |
+|                  |                          |   !!@ ilivalid.requiredIn = bid1                                                  |
 |                  |                          |                                                                                   |
 +------------------+--------------------------+-----------------------------------------------------------------------------------+
 | ConstraintDef    | ::                       | Constraint-Pruefung ein/ausschalten bzw. nur als Hinweis.                         |
