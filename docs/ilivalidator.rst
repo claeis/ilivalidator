@@ -394,39 +394,46 @@ Normalerweise ist ein Rollenname der Name des Referenzattributes und der andere 
 Und der Assoziationsname ist die Verkettung der beiden (falls dies nicht zu einem Namenskonflikt führt). Zum Beispiel folgendes 
 Interlis 1 Modell:
 
-|	MODEL M =
-|		TOPIC T =
-|		    TABLE A =
-|			    AttrA1: TEXT*20;
-|		    END A;
+.. code:: class
 
-|			TABLE B = 
-|				AttrB1: TEXT*10;
-|				AttrB2: -> A;
-|				AttrB3: -> A;
-|			END B;
-|		END T.
-|	END M.
+	MODEL M =
+		TOPIC T =
+		    TABLE A =
+			    AttrA1: TEXT*20;
+		    END A;
+			TABLE B = 
+				AttrB1: TEXT*10;
+				AttrB2: -> A;
+				AttrB3: -> A;
+			END B;
+		END T.
+	END M.
 
 ``AttrB2`` wird wie folgt übersetzt:
 
-|	ASSOCIATION BAttrB2 =
-|		B -- {0..*} B;
-|		AttrB2 -- {1} A;
-|	END BAttrB2;
+.. code:: class
+
+	ASSOCIATION BAttrB2 =
+		B -- {0..*} B;
+		AttrB2 -- {1} A;
+	END BAttrB2;
 
 Somit sind die qualifizierten Namen der Rollen (die sich aus dem Referenzattribut ergeben): ``M.T.BAttrB2.B`` und ``M.T.BAttrB2.AttrB2``.
 
 Wenn ein Namenskonflikt besteht (wie bei ``AttrB3`` im Beispiel), wird der Name um einen Index (beginnend bei 2 pro Tabelle) verlängert. ``AttrB3`` führt also zu:
 
-|   ASSOCIATION B2AttrB3 =
-|     B2 -- {0..*} B;
-|     AttrB3 -- {1} A;
-|   END B2AttrB3;
+.. code:: class
+
+   ASSOCIATION B2AttrB3 =
+     B2 -- {0..*} B;
+     AttrB3 -- {1} A;
+   END B2AttrB3;
 
 Somit sind die qualifizierten Namen: ``M.T.BAttrB2.B`` und ``M.T.BAttrB2.AttrB2``.
 
 Die qualifizierten Rollennamen werden auch im Log aufgeführt. z.B.
 
-| Info: validate target of role ``M.T.BAttrB2.B``...
-| Info: validate multiplicity of role ``M.T.BAttrB2.B``...
+.. code:: class
+
+ Info: validate target of role ``M.T.BAttrB2.B``...
+ Info: validate multiplicity of role ``M.T.BAttrB2.B``...
