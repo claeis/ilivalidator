@@ -91,7 +91,7 @@ Fall 6
 Es wird eine INTERLIS 2-Datei validiert/geprüft. Wobei spezifische Modelle gesetzt werden.
 Dazu wird der Pfad zu den spezifischen Modellen gesetzt.
 
-``java -jar ilivalidator.jar --models modelname1;modelname2 --modeldir path/to/data path/to/data.csv``
+``java -jar ilivalidator.jar --models modelname1;modelname2 --modeldir path/to/data path/to/data.xtf``
 
 
 Referenz
@@ -429,7 +429,7 @@ Wenn ein Namenskonflikt besteht (wie bei ``AttrB3`` im Beispiel), wird der Name 
      AttrB3 -- {1} A;
    END B2AttrB3;
 
-Somit sind die qualifizierten Namen: ``M.T.BAttrB2.B`` und ``M.T.BAttrB2.AttrB2``.
+Somit sind die qualifizierten Namen: ``M.T.B2AttrB3.B2`` und ``M.T.B2AttrB3.AttrB3``.
 
 Die qualifizierten Rollennamen werden auch im Log aufgeführt. z.B.
 
