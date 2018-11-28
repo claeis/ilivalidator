@@ -14,7 +14,6 @@ import java.io.FileWriter;
 import java.io.IOException;
 import java.io.OutputStreamWriter;
 import java.lang.reflect.Array;
-import java.nio.charset.StandardCharsets;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
@@ -618,7 +617,7 @@ public class MainFrame extends JFrame {
                     FileChooser fileDialog =  new FileChooser(file);
                     fileDialog.setCurrentDirectory(new File(getWorkingDirectory()));
                     fileDialog.setDialogTitle(rsrc.getString("MainFrame.xtflogFileChooserTitle"));
-                    fileDialog.addChoosableFileFilter(new GenericFileFilter(rsrc.getString("MainFrame.newConfigFileFilter"),"toml"));
+                    fileDialog.addChoosableFileFilter(new GenericFileFilter(rsrc.getString("MainFrame.configFileFilter"),"toml"));
 
                     if (fileDialog.showSaveDialog(MainFrame.this) == FileChooser.APPROVE_OPTION) {
                         setWorkingDirectory(fileDialog.getCurrentDirectory().getAbsolutePath());
@@ -686,8 +685,6 @@ public class MainFrame extends JFrame {
                             writer.write("# Mögliche Einstellungen sind: \"true\", \"false\". \n");
                             writer.write("# DEFAULT=\"false\".\n");
                             writer.write("# disableRounding=\"true\" \n");
-                        } catch (FileNotFoundException e) {
-                            EhiLogger.logError(e);
                         } catch (IOException e) {
                             EhiLogger.logError(e);
                         } finally {
