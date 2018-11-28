@@ -14,6 +14,7 @@ import java.io.FileWriter;
 import java.io.IOException;
 import java.io.OutputStreamWriter;
 import java.lang.reflect.Array;
+import java.nio.charset.StandardCharsets;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
@@ -150,11 +151,10 @@ public class MainFrame extends JFrame {
 			java.awt.GridBagConstraints xtfLogFileUiConstraints = new java.awt.GridBagConstraints();
 			java.awt.GridBagConstraints doXtfLogFileSelBtnConstraints = new java.awt.GridBagConstraints();
 			
-			java.awt.GridBagConstraints doNewConfigFileBtnConstraints = new java.awt.GridBagConstraints();
-			
 			java.awt.GridBagConstraints configFileLabelConstraints = new java.awt.GridBagConstraints();
 			java.awt.GridBagConstraints configFileUiConstraints = new java.awt.GridBagConstraints();
 			java.awt.GridBagConstraints doConfigFileSelBtnConstraints = new java.awt.GridBagConstraints();
+			java.awt.GridBagConstraints doNewConfigFileBtnConstraints = new java.awt.GridBagConstraints();
 			
 			java.awt.GridBagConstraints clearlogBtnConstraints = new java.awt.GridBagConstraints();
 			java.awt.GridBagConstraints logPaneConstraints = new java.awt.GridBagConstraints();
@@ -171,6 +171,7 @@ public class MainFrame extends JFrame {
 			xtfFileUiConstraints.anchor = java.awt.GridBagConstraints.NORTHWEST;
 			doXtfFileSelBtnConstraints.gridx = 2;
 			doXtfFileSelBtnConstraints.gridy = 0;
+			doXtfFileSelBtnConstraints.anchor = java.awt.GridBagConstraints.WEST;
 			
 			// row 1
 			allObjectsAccessibleConstraints.gridx = 1;
@@ -198,6 +199,7 @@ public class MainFrame extends JFrame {
 			logFileUiConstraints.anchor = java.awt.GridBagConstraints.NORTHWEST;
 			doLogFileSelBtnConstraints.gridx = 2;
 			doLogFileSelBtnConstraints.gridy = 3;
+			doLogFileSelBtnConstraints.anchor = java.awt.GridBagConstraints.WEST;
 			
 			// row 4
 			xtfLogFileLabelConstraints.gridx = 0;
@@ -210,10 +212,7 @@ public class MainFrame extends JFrame {
 			xtfLogFileUiConstraints.anchor = java.awt.GridBagConstraints.NORTHWEST;
 			doXtfLogFileSelBtnConstraints.gridx = 2;
 			doXtfLogFileSelBtnConstraints.gridy = 4;
-			
-			// new Button
-			doNewConfigFileBtnConstraints.gridx = 3;
-			doNewConfigFileBtnConstraints.gridy = 5;
+			doXtfLogFileSelBtnConstraints.anchor = java.awt.GridBagConstraints.WEST;
 			
 			// row 5
 			configFileLabelConstraints.gridx = 0;
@@ -226,6 +225,9 @@ public class MainFrame extends JFrame {
 			configFileUiConstraints.anchor = java.awt.GridBagConstraints.NORTHWEST;
 			doConfigFileSelBtnConstraints.gridx = 2;
 			doConfigFileSelBtnConstraints.gridy = 5;
+			doConfigFileSelBtnConstraints.anchor = java.awt.GridBagConstraints.WEST;
+            doNewConfigFileBtnConstraints.gridx = 3;
+            doNewConfigFileBtnConstraints.gridy = 5;
 			
 			// row 6
 			logPaneConstraints.fill = java.awt.GridBagConstraints.BOTH;
@@ -237,11 +239,14 @@ public class MainFrame extends JFrame {
 			logPaneConstraints.gridwidth = 2;
 			doValidateConstraints.gridy = 6;
 			doValidateConstraints.gridx = 2;
+			doValidateConstraints.gridwidth = 2;
+			doValidateConstraints.anchor = java.awt.GridBagConstraints.WEST;
 			
 			// row 7
-			clearlogBtnConstraints.gridx = 2;
+			clearlogBtnConstraints.gridx = 2;//2
 			clearlogBtnConstraints.gridy = 7;
-			clearlogBtnConstraints.anchor = java.awt.GridBagConstraints.NORTH;
+			clearlogBtnConstraints.gridwidth = 2;
+			clearlogBtnConstraints.anchor = java.awt.GridBagConstraints.NORTHWEST;
 			
 			jContentPane.setLayout(new java.awt.GridBagLayout());
 			jContentPane.add(getXtfFileLabel(), xtfFileLabelConstraints);
@@ -259,11 +264,10 @@ public class MainFrame extends JFrame {
 			jContentPane.add(getXtfLogFileUi(), xtfLogFileUiConstraints);
 			jContentPane.add(getDoXtfLogFileSelBtn(), doXtfLogFileSelBtnConstraints);
 			
-			jContentPane.add(getNewConfigFileBtn(), doNewConfigFileBtnConstraints);
-			
 			jContentPane.add(getConfigFileLabel(), configFileLabelConstraints);
 			jContentPane.add(getConfigFileUi(), configFileUiConstraints);
 			jContentPane.add(getDoConfigFileSelBtn(), doConfigFileSelBtnConstraints);
+			jContentPane.add(getNewConfigFileBtn(), doNewConfigFileBtnConstraints);
 			
 			jContentPane.add(getJScrollPane(), logPaneConstraints);
 			jContentPane.add(getClearlogBtn(), clearlogBtnConstraints);
@@ -607,7 +611,7 @@ public class MainFrame extends JFrame {
     private javax.swing.JButton getNewConfigFileBtn() {
         if(doNewConfigFileBtn == null) {
             doNewConfigFileBtn = new javax.swing.JButton();
-            doNewConfigFileBtn.setText("new...");
+            doNewConfigFileBtn.setText("new..");
             doNewConfigFileBtn.addActionListener(new java.awt.event.ActionListener() { 
                 public void actionPerformed(java.awt.event.ActionEvent e) {    
                     String file=getLogFile();
@@ -627,20 +631,20 @@ public class MainFrame extends JFrame {
                     BufferedWriter writer = null;
                     if (file != null) {
                         try {
-                            writer = new BufferedWriter(new FileWriter(new File(file), false));
+                            writer = new BufferedWriter(new OutputStreamWriter(new FileOutputStream(file), "UTF-8"));
                             // 1. Configuration
                             writer.write("# [PARAMETER]\n");
                             
+                            writer.write("# \"off\" schaltet generell alle Prüfungen aus.\n");
+                            writer.write("# Mögliche Einstellungen sind: \"off\", \"on\". \n");
+                            writer.write("# DEFAULT=\"on\".\n");
+                            writer.write("# validation=\"off\" \n\n");
+                            
+                            // 2. Configuration
                             writer.write("# \"Model1\" und \"Modell2\" sind die Namen der Modelle mit Definitionen von \n");
                             writer.write("# zusätzlichen Validierungen (in Form von Interlis Konsistenbedingungen). \n");
                             writer.write("# Mehrere Zusatzmodelle werden mit einem Strichpunkt \";\" getrennt.\n");
                             writer.write("# additionalModels=\"Model1;Modell2\"\n\n");
-                            
-                            // 2. Configuration
-                            writer.write("# \"off\" schaltet generell alle Prüfungen aus.\n");
-                            writer.write("# Mögliche Einstellungen sind: \\\"off\\\", \\\"on\\\". \n");
-                            writer.write("# DEFAULT=\"on\".\n");
-                            writer.write("# validation=\"off\" \n\n");
                             
                             // 3. Configuration
                             writer.write("# \"off\" schaltet die AREA-Topology Prüfung aus. \n");
@@ -650,13 +654,13 @@ public class MainFrame extends JFrame {
                             
                             // 4. Configuration
                             writer.write("# \"off\" schaltet alle Prüfungen von Konsistenzbedingungen aus.\n");
-                            writer.write("# Mögliche Einstellungen sind: \"off\", \"on\". ");
+                            writer.write("# Mögliche Einstellungen sind: \"off\", \"on\".\n");
                             writer.write("# DEFAULT=\"on\".\n");
                             writer.write("# constraintValidation=\"off\" \n\n");
                             
                             // 5. Configuration
-                            writer.write("# true\" ignoriert die Konfiguration der Typprüfungen aus der TOML-Datei, \n");
-                            writer.write("# d.h. es kann nur die Prüfung der Multiplizität konfiguriert werden. \n ");
+                            writer.write("# \"true\" ignoriert die Konfiguration der Typprüfungen aus der TOML-Datei, \n");
+                            writer.write("# d.h. es kann nur die Prüfung der Multiplizität konfiguriert werden. \n");
                             writer.write("# Mögliche Einstellungen sind: \"true\", \"false\". \n");
                             writer.write("# DEFAULT=\"false\".\n");
                             writer.write("# allowOnlyMultiplicityReduction=\"true\" \n\n");
