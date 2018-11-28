@@ -6,7 +6,13 @@ import java.awt.event.ItemEvent;
 import java.awt.event.KeyEvent;
 import java.awt.event.WindowAdapter;
 import java.awt.event.WindowEvent;
+import java.io.BufferedWriter;
 import java.io.File;
+import java.io.FileNotFoundException;
+import java.io.FileOutputStream;
+import java.io.FileWriter;
+import java.io.IOException;
+import java.io.OutputStreamWriter;
 import java.lang.reflect.Array;
 import java.util.ArrayList;
 import java.util.Collections;
@@ -58,6 +64,7 @@ public class MainFrame extends JFrame {
 	private javax.swing.JLabel xtfLogFileLabel = null;
 	private javax.swing.JTextField xtfLogFileUi = null;
 	private javax.swing.JButton doXtfLogFileSelBtn = null;
+	private javax.swing.JButton doNewConfigFileBtn = null;
 	
 	private javax.swing.JTextArea logUi = null;
 	private javax.swing.JButton clearlogBtn = null;
@@ -143,6 +150,8 @@ public class MainFrame extends JFrame {
 			java.awt.GridBagConstraints xtfLogFileUiConstraints = new java.awt.GridBagConstraints();
 			java.awt.GridBagConstraints doXtfLogFileSelBtnConstraints = new java.awt.GridBagConstraints();
 			
+			java.awt.GridBagConstraints doNewConfigFileBtnConstraints = new java.awt.GridBagConstraints();
+			
 			java.awt.GridBagConstraints configFileLabelConstraints = new java.awt.GridBagConstraints();
 			java.awt.GridBagConstraints configFileUiConstraints = new java.awt.GridBagConstraints();
 			java.awt.GridBagConstraints doConfigFileSelBtnConstraints = new java.awt.GridBagConstraints();
@@ -202,6 +211,10 @@ public class MainFrame extends JFrame {
 			doXtfLogFileSelBtnConstraints.gridx = 2;
 			doXtfLogFileSelBtnConstraints.gridy = 4;
 			
+			// new Button
+			doNewConfigFileBtnConstraints.gridx = 3;
+			doNewConfigFileBtnConstraints.gridy = 5;
+			
 			// row 5
 			configFileLabelConstraints.gridx = 0;
 			configFileLabelConstraints.gridy = 5;
@@ -245,6 +258,8 @@ public class MainFrame extends JFrame {
 			jContentPane.add(getXtfLogFileLabel(), xtfLogFileLabelConstraints);
 			jContentPane.add(getXtfLogFileUi(), xtfLogFileUiConstraints);
 			jContentPane.add(getDoXtfLogFileSelBtn(), doXtfLogFileSelBtnConstraints);
+			
+			jContentPane.add(getNewConfigFileBtn(), doNewConfigFileBtnConstraints);
 			
 			jContentPane.add(getConfigFileLabel(), configFileLabelConstraints);
 			jContentPane.add(getConfigFileUi(), configFileUiConstraints);
@@ -589,7 +604,106 @@ public class MainFrame extends JFrame {
 		}
 		return doXtfLogFileSelBtn;
 	}
-	private javax.swing.JButton getDoConfigFileSelBtn() {
+    private javax.swing.JButton getNewConfigFileBtn() {
+        if(doNewConfigFileBtn == null) {
+            doNewConfigFileBtn = new javax.swing.JButton();
+            doNewConfigFileBtn.setText("new...");
+            doNewConfigFileBtn.addActionListener(new java.awt.event.ActionListener() { 
+                public void actionPerformed(java.awt.event.ActionEvent e) {    
+                    String file=getLogFile();
+                    FileChooser fileDialog =  new FileChooser(file);
+                    fileDialog.setCurrentDirectory(new File(getWorkingDirectory()));
+                    fileDialog.setDialogTitle(rsrc.getString("MainFrame.xtflogFileChooserTitle"));
+                    fileDialog.addChoosableFileFilter(new GenericFileFilter(rsrc.getString("MainFrame.newConfigFileFilter"),"toml"));
+
+                    if (fileDialog.showSaveDialog(MainFrame.this) == FileChooser.APPROVE_OPTION) {
+                        setWorkingDirectory(fileDialog.getCurrentDirectory().getAbsolutePath());
+                        file=fileDialog.getSelectedFile().getAbsolutePath();
+                        setConfigFile(file);
+                        writeNewConfigFile(file);
+                    }                   
+                }
+                private void writeNewConfigFile(String file) {
+                    BufferedWriter writer = null;
+                    if (file != null) {
+                        try {
+                            writer = new BufferedWriter(new FileWriter(new File(file), false));
+                            // 1. Configuration
+                            writer.write("# Globale Validator Einstellungen\n\n");
+                            
+                            writer.write("# \"Model1\" und \"Modell2\" sind die Namen der Modelle mit Definitionen von zusätzlichen Validierungen (in Form von Interlis Konsistenbedingungen).\n");
+                            writer.write("# Mehrere Zusatzmodelle werden mit einem Strichpunkt \";\" getrennt.\n");
+                            writer.write("# additionalModels=\"Model1;Modell2\"\n\n");
+                            
+                            // 2. Configuration
+                            writer.write("# Validierung generell ausschalten off\n\n");
+                            
+                            writer.write("# \"off\" schaltet generell alle Prüfungen aus. Mögliche Einstellungen sind: \"off\", \"on\". \n");
+                            writer.write("# DEFAULT=\"on\".\n");
+                            writer.write("# validation=\"off\" \n\n");
+                            
+                            // 3. Configuration
+                            writer.write("# areaOverlapValidierung generell ausschalten off\n\n");
+                            
+                            writer.write("# \"off\" schaltet die AREA-Topology Prüfung aus. Mögliche Einstellungen sind: \"off\", \"on\".\n");
+                            writer.write("# DEFAULT=\"on\".\n");
+                            writer.write("# areaOverlapValidation=\"off\" \n\n");
+                            
+                            // 4. Configuration
+                            writer.write("# ConstraintValidierung generell ausschalten off\n\n");
+                            
+                            writer.write("# \"off\" schaltet alle Prüfungen von Konsistenzbedingungen aus. Mögliche Einstellungen sind: \"off\", \"on\". \n");
+                            writer.write("# DEFAULT=\"on\".\n");
+                            writer.write("# constraintValidation=\"off\" \n\n");
+                            
+                            // 5. Configuration
+                            writer.write("# allowOnlyMultiplicityReduction\n\n");
+                            
+                            writer.write("# true\" ignoriert die Konfiguration der Typprüfungen aus der TOML-Datei, d.h. es kann nur die Prüfung der Multiplizität konfiguriert werden. Mögliche Einstellungen sind: \"true\", \"false\". \n");
+                            writer.write("# DEFAULT=\"false\".\n");
+                            writer.write("# allowOnlyMultiplicityReduction=\"true\" \n\n");
+                            
+                            // 6. Configuration
+                            writer.write("# allObjectsAccessible=\"true\"\n\n");
+                            
+                            writer.write("# \"true\" definiert, dass die mitgegebenen Dateien alle Objekte enthalten, d.h. dass alle Referenzen (insb. mit EXTERNAL) auflösbar sind. Wenn allObjectsAccessible false ist, können bei Referenzen mit EXTERNAL nicht alle Prüfungen durchgeführt werden. Mögliche Einstellungen sind: \"true\", \"false\". \n");
+                            writer.write("# DEFAULT=\"false\".\n");
+                            writer.write("# allObjectsAccessible=\"true\"\n\n");
+                            
+                            // 7. Configuration
+                            writer.write("# validation=\"on\"\n\n");
+                            
+                            writer.write("# \"off\" schaltet die Multiplizitätsprüfung für alle Attribute und Rollen aus. Mögliche Einstellungen sind: \"on\", \"warning\", \"off\". \n");
+                            writer.write("# DEFAULT=\"on\".\n");
+                            writer.write("# multiplicity=\"off\"\n\n");
+                            
+                            // 8. Configuration
+                            writer.write("# validation=\"on\"\n\n");
+                            
+                            writer.write("# \"true\" schaltet das Runden vor der Validierung von numerischen Werten aus (inkl. Koordinaten). Mögliche Einstellungen sind: \"true\", \"false\".\n");
+                            writer.write("# DEFAULT=\"false\".\n");
+                            writer.write("# disableRounding=\"true\" \n");
+                        } catch (FileNotFoundException e) {
+                            EhiLogger.logError(e);
+                        } catch (IOException e) {
+                            EhiLogger.logError(e);
+                        } finally {
+                            if (writer != null) {
+                                try {
+                                    writer.close();
+                                } catch (IOException e) {
+                                    EhiLogger.logError(e);
+                                }
+                            }
+                        }
+                    }
+                }
+            });
+        }
+        return doNewConfigFileBtn;
+    }
+    
+    private javax.swing.JButton getDoConfigFileSelBtn() {
 		if(doConfigFileSelBtn == null) {
 			doConfigFileSelBtn = new javax.swing.JButton();
 			doConfigFileSelBtn.setText("...");
