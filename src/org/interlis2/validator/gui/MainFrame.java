@@ -629,58 +629,57 @@ public class MainFrame extends JFrame {
                         try {
                             writer = new BufferedWriter(new FileWriter(new File(file), false));
                             // 1. Configuration
-                            writer.write("# Globale Validator Einstellungen\n\n");
+                            writer.write("# [PARAMETER]\n");
                             
-                            writer.write("# \"Model1\" und \"Modell2\" sind die Namen der Modelle mit Definitionen von zusätzlichen Validierungen (in Form von Interlis Konsistenbedingungen).\n");
+                            writer.write("# \"Model1\" und \"Modell2\" sind die Namen der Modelle mit Definitionen von \n");
+                            writer.write("# zusätzlichen Validierungen (in Form von Interlis Konsistenbedingungen). \n");
                             writer.write("# Mehrere Zusatzmodelle werden mit einem Strichpunkt \";\" getrennt.\n");
                             writer.write("# additionalModels=\"Model1;Modell2\"\n\n");
                             
                             // 2. Configuration
-                            writer.write("# Validierung generell ausschalten off\n\n");
-                            
-                            writer.write("# \"off\" schaltet generell alle Prüfungen aus. Mögliche Einstellungen sind: \"off\", \"on\". \n");
+                            writer.write("# \"off\" schaltet generell alle Prüfungen aus.\n");
+                            writer.write("# Mögliche Einstellungen sind: \\\"off\\\", \\\"on\\\". \n");
                             writer.write("# DEFAULT=\"on\".\n");
                             writer.write("# validation=\"off\" \n\n");
                             
                             // 3. Configuration
-                            writer.write("# areaOverlapValidierung generell ausschalten off\n\n");
-                            
-                            writer.write("# \"off\" schaltet die AREA-Topology Prüfung aus. Mögliche Einstellungen sind: \"off\", \"on\".\n");
+                            writer.write("# \"off\" schaltet die AREA-Topology Prüfung aus. \n");
+                            writer.write("# Mögliche Einstellungen sind: \"off\", \"on\". \n");
                             writer.write("# DEFAULT=\"on\".\n");
                             writer.write("# areaOverlapValidation=\"off\" \n\n");
                             
                             // 4. Configuration
-                            writer.write("# ConstraintValidierung generell ausschalten off\n\n");
-                            
-                            writer.write("# \"off\" schaltet alle Prüfungen von Konsistenzbedingungen aus. Mögliche Einstellungen sind: \"off\", \"on\". \n");
+                            writer.write("# \"off\" schaltet alle Prüfungen von Konsistenzbedingungen aus.\n");
+                            writer.write("# Mögliche Einstellungen sind: \"off\", \"on\". ");
                             writer.write("# DEFAULT=\"on\".\n");
                             writer.write("# constraintValidation=\"off\" \n\n");
                             
                             // 5. Configuration
-                            writer.write("# allowOnlyMultiplicityReduction\n\n");
-                            
-                            writer.write("# true\" ignoriert die Konfiguration der Typprüfungen aus der TOML-Datei, d.h. es kann nur die Prüfung der Multiplizität konfiguriert werden. Mögliche Einstellungen sind: \"true\", \"false\". \n");
+                            writer.write("# true\" ignoriert die Konfiguration der Typprüfungen aus der TOML-Datei, \n");
+                            writer.write("# d.h. es kann nur die Prüfung der Multiplizität konfiguriert werden. \n ");
+                            writer.write("# Mögliche Einstellungen sind: \"true\", \"false\". \n");
                             writer.write("# DEFAULT=\"false\".\n");
                             writer.write("# allowOnlyMultiplicityReduction=\"true\" \n\n");
                             
                             // 6. Configuration
-                            writer.write("# allObjectsAccessible=\"true\"\n\n");
-                            
-                            writer.write("# \"true\" definiert, dass die mitgegebenen Dateien alle Objekte enthalten, d.h. dass alle Referenzen (insb. mit EXTERNAL) auflösbar sind. Wenn allObjectsAccessible false ist, können bei Referenzen mit EXTERNAL nicht alle Prüfungen durchgeführt werden. Mögliche Einstellungen sind: \"true\", \"false\". \n");
+                            writer.write("# \"true\" definiert, dass die mitgegebenen Dateien alle Objekte enthalten, \n");
+                            writer.write("# d.h. dass alle Referenzen (insb. mit EXTERNAL) auflösbar sind. \n");
+                            writer.write("# Wenn allObjectsAccessible false ist, \n");
+                            writer.write("# können bei Referenzen mit EXTERNAL nicht alle Prüfungen durchgeführt werden.\n");
+                            writer.write("# Mögliche Einstellungen sind: \"true\", \"false\". \n");
                             writer.write("# DEFAULT=\"false\".\n");
                             writer.write("# allObjectsAccessible=\"true\"\n\n");
                             
                             // 7. Configuration
-                            writer.write("# validation=\"on\"\n\n");
-                            
-                            writer.write("# \"off\" schaltet die Multiplizitätsprüfung für alle Attribute und Rollen aus. Mögliche Einstellungen sind: \"on\", \"warning\", \"off\". \n");
+                            writer.write("# \"off\" schaltet die Multiplizitätsprüfung für alle Attribute und Rollen aus. \n");
+                            writer.write("# Mögliche Einstellungen sind: \"on\", \"warning\", \"off\". \n");
                             writer.write("# DEFAULT=\"on\".\n");
                             writer.write("# multiplicity=\"off\"\n\n");
                             
                             // 8. Configuration
-                            writer.write("# validation=\"on\"\n\n");
-                            
-                            writer.write("# \"true\" schaltet das Runden vor der Validierung von numerischen Werten aus (inkl. Koordinaten). Mögliche Einstellungen sind: \"true\", \"false\".\n");
+                            writer.write("# \"true\" schaltet das Runden vor der Validierung von \n");
+                            writer.write("# numerischen Werten aus (inkl. Koordinaten). \n");
+                            writer.write("# Mögliche Einstellungen sind: \"true\", \"false\". \n");
                             writer.write("# DEFAULT=\"false\".\n");
                             writer.write("# disableRounding=\"true\" \n");
                         } catch (FileNotFoundException e) {
