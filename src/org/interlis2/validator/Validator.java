@@ -147,8 +147,9 @@ public class Validator {
 			
 			// specified model names
 			List<String> modelnames=new ArrayList<String>();
+			String specifiedModelNames=null;
 			if(settings.getValue(Validator.SETTING_MODELNAMES)!=null) {
-				String specifiedModelNames=settings.getValue(Validator.SETTING_MODELNAMES);
+				specifiedModelNames=settings.getValue(Validator.SETTING_MODELNAMES);
 				List<String> modelNameList=getSpecifiedModelNames(specifiedModelNames);
 				modelnames.addAll(modelNameList);
 			}else {
@@ -166,9 +167,10 @@ public class Validator {
 					settings.setValue(ch.interlis.iox_j.validator.Validator.CONFIG_DO_ITF_OIDPERTABLE, ch.interlis.iox_j.validator.Validator.CONFIG_DO_ITF_OIDPERTABLE_DO);
 				}
 			}
+			List<String> modelNamesFromConfig = null;
 			if(configFilename!=null){
 				try {
-					List<String> modelNamesFromConfig=getModelsFromConfigFile(configFilename);
+					modelNamesFromConfig=getModelsFromConfigFile(configFilename);
 					modelnames.addAll(modelNamesFromConfig);
 				} catch (IOException e) {
 					EhiLogger.logError("failed to read config file <"+configFilename+">", e);
@@ -215,6 +217,11 @@ public class Validator {
 				String globalMultiplicity=settings.getValue(SETTING_MULTIPLICITY_VALIDATION);
 				if(globalMultiplicity!=null){
 					modelConfig.setConfigValue(ValidationConfig.PARAMETER, ValidationConfig.MULTIPLICITY, globalMultiplicity);
+				}
+				if (modelNamesFromConfig == null || modelNamesFromConfig.size() == 0) {
+				    if (specifiedModelNames != null) {
+				        modelConfig.setConfigValue(ValidationConfig.PARAMETER, ValidationConfig.ADDITIONAL_MODELS, specifiedModelNames);
+				    }
 				}
 				
 				IoxLogging errHandler=new ch.interlis.iox_j.logging.Log2EhiLogger();
