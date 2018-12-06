@@ -632,59 +632,59 @@ public class MainFrame extends JFrame {
                         try {
                             writer = new BufferedWriter(new OutputStreamWriter(new FileOutputStream(file), "UTF-8"));
                             // 1. Configuration
-                            writer.write("# [PARAMETER]\n");
+                            writer.write(rsrc.getString("MainFrame.ConfigFileLine1"));
                             
-                            writer.write("# \"off\" schaltet generell alle Prüfungen aus.\n");
-                            writer.write("# Mögliche Einstellungen sind: \"off\", \"on\". \n");
-                            writer.write("# DEFAULT=\"on\".\n");
-                            writer.write("# validation=\"off\" \n\n");
+                            writer.write(rsrc.getString("MainFrame.ConfigFileLine2"));
+                            writer.write(rsrc.getString("MainFrame.ConfigFileLine3"));
+                            writer.write(rsrc.getString("MainFrame.ConfigFileLine4"));
+                            writer.write(rsrc.getString("MainFrame.ConfigFileLine5"));
                             
                             // 2. Configuration
-                            writer.write("# \"Model1\" und \"Modell2\" sind die Namen der Modelle mit Definitionen von \n");
-                            writer.write("# zusätzlichen Validierungen (in Form von Interlis Konsistenbedingungen). \n");
-                            writer.write("# Mehrere Zusatzmodelle werden mit einem Strichpunkt \";\" getrennt.\n");
-                            writer.write("# additionalModels=\"Model1;Modell2\"\n\n");
+                            writer.write(rsrc.getString("MainFrame.ConfigFileLine6"));
+                            writer.write(rsrc.getString("MainFrame.ConfigFileLine7"));
+                            writer.write(rsrc.getString("MainFrame.ConfigFileLine8"));
+                            writer.write(rsrc.getString("MainFrame.ConfigFileLine9"));
                             
                             // 3. Configuration
-                            writer.write("# \"off\" schaltet die AREA-Topology Prüfung aus. \n");
-                            writer.write("# Mögliche Einstellungen sind: \"off\", \"on\". \n");
-                            writer.write("# DEFAULT=\"on\".\n");
-                            writer.write("# areaOverlapValidation=\"off\" \n\n");
+                            writer.write(rsrc.getString("MainFrame.ConfigFileLine10"));
+                            writer.write(rsrc.getString("MainFrame.ConfigFileLine11"));
+                            writer.write(rsrc.getString("MainFrame.ConfigFileLine12"));
+                            writer.write(rsrc.getString("MainFrame.ConfigFileLine13"));
                             
                             // 4. Configuration
-                            writer.write("# \"off\" schaltet alle Prüfungen von Konsistenzbedingungen aus.\n");
-                            writer.write("# Mögliche Einstellungen sind: \"off\", \"on\".\n");
-                            writer.write("# DEFAULT=\"on\".\n");
-                            writer.write("# constraintValidation=\"off\" \n\n");
+                            writer.write(rsrc.getString("MainFrame.ConfigFileLine14"));
+                            writer.write(rsrc.getString("MainFrame.ConfigFileLine15"));
+                            writer.write(rsrc.getString("MainFrame.ConfigFileLine16"));
+                            writer.write(rsrc.getString("MainFrame.ConfigFileLine17"));
                             
                             // 5. Configuration
-                            writer.write("# \"true\" ignoriert die Konfiguration der Typprüfungen aus der TOML-Datei, \n");
-                            writer.write("# d.h. es kann nur die Prüfung der Multiplizität konfiguriert werden. \n");
-                            writer.write("# Mögliche Einstellungen sind: \"true\", \"false\". \n");
-                            writer.write("# DEFAULT=\"false\".\n");
-                            writer.write("# allowOnlyMultiplicityReduction=\"true\" \n\n");
+                            writer.write(rsrc.getString("MainFrame.ConfigFileLine18"));
+                            writer.write(rsrc.getString("MainFrame.ConfigFileLine19"));
+                            writer.write(rsrc.getString("MainFrame.ConfigFileLine20"));
+                            writer.write(rsrc.getString("MainFrame.ConfigFileLine21"));
+                            writer.write(rsrc.getString("MainFrame.ConfigFileLine22"));
                             
                             // 6. Configuration
-                            writer.write("# \"true\" definiert, dass die mitgegebenen Dateien alle Objekte enthalten, \n");
-                            writer.write("# d.h. dass alle Referenzen (insb. mit EXTERNAL) auflösbar sind. \n");
-                            writer.write("# Wenn allObjectsAccessible false ist, \n");
-                            writer.write("# können bei Referenzen mit EXTERNAL nicht alle Prüfungen durchgeführt werden.\n");
-                            writer.write("# Mögliche Einstellungen sind: \"true\", \"false\". \n");
-                            writer.write("# DEFAULT=\"false\".\n");
-                            writer.write("# allObjectsAccessible=\"true\"\n\n");
+                            writer.write(rsrc.getString("MainFrame.ConfigFileLine23"));
+                            writer.write(rsrc.getString("MainFrame.ConfigFileLine24"));
+                            writer.write(rsrc.getString("MainFrame.ConfigFileLine25"));
+                            writer.write(rsrc.getString("MainFrame.ConfigFileLine26"));
+                            writer.write(rsrc.getString("MainFrame.ConfigFileLine27"));
+                            writer.write(rsrc.getString("MainFrame.ConfigFileLine28"));
+                            writer.write(rsrc.getString("MainFrame.ConfigFileLine29"));
                             
                             // 7. Configuration
-                            writer.write("# \"off\" schaltet die Multiplizitätsprüfung für alle Attribute und Rollen aus. \n");
-                            writer.write("# Mögliche Einstellungen sind: \"on\", \"warning\", \"off\". \n");
-                            writer.write("# DEFAULT=\"on\".\n");
-                            writer.write("# multiplicity=\"off\"\n\n");
+                            writer.write(rsrc.getString("MainFrame.ConfigFileLine30"));
+                            writer.write(rsrc.getString("MainFrame.ConfigFileLine31"));
+                            writer.write(rsrc.getString("MainFrame.ConfigFileLine32"));
+                            writer.write(rsrc.getString("MainFrame.ConfigFileLine33"));
                             
                             // 8. Configuration
-                            writer.write("# \"true\" schaltet das Runden vor der Validierung von \n");
-                            writer.write("# numerischen Werten aus (inkl. Koordinaten). \n");
-                            writer.write("# Mögliche Einstellungen sind: \"true\", \"false\". \n");
-                            writer.write("# DEFAULT=\"false\".\n");
-                            writer.write("# disableRounding=\"true\" \n");
+                            writer.write(rsrc.getString("MainFrame.ConfigFileLine34"));
+                            writer.write(rsrc.getString("MainFrame.ConfigFileLine35"));
+                            writer.write(rsrc.getString("MainFrame.ConfigFileLine36"));
+                            writer.write(rsrc.getString("MainFrame.ConfigFileLine37"));
+                            writer.write(rsrc.getString("MainFrame.ConfigFileLine38"));
                         } catch (IOException e) {
                             EhiLogger.logError(e);
                         } finally {
