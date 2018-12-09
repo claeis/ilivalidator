@@ -7,7 +7,7 @@ allprojects {
 	targetCompatibility = "1.6"
 }
 
-version '1.10.0'+System.getProperty('release','-SNAPSHOT')
+version '1.10.1'+System.getProperty('release','-SNAPSHOT')
 
 configurations {
     deployerJars
