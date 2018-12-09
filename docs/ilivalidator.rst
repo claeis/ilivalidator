@@ -6,7 +6,7 @@ ilivalidator-Anleitung
 =========
 
 Ilivalidator ist ein in Java erstelltes Programm, das eine
-Interlis-Transferdatei (itf oder xtf) gemäss einem Interlis-Modell entsprechend
+Interlis-Transferdatei (itf oder xtf) gemäss einem Interlis-Modell 
 (ili) überprüft.
 
 Es bestehen u.a. folgende Konfigurationsmöglichkeiten:
@@ -14,7 +14,7 @@ Es bestehen u.a. folgende Konfigurationsmöglichkeiten:
 - eigene Fehlermeldungen inkl. Attributwerte zu definieren
 - zusätzliche Bedingung zu definieren
 - zusätzliche INTERLIS-Funktionen zu implementieren
-- modellnamen zu setzen
+- Modellnamen zu setzen
 
 Laufzeitanforderungen
 ---------------------
@@ -32,6 +32,9 @@ Funktionsweise
 In den folgenden Abschnitten wird die Funktionsweise anhand einzelner
 Anwendungsfälle beispielhaft beschrieben. Die detaillierte Beschreibung
 einzelner Funktionen ist im Kapitel „Referenz“ zu finden.
+
+Je nach Betriebssystem kann das Programm auch einfach durch Doppelklick mit linker Maustaste 
+auf  ```ilivalidator.jar``` gestartet werden.
 
 Beispiele
 ---------
@@ -91,7 +94,7 @@ Fall 6
 Es wird eine INTERLIS 2-Datei validiert/geprüft. Wobei spezifische Modelle gesetzt werden.
 Dazu wird der Pfad zu den spezifischen Modellen gesetzt.
 
-``java -jar ilivalidator.jar --models modelname1;modelname2 --modeldir path/to/data path/to/data.csv``
+``java -jar ilivalidator.jar --models modelname1;modelname2 --modeldir path/to/data path/to/data.xtf``
 
 
 Referenz
@@ -121,10 +124,10 @@ Optionen:
 | ``--forceTypeValidation``         | Ignoriert die Konfiguration der Typprüfung aus der TOML-Datei, d.h. es kann nur die Multiplizität aufgeweicht werden.                                                                                                                                                                                                                                                                                                                                                                                                                  |
 |                                   |                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                        |
 +-----------------------------------+----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------+
-| ``--disableAreaValidation``       | Schaltet die AREA Topologieprüfung aus.                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                |
+| ``--disableAreaValidation``       | Schaltet die AREA Topologieprüfung aus (XTF).                                                                                                                                                                                                                                                                                                                                                                                                                                                                                          |
 |                                   |                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                        |
 +-----------------------------------+----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------+
-| ``--disableConstraintValidation`` | Schaltet die constraint prüfung aus.                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                   |
+| ``--disableConstraintValidation`` | Schaltet die Constraint prüfung aus.                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                   |
 |                                   |                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                        |
 +-----------------------------------+----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------+
 | ``--allObjectsAccessible``        | Mit der Option nimmt der Validator an, dass er Zugriff auf alle Objekte hat. D.h. es wird z.B. auch die Multiplizität von Beziehungen auf externe Objekte geprüft.                                                                                                                                                                                                                                                                                                                                                                     |
@@ -136,7 +139,7 @@ Optionen:
 | ``--skipPolygonBuilding``         | Schaltet die Bildung der Polygone aus (nur ITF).                                                                                                                                                                                                                                                                                                                                                                                                                                                                                       |
 |                                   |                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                        |
 +-----------------------------------+----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------+
-| ``--allowItfAreaHoles``           | Lässt bei ITF AREA Attributen innere Ränder, die keinem Objekt zugeordnet sind, zu.                                                                                                                                                                                                                                                                                                                                                                                                                                                    |
+| ``--allowItfAreaHoles``           | Lässt bei ITF AREA Attributen innere Ränder zu, die keinem Objekt zugeordnet sind.                                                                                                                                                                                                                                                                                                                                                                                                                                                     |
 |                                   |                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                        |
 +-----------------------------------+----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------+
 | ``--models modelnames``           | Setzt spezifische Modellnamen, welche sich innerhalb von ili-Dateien befinden. Mehrere Modellnamen können durch Semikolon ‚;‘ getrennt werden. Das Setzen des Pfades, der zu den Modellen führt, muss mittels '--modeldir path' angegeben werden.                                                                                                                                                                                                                                                                                      |
@@ -177,8 +180,8 @@ Optionen:
 
 Konfiguration
 -------------
-Die Konfiguration der einzelnen Prüfungen kann direkt im Modell über Metaaatribute konfiguriert werden oder 
-in einer getrennten TOML Datei, so dass keine Änderung der ili-Datei notwendig ist.
+Die einzelnen Prüfungen können direkt im Modell über Metaaatribute konfiguriert werden oder 
+in einer getrennten Konfigurations-Datei, so dass keine Änderung der ili-Datei notwendig ist.
 
 Um z.B. bei einem Attribut den Mandatory Check ganz auszuschalten, schreibt man in der ili-Datei:
 
@@ -217,47 +220,48 @@ TOML-Globale Konfigurationen
 |                                 |                                           |                                                                                   |
 +---------------------------------+-------------------------------------------+-----------------------------------------------------------------------------------+
 | validation                      | ["PARAMETER"]                             | "off" schaltet generell alle Prüfungen aus.                                       |
-|                                 | validation="off"                          | Mögliche Einstellungen sind: "off", "on". DEFAULT="on".                           |
+|                                 | validation="off"                          | Mögliche Einstellungen sind: "off", "on". DEFAULT ist "on".                       |
 |                                 |                                           |                                                                                   |
 +---------------------------------+-------------------------------------------+-----------------------------------------------------------------------------------+
 | areaOverlapValidation           | ["PARAMETER"]                             | "off" schaltet die AREA-Topology Prüfung aus.                                     |
-|                                 | areaOverlapValidation="off"               | Mögliche Einstellungen sind: "off", "on". DEFAULT="on".                           |
+|                                 | areaOverlapValidation="off"               | Mögliche Einstellungen sind: "off", "on". DEFAULT ist "on".                       |
 |                                 |                                           |                                                                                   |
 +---------------------------------+-------------------------------------------+-----------------------------------------------------------------------------------+
 | constraintValidation            | ["PARAMETER"]                             | "off" schaltet alle Prüfungen von Konsistenzbedingungen aus.                      |
-|                                 | constraintValidation="off"                | Mögliche Einstellungen sind: "off", "on". DEFAULT="on".                           |
+|                                 | constraintValidation="off"                | Mögliche Einstellungen sind: "off", "on". DEFAULT ist "on".                       |
 |                                 |                                           |                                                                                   |
 +---------------------------------+-------------------------------------------+-----------------------------------------------------------------------------------+
 | defaultGeometryTypeValidation   | ["PARAMETER"]                             | Der Default-Wert für die Datentypprüfung bei Geometrie-Attributen.                |
-|                                 | defaultGeometryTypeValidation="off"       | Mögliche Einstellungen sind: "warning", "off", "on". DEFAULT="on".                |
+|                                 | defaultGeometryTypeValidation="off"       | Mögliche Einstellungen sind: "warning", "off", "on". DEFAULT ist "on".            |
 |                                 |                                           |                                                                                   |
 +---------------------------------+-------------------------------------------+-----------------------------------------------------------------------------------+
 | allowOnlyMultiplicityReduction  | ["PARAMETER"]                             | "true" ignoriert die Konfiguration der Typprüfungen aus der TOML-Datei,           |
 |                                 | allowOnlyMultiplicityReduction="true"     | d.h. es kann nur die Prüfung der Multiplizität konfiguriert werden.               |
-|                                 |                                           | Mögliche Einstellungen sind: "true", "false". DEFAULT="false".                    |
+|                                 |                                           | Mögliche Einstellungen sind: "true", "false". DEFAULT ist "false".                |
 |                                 |                                           |                                                                                   |
 +---------------------------------+-------------------------------------------+-----------------------------------------------------------------------------------+
 | allObjectsAccessible            | ["PARAMETER"]                             | "true" definiert, dass die mitgegebenen Dateien alle                              |
 |                                 | allObjectsAccessible="true"               | Objekte enthalten, d.h. dass alle Referenzen (insb. mit EXTERNAL) auflösbar sind. |
-|                                 |                                           | Wenn allObjectsAccessible false ist, können bei Referenzen mit EXTERNAL           |
+|                                 |                                           | Mit false können bei Referenzen mit EXTERNAL                                      |
 |                                 |                                           | nicht alle Prüfungen durchgeführt werden.                                         |
-|                                 |                                           | Mögliche Einstellungen sind: "true", "false". DEFAULT="false".                    |
+|                                 |                                           | Mögliche Einstellungen sind: "true", "false". DEFAULT ist "false".                |
 |                                 |                                           |                                                                                   |
 +---------------------------------+-------------------------------------------+-----------------------------------------------------------------------------------+
 | multiplicity                    | ["PARAMETER"]                             | "off" schaltet die Multiplizitätsprüfung für alle Attribute und Rollen aus.       |
-|                                 | multiplicity="off"                        | Mögliche Einstellungen sind: "on", "warning", "off". DEFAULT="on".                |
+|                                 | multiplicity="off"                        | Mögliche Einstellungen sind: "on", "warning", "off". DEFAULT ist "on".            |
 |                                 |                                           |                                                                                   |
 +---------------------------------+-------------------------------------------+-----------------------------------------------------------------------------------+
 | disableRounding                 | ["PARAMETER"]                             | "true" schaltet das Runden vor der Validierung von                                |
 |                                 | disableRounding="true"                    | numerischen Werten aus (inkl. Koordinaten).                                       |
-|                                 |                                           | Mögliche Einstellungen sind: "true", "false". DEFAULT="false".                    |
+|                                 |                                           | Mögliche Einstellungen sind: "true", "false". DEFAULT ist "false".                |
 +---------------------------------+-------------------------------------------+-----------------------------------------------------------------------------------+
 
 
 INTERLIS-Metaattribute
 ~~~~~~~~~~~~~~~~~~~~~~
-Die Konfiguration der einzelnen Prüfungen kann direkt im Modell über Metaaatribute konfiguriert werden. 
+Die einzelnen Prüfungen können direkt im Modell über Metaaatribute konfiguriert werden. 
 Metaattribute stehen unmittelbar vor dem Modellelement das sie betreffen und beginnen mit ``!!@``.
+Falls der Wert (rechts von ```=```) aus mehreren durch Leerstellen getrennten Wörtern besteht, muss er mit Gänsefüsschen eingerahmt werden (```"..."```).
 
 `Beispiel1.ili`_
 
@@ -266,14 +270,14 @@ Metaattribute stehen unmittelbar vor dem Modellelement das sie betreffen und beg
 +------------------+--------------------------+-----------------------------------------------------------------------------------+
 | Modelelement     | Metaattribut             | Beschreibung                                                                      |
 +==================+==========================+===================================================================================+
-| ClassDef         | ::                       | Zusaetzlicher Text fuer die Objektidentifikation fuer alle Fehlermeldung          |
+| ClassDef         | ::                       | Zusätzlicher Text für die Objektidentifikation für alle Fehlermeldung             |
 |                  |                          | die sich auf ein Objekt der diesem Metaattribut folgenden Klasse beziehen.        |
 |                  |  ilivalid.keymsg         | Die TID und Zeilennummer erscheint immer, falls vorhanden. keymsg ist             |
-|                  |  ilivalid.keymsg_de      | zusaetzlich (eine Benutzerdefinierte/verständliche Identifikation).               |
+|                  |  ilivalid.keymsg_de      | zusätzlich (eine Benutzerdefinierte/verständliche Identifikation).                |
 |                  |                          | Bei Export aus/Check auf DB ist TID evtl. nicht vorhanden. Bei XML                |
-|                  |                          | ist Zeilennummer in der Regel nicht hilfreich.                                    |
+|                  |                          | ist die Zeilennummer in der Regel nicht hilfreich.                                |
 |                  |                          | Inkl. Attributwerte in {}.                                                        |
-|                  |                          | Fuer irgendeine Sprache bzw. fuer DE.                                             |
+|                  |                          | Für irgendeine Sprache bzw. fuer DE.                                              |
 |                  |                          |                                                                                   |
 |                  |                          | ::                                                                                |
 |                  |                          |                                                                                   |
@@ -283,19 +287,19 @@ Metaattribute stehen unmittelbar vor dem Modellelement das sie betreffen und beg
 +------------------+--------------------------+-----------------------------------------------------------------------------------+
 | AttributeDef     | ::                       | Datentyppruefung ein/ausschalten bzw. nur als Hinweis.                            |                    
 |                  |                          | z.B. ob eine Zahlenwert innerhalb des Bereichs ist, oder ein                      |
-|                  |  ilivalid.type           | Aufzaehlwert dem Modell entspricht oder die Flaechen eine                         |
+|                  |  ilivalid.type           | Aufzählwert dem Modell entspricht oder die Flächen eine                           |
 |                  |                          | Gebietseinteilung sind usw.                                                       |
-|                  |                          | on/warning/off                                                                    |
+|                  |                          | Werte sind on/warning/off                                                         |
 |                  |                          |                                                                                   |
 |                  |                          | ::                                                                                |
 |                  |                          |                                                                                   |
 |                  |                          |   !!@ ilivalid.type = off                                                         |
 |                  |                          |                                                                                   |
 +------------------+--------------------------+-----------------------------------------------------------------------------------+
-| AttributeDef     | ::                       | Multiplizitaetpruefung ein/ausschalten bzw. nur als Hinweis.                      |                    
+| AttributeDef     | ::                       | Multiplizitätprüfung ein/ausschalten bzw. nur als Hinweis.                        |                    
 |                  |                          | z.B. ob bei MANDATORY ein Wert vorhanden ist, oder nicht bzw.                     |
 |                  |  ilivalid.multiplicity   | bei BAG/LIST ob die entsprechende Anzahl Strukturelemente vorhanden ist           |
-|                  |                          | on/warning/off                                                                    |
+|                  |                          | Werte sind on/warning/off                                                         |
 |                  |                          |                                                                                   |
 |                  |                          | ::                                                                                |
 |                  |                          |                                                                                   |
@@ -303,28 +307,49 @@ Metaattribute stehen unmittelbar vor dem Modellelement das sie betreffen und beg
 |                  |                          |                                                                                   |
 |                  |                          |                                                                                   |
 +------------------+--------------------------+-----------------------------------------------------------------------------------+
-| RoleDef          | ::                       | Zielobjekt-Pruefung ein/ausschalten bzw. nur als Hinweis.                         |
-|                  |                          | Prueft ob das referenzierte Objekt vorhanden ist und                              |
-|                  |  ilivalid.target         | ob es von der gewuenschten Klasse ist.                                            |
-|                  |                          | on/warning/off                                                                    |
+| AttributeDef     | ::                       | Bei einem Referenz-Attribut oder Struktur-Attribut definieren, dass nur Objekte   |                    
+|                  |                          | referenziert werden dürfen, die im Behälter mit der                               |
+|                  |  ilivalid.requiredIn     | gegebenen BID vorkommen. Wenn das Metaattribut bei einem Struktur-Attribut        |
+|                  |                          | benutzt wird, muss die Struktur ein Referenzattribut enthalten,                   |
+|                  |                          | und die Restriktion betrifft dann die von diesem                                  |
+|                  |                          | Referenz-Attribut referenzierten Objekte.                                         |
+|                  |                          |                                                                                   |
+|                  |                          | ::                                                                                |
+|                  |                          |                                                                                   |
+|                  |                          |   !!@ ilivalid.requiredIn = bid1                                                  |
+|                  |                          |                                                                                   |
++------------------+--------------------------+-----------------------------------------------------------------------------------+
+| RoleDef          | ::                       | Zielobjekt-Prüfung ein/ausschalten bzw. nur als Hinweis.                          |
+|                  |                          | Prüft ob das referenzierte Objekt vorhanden ist und                               |
+|                  |  ilivalid.target         | ob es von der gewünschten Klasse ist.                                             |
+|                  |                          | Werte sind on/warning/off                                                         |
 |                  |                          |                                                                                   |
 |                  |                          | ::                                                                                |
 |                  |                          |                                                                                   |
 |                  |                          |   !!@ ilivalid.target = warning                                                   |
 |                  |                          |                                                                                   |
 +------------------+--------------------------+-----------------------------------------------------------------------------------+
-| RoleDef          | ::                       | Multiplizitaetpruefung ein/ausschalten bzw. nur als Hinweis.                      |
-|                  |                          | Pruefen ob die vom Modell geforderte Anzahl Objekte referenziert wird             |
-|                  |   ilivalid.multiplicity  | on/warning/off                                                                    |
+| RoleDef          | ::                       | Multiplizitätprüfung ein/ausschalten bzw. nur als Hinweis.                        |
+|                  |                          | Prüfen ob die vom Modell geforderte Anzahl Objekte referenziert wird.             |
+|                  |   ilivalid.multiplicity  | Werte sind on/warning/off                                                         |
 |                  |                          |                                                                                   |
 |                  |                          | ::                                                                                |
 |                  |                          |                                                                                   |
 |                  |                          |   !!@ ilivalid.multiplicity = off                                                 |
 |                  |                          |                                                                                   |
 +------------------+--------------------------+-----------------------------------------------------------------------------------+
-| ConstraintDef    | ::                       | Constraint-Pruefung ein/ausschalten bzw. nur als Hinweis.                         |
-|                  |                          | Pruefen ob die Konsistenzbedingung erfuellt ist oder nicht.                       |
-|                  |  ilivalid.check          | on/warning/off                                                                    |
+| RoleDef          | ::                       | Bei einer Rolle definieren, dass nur Objekte                                      |                    
+|                  |                          | referenziert werden dürfen, die im Behälter mit der                               |
+|                  |  ilivalid.requiredIn     | gegebenen BID vorkommen.                                                          |
+|                  |                          |                                                                                   |
+|                  |                          | ::                                                                                |
+|                  |                          |                                                                                   |
+|                  |                          |   !!@ ilivalid.requiredIn = bid1                                                  |
+|                  |                          |                                                                                   |
++------------------+--------------------------+-----------------------------------------------------------------------------------+
+| ConstraintDef    | ::                       | Constraint-Prüfung ein/ausschalten bzw. nur als Hinweis.                          |
+|                  |                          | Prüfen ob die Konsistenzbedingung erfüllt ist oder nicht.                         |
+|                  |  ilivalid.check          | Werte sind on/warning/off                                                         |
 |                  |                          |                                                                                   |
 |                  |                          | ::                                                                                |
 |                  |                          |                                                                                   |
@@ -332,8 +357,8 @@ Metaattribute stehen unmittelbar vor dem Modellelement das sie betreffen und beg
 |                  |                          |                                                                                   |
 |                  |                          |                                                                                   |
 +------------------+--------------------------+-----------------------------------------------------------------------------------+
-| ConstraintDef    | ::                       | Meldungstext, falls dieses Constraint nicht erfuellt ist.                         |
-|                  |                          | Wird ergaenzt um Objektidentifikation und Name des Constraints.                   |
+| ConstraintDef    | ::                       | Meldungstext, falls dieses Constraint nicht erfüllt ist.                          |
+|                  |                          | Wird ergänzt um Objektidentifikation und Name des Constraints.                    |
 |                  |  ilivalid.msg            | inkl. Attributwerte in {}                                                         |
 |                  |  ilivalid.msg_de         |                                                                                   |
 |                  |                          | ::                                                                                |
@@ -345,7 +370,7 @@ Metaattribute stehen unmittelbar vor dem Modellelement das sie betreffen und beg
 |                  |                          |                                                                                   |
 +------------------+--------------------------+-----------------------------------------------------------------------------------+
 | ConstraintDef    | ::                       | Name des Constraints (ili2.3 oder bei ili2.4 falls constraint kein name hat)      |
-|                  |                          | Ergaenzt Fehlermeldung (ohne Name wird interne Id des Constraints verwendet)      |
+|                  |                          | Ergänzt die Fehlermeldung (ohne Name wird interne Id des Constraints verwendet)   |
 |                  |  name                    |                                                                                   |
 |                  |                          | ::                                                                                |
 |                  |                          |                                                                                   |
@@ -362,3 +387,57 @@ Modell IliVErrors
 
 .. _IliVErrors.ili: IliVErrors.ili
 
+
+INTERLIS 1
+~~~~~~~~~~
+
+Das Interlis 1 Modell wird intern in ein Interlis 2 Modell übersetzt. Tabellen werden zu Klassen, Attribute bleiben Attribute. 
+Referenzattribute werden zu Assoziationen. Für die Namen der Assoziation und Rollen gelten folgende Regeln.
+
+Normalerweise ist ein Rollenname der Name des Referenzattributes und der andere ist der Tabellenname, der das Referenzattribut enthält.
+Und der Assoziationsname ist die Verkettung der beiden (falls dies nicht zu einem Namenskonflikt führt). Zum Beispiel folgendes 
+Interlis 1 Modell:
+
+.. code:: class
+
+	MODEL M =
+		TOPIC T =
+		    TABLE A =
+			    AttrA1: TEXT*20;
+		    END A;
+			TABLE B = 
+				AttrB1: TEXT*10;
+				AttrB2: -> A;
+				AttrB3: -> A;
+			END B;
+		END T.
+	END M.
+
+``AttrB2`` wird wie folgt übersetzt:
+
+.. code:: class
+
+	ASSOCIATION BAttrB2 =
+		B -- {0..*} B;
+		AttrB2 -- {1} A;
+	END BAttrB2;
+
+Somit sind die qualifizierten Namen der Rollen (die sich aus dem Referenzattribut ergeben): ``M.T.BAttrB2.B`` und ``M.T.BAttrB2.AttrB2``.
+
+Wenn ein Namenskonflikt besteht (wie bei ``AttrB3`` im Beispiel), wird der Name um einen Index (beginnend bei 2 pro Tabelle) verlängert. ``AttrB3`` führt also zu:
+
+.. code:: class
+
+   ASSOCIATION B2AttrB3 =
+     B2 -- {0..*} B;
+     AttrB3 -- {1} A;
+   END B2AttrB3;
+
+Somit sind die qualifizierten Namen: ``M.T.B2AttrB3.B2`` und ``M.T.B2AttrB3.AttrB3``.
+
+Die qualifizierten Rollennamen werden auch im Log aufgeführt. z.B.
+
+.. code:: class
+
+ Info: validate target of role ``M.T.BAttrB2.B``...
+ Info: validate multiplicity of role ``M.T.BAttrB2.B``...

@@ -6,7 +6,13 @@ import java.awt.event.ItemEvent;
 import java.awt.event.KeyEvent;
 import java.awt.event.WindowAdapter;
 import java.awt.event.WindowEvent;
+import java.io.BufferedWriter;
 import java.io.File;
+import java.io.FileNotFoundException;
+import java.io.FileOutputStream;
+import java.io.FileWriter;
+import java.io.IOException;
+import java.io.OutputStreamWriter;
 import java.lang.reflect.Array;
 import java.util.ArrayList;
 import java.util.Collections;
@@ -58,6 +64,7 @@ public class MainFrame extends JFrame {
 	private javax.swing.JLabel xtfLogFileLabel = null;
 	private javax.swing.JTextField xtfLogFileUi = null;
 	private javax.swing.JButton doXtfLogFileSelBtn = null;
+	private javax.swing.JButton doNewConfigFileBtn = null;
 	
 	private javax.swing.JTextArea logUi = null;
 	private javax.swing.JButton clearlogBtn = null;
@@ -146,6 +153,7 @@ public class MainFrame extends JFrame {
 			java.awt.GridBagConstraints configFileLabelConstraints = new java.awt.GridBagConstraints();
 			java.awt.GridBagConstraints configFileUiConstraints = new java.awt.GridBagConstraints();
 			java.awt.GridBagConstraints doConfigFileSelBtnConstraints = new java.awt.GridBagConstraints();
+			java.awt.GridBagConstraints doNewConfigFileBtnConstraints = new java.awt.GridBagConstraints();
 			
 			java.awt.GridBagConstraints clearlogBtnConstraints = new java.awt.GridBagConstraints();
 			java.awt.GridBagConstraints logPaneConstraints = new java.awt.GridBagConstraints();
@@ -162,6 +170,7 @@ public class MainFrame extends JFrame {
 			xtfFileUiConstraints.anchor = java.awt.GridBagConstraints.NORTHWEST;
 			doXtfFileSelBtnConstraints.gridx = 2;
 			doXtfFileSelBtnConstraints.gridy = 0;
+			doXtfFileSelBtnConstraints.anchor = java.awt.GridBagConstraints.WEST;
 			
 			// row 1
 			allObjectsAccessibleConstraints.gridx = 1;
@@ -189,6 +198,7 @@ public class MainFrame extends JFrame {
 			logFileUiConstraints.anchor = java.awt.GridBagConstraints.NORTHWEST;
 			doLogFileSelBtnConstraints.gridx = 2;
 			doLogFileSelBtnConstraints.gridy = 3;
+			doLogFileSelBtnConstraints.anchor = java.awt.GridBagConstraints.WEST;
 			
 			// row 4
 			xtfLogFileLabelConstraints.gridx = 0;
@@ -201,6 +211,7 @@ public class MainFrame extends JFrame {
 			xtfLogFileUiConstraints.anchor = java.awt.GridBagConstraints.NORTHWEST;
 			doXtfLogFileSelBtnConstraints.gridx = 2;
 			doXtfLogFileSelBtnConstraints.gridy = 4;
+			doXtfLogFileSelBtnConstraints.anchor = java.awt.GridBagConstraints.WEST;
 			
 			// row 5
 			configFileLabelConstraints.gridx = 0;
@@ -213,6 +224,9 @@ public class MainFrame extends JFrame {
 			configFileUiConstraints.anchor = java.awt.GridBagConstraints.NORTHWEST;
 			doConfigFileSelBtnConstraints.gridx = 2;
 			doConfigFileSelBtnConstraints.gridy = 5;
+			doConfigFileSelBtnConstraints.anchor = java.awt.GridBagConstraints.WEST;
+            doNewConfigFileBtnConstraints.gridx = 3;
+            doNewConfigFileBtnConstraints.gridy = 5;
 			
 			// row 6
 			logPaneConstraints.fill = java.awt.GridBagConstraints.BOTH;
@@ -224,11 +238,14 @@ public class MainFrame extends JFrame {
 			logPaneConstraints.gridwidth = 2;
 			doValidateConstraints.gridy = 6;
 			doValidateConstraints.gridx = 2;
+			doValidateConstraints.gridwidth = 2;
+			doValidateConstraints.anchor = java.awt.GridBagConstraints.WEST;
 			
 			// row 7
-			clearlogBtnConstraints.gridx = 2;
+			clearlogBtnConstraints.gridx = 2;//2
 			clearlogBtnConstraints.gridy = 7;
-			clearlogBtnConstraints.anchor = java.awt.GridBagConstraints.NORTH;
+			clearlogBtnConstraints.gridwidth = 2;
+			clearlogBtnConstraints.anchor = java.awt.GridBagConstraints.NORTHWEST;
 			
 			jContentPane.setLayout(new java.awt.GridBagLayout());
 			jContentPane.add(getXtfFileLabel(), xtfFileLabelConstraints);
@@ -249,6 +266,7 @@ public class MainFrame extends JFrame {
 			jContentPane.add(getConfigFileLabel(), configFileLabelConstraints);
 			jContentPane.add(getConfigFileUi(), configFileUiConstraints);
 			jContentPane.add(getDoConfigFileSelBtn(), doConfigFileSelBtnConstraints);
+			jContentPane.add(getNewConfigFileBtn(), doNewConfigFileBtnConstraints);
 			
 			jContentPane.add(getJScrollPane(), logPaneConstraints);
 			jContentPane.add(getClearlogBtn(), clearlogBtnConstraints);
@@ -589,7 +607,103 @@ public class MainFrame extends JFrame {
 		}
 		return doXtfLogFileSelBtn;
 	}
-	private javax.swing.JButton getDoConfigFileSelBtn() {
+    private javax.swing.JButton getNewConfigFileBtn() {
+        if(doNewConfigFileBtn == null) {
+            doNewConfigFileBtn = new javax.swing.JButton();
+            doNewConfigFileBtn.setText("new..");
+            doNewConfigFileBtn.addActionListener(new java.awt.event.ActionListener() { 
+                public void actionPerformed(java.awt.event.ActionEvent e) {    
+                    String file=getLogFile();
+                    FileChooser fileDialog =  new FileChooser(file);
+                    fileDialog.setCurrentDirectory(new File(getWorkingDirectory()));
+                    fileDialog.setDialogTitle(rsrc.getString("MainFrame.xtflogFileChooserTitle"));
+                    fileDialog.addChoosableFileFilter(new GenericFileFilter(rsrc.getString("MainFrame.configFileFilter"),"toml"));
+
+                    if (fileDialog.showSaveDialog(MainFrame.this) == FileChooser.APPROVE_OPTION) {
+                        setWorkingDirectory(fileDialog.getCurrentDirectory().getAbsolutePath());
+                        file=fileDialog.getSelectedFile().getAbsolutePath();
+                        setConfigFile(file);
+                        writeNewConfigFile(file);
+                    }                   
+                }
+                private void writeNewConfigFile(String file) {
+                    BufferedWriter writer = null;
+                    if (file != null) {
+                        try {
+                            writer = new BufferedWriter(new OutputStreamWriter(new FileOutputStream(file), "UTF-8"));
+                            // 1. Configuration
+                            writer.write(rsrc.getString("MainFrame.ConfigFileLine1"));
+                            
+                            writer.write(rsrc.getString("MainFrame.ConfigFileLine2"));
+                            writer.write(rsrc.getString("MainFrame.ConfigFileLine3"));
+                            writer.write(rsrc.getString("MainFrame.ConfigFileLine4"));
+                            writer.write(rsrc.getString("MainFrame.ConfigFileLine5"));
+                            
+                            // 2. Configuration
+                            writer.write(rsrc.getString("MainFrame.ConfigFileLine6"));
+                            writer.write(rsrc.getString("MainFrame.ConfigFileLine7"));
+                            writer.write(rsrc.getString("MainFrame.ConfigFileLine8"));
+                            writer.write(rsrc.getString("MainFrame.ConfigFileLine9"));
+                            
+                            // 3. Configuration
+                            writer.write(rsrc.getString("MainFrame.ConfigFileLine10"));
+                            writer.write(rsrc.getString("MainFrame.ConfigFileLine11"));
+                            writer.write(rsrc.getString("MainFrame.ConfigFileLine12"));
+                            writer.write(rsrc.getString("MainFrame.ConfigFileLine13"));
+                            
+                            // 4. Configuration
+                            writer.write(rsrc.getString("MainFrame.ConfigFileLine14"));
+                            writer.write(rsrc.getString("MainFrame.ConfigFileLine15"));
+                            writer.write(rsrc.getString("MainFrame.ConfigFileLine16"));
+                            writer.write(rsrc.getString("MainFrame.ConfigFileLine17"));
+                            
+                            // 5. Configuration
+                            writer.write(rsrc.getString("MainFrame.ConfigFileLine18"));
+                            writer.write(rsrc.getString("MainFrame.ConfigFileLine19"));
+                            writer.write(rsrc.getString("MainFrame.ConfigFileLine20"));
+                            writer.write(rsrc.getString("MainFrame.ConfigFileLine21"));
+                            writer.write(rsrc.getString("MainFrame.ConfigFileLine22"));
+                            
+                            // 6. Configuration
+                            writer.write(rsrc.getString("MainFrame.ConfigFileLine23"));
+                            writer.write(rsrc.getString("MainFrame.ConfigFileLine24"));
+                            writer.write(rsrc.getString("MainFrame.ConfigFileLine25"));
+                            writer.write(rsrc.getString("MainFrame.ConfigFileLine26"));
+                            writer.write(rsrc.getString("MainFrame.ConfigFileLine27"));
+                            writer.write(rsrc.getString("MainFrame.ConfigFileLine28"));
+                            writer.write(rsrc.getString("MainFrame.ConfigFileLine29"));
+                            
+                            // 7. Configuration
+                            writer.write(rsrc.getString("MainFrame.ConfigFileLine30"));
+                            writer.write(rsrc.getString("MainFrame.ConfigFileLine31"));
+                            writer.write(rsrc.getString("MainFrame.ConfigFileLine32"));
+                            writer.write(rsrc.getString("MainFrame.ConfigFileLine33"));
+                            
+                            // 8. Configuration
+                            writer.write(rsrc.getString("MainFrame.ConfigFileLine34"));
+                            writer.write(rsrc.getString("MainFrame.ConfigFileLine35"));
+                            writer.write(rsrc.getString("MainFrame.ConfigFileLine36"));
+                            writer.write(rsrc.getString("MainFrame.ConfigFileLine37"));
+                            writer.write(rsrc.getString("MainFrame.ConfigFileLine38"));
+                        } catch (IOException e) {
+                            EhiLogger.logError(e);
+                        } finally {
+                            if (writer != null) {
+                                try {
+                                    writer.close();
+                                } catch (IOException e) {
+                                    EhiLogger.logError(e);
+                                }
+                            }
+                        }
+                    }
+                }
+            });
+        }
+        return doNewConfigFileBtn;
+    }
+    
+    private javax.swing.JButton getDoConfigFileSelBtn() {
 		if(doConfigFileSelBtn == null) {
 			doConfigFileSelBtn = new javax.swing.JButton();
 			doConfigFileSelBtn.setText("...");

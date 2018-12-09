@@ -2,6 +2,7 @@ package org.interlis2.validator;
 
 import java.io.File;
 import java.io.FileNotFoundException;
+import java.io.IOException;
 import java.util.ArrayList;
 import java.util.HashSet;
 import java.util.List;
@@ -17,6 +18,7 @@ import ch.ehi.basics.settings.Settings;
 import ch.interlis.ili2c.Ili2c;
 import ch.interlis.ili2c.Ili2cException;
 import ch.interlis.ili2c.Ili2cFailure;
+import ch.interlis.ili2c.gui.UserSettings;
 import ch.interlis.ili2c.metamodel.Model;
 import ch.interlis.ili2c.metamodel.TransferDescription;
 import ch.interlis.iom_j.csv.CsvReader;
@@ -145,8 +147,9 @@ public class Validator {
 			
 			// specified model names
 			List<String> modelnames=new ArrayList<String>();
+			String specifiedModelNames=null;
 			if(settings.getValue(Validator.SETTING_MODELNAMES)!=null) {
-				String specifiedModelNames=settings.getValue(Validator.SETTING_MODELNAMES);
+				specifiedModelNames=settings.getValue(Validator.SETTING_MODELNAMES);
 				List<String> modelNameList=getSpecifiedModelNames(specifiedModelNames);
 				modelnames.addAll(modelNameList);
 			}else {
@@ -164,12 +167,13 @@ public class Validator {
 					settings.setValue(ch.interlis.iox_j.validator.Validator.CONFIG_DO_ITF_OIDPERTABLE, ch.interlis.iox_j.validator.Validator.CONFIG_DO_ITF_OIDPERTABLE_DO);
 				}
 			}
+			List<String> modelNamesFromConfig = null;
 			if(configFilename!=null){
 				try {
-					List<String> modelNamesFromConfig=getModelsFromConfigFile(configFilename);
+					modelNamesFromConfig=getModelsFromConfigFile(configFilename);
 					modelnames.addAll(modelNamesFromConfig);
-				} catch (FileNotFoundException e) {
-					EhiLogger.logError("config file <"+configFilename+"> not found", e);
+				} catch (IOException e) {
+					EhiLogger.logError("failed to read config file <"+configFilename+">", e);
 					return false;
 				}
 			}
@@ -213,6 +217,11 @@ public class Validator {
 				String globalMultiplicity=settings.getValue(SETTING_MULTIPLICITY_VALIDATION);
 				if(globalMultiplicity!=null){
 					modelConfig.setConfigValue(ValidationConfig.PARAMETER, ValidationConfig.MULTIPLICITY, globalMultiplicity);
+				}
+				if (modelNamesFromConfig == null || modelNamesFromConfig.size() == 0) {
+				    if (specifiedModelNames != null) {
+				        modelConfig.setConfigValue(ValidationConfig.PARAMETER, ValidationConfig.ADDITIONAL_MODELS, specifiedModelNames);
+				    }
 				}
 				
 				IoxLogging errHandler=new ch.interlis.iox_j.logging.Log2EhiLogger();
@@ -310,7 +319,7 @@ public class Validator {
 		return ioxReader;
 	}
 	
-	private static List<String> getModelsFromConfigFile(String configFilename) throws FileNotFoundException {
+	private static List<String> getModelsFromConfigFile(String configFilename) throws IOException {
 		List<String> ret=new ArrayList<String>();
 		if(configFilename!=null){
 			ValidationConfig modelConfig=new ValidationConfig();
@@ -385,13 +394,19 @@ public class Validator {
 		if(ilifile!=null){
 			//ili2cConfig=new ch.interlis.ili2c.config.Configuration();
 			//ili2cConfig.addFileEntry(new ch.interlis.ili2c.config.FileEntry(ilifile.getPath(),ch.interlis.ili2c.config.FileEntryKind.ILIMODELFILE));				
+	        // get/create repository manager
+	        ch.interlis.ilirepository.IliManager repositoryManager = (ch.interlis.ilirepository.IliManager) settings
+	                .getTransientObject(UserSettings.CUSTOM_ILI_MANAGER);
+	        if(repositoryManager==null) {
+	            repositoryManager=new ch.interlis.ilirepository.IliManager();
+	            settings.setTransientObject(UserSettings.CUSTOM_ILI_MANAGER,repositoryManager);
+	        }
 			try {
 				//ili2cConfig=ch.interlis.ili2c.ModelScan.getConfig(modeldirv, modelv);
-				ch.interlis.ilirepository.IliManager modelManager=new ch.interlis.ilirepository.IliManager();
-				modelManager.setRepositories((String[])modeldirv.toArray(new String[]{}));
+				repositoryManager.setRepositories((String[])modeldirv.toArray(new String[]{}));
 				ArrayList<String> ilifiles=new ArrayList<String>();
 				ilifiles.add(ilifile.getPath());
-				ili2cConfig=modelManager.getConfigWithFiles(ilifiles);
+				ili2cConfig=repositoryManager.getConfigWithFiles(ilifiles);
 				ili2cConfig.setGenerateWarnings(false);
 			} catch (Ili2cException ex) {
 				EhiLogger.logError(ex);
