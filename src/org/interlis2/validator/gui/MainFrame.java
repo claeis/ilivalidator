@@ -17,6 +17,7 @@ import java.lang.reflect.Array;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
+import java.util.Set;
 
 import ch.ehi.basics.logging.EhiLogger;
 import ch.ehi.basics.view.*;
@@ -25,6 +26,7 @@ import ch.ehi.basics.swing.SwingWorker;
 import ch.ehi.basics.tools.StringUtility;
 
 import javax.swing.BorderFactory;
+import javax.swing.JCheckBoxMenuItem;
 import javax.swing.JFrame;
 import javax.swing.JMenu;
 import javax.swing.JMenuBar;
@@ -69,6 +71,13 @@ public class MainFrame extends JFrame {
 	private javax.swing.JTextArea logUi = null;
 	private javax.swing.JButton clearlogBtn = null;
 	
+	private JCheckBoxMenuItem optionsSkipPolygonBuildingItem = null;
+	private JCheckBoxMenuItem optionsMultiplicityOffItem = null;
+	private JCheckBoxMenuItem optionsAllowItfAreaHolesItem = null;
+	private JCheckBoxMenuItem optionsTraceItem = null;
+	private JCheckBoxMenuItem optionsDisableConstraintValidationItem = null;
+	private JCheckBoxMenuItem optionsDisableAreaValidationItem = null;
+	
 	
 	public MainFrame() {
 		super();
@@ -111,7 +120,32 @@ public class MainFrame extends JFrame {
 			}
 
 		});
-	    menu.add(menuItem);
+		menu.add(menuItem);
+		
+		// Add Options Menu in the Menu Bar
+        JMenu optionsMenu = new JMenu(rsrc.getString("MainFrame.OptionsMenu"));
+        optionsMenu.setMnemonic(KeyEvent.VK_T);
+        menuBar.add(optionsMenu);
+        
+        // Add Checkboxes to Options Menu
+        optionsMultiplicityOffItem = new JCheckBoxMenuItem(rsrc.getString("MainFrame.OptionsMultiplicityOffItem"));
+        optionsMenu.add(optionsMultiplicityOffItem);
+        
+        optionsSkipPolygonBuildingItem = new JCheckBoxMenuItem(rsrc.getString("MainFrame.OptionsSkipPolygonBuildingItem"));
+        optionsMenu.add(optionsSkipPolygonBuildingItem); 
+        
+        optionsAllowItfAreaHolesItem = new JCheckBoxMenuItem(rsrc.getString("MainFrame.OptionsAllowItfAreaHolesItem"));
+        optionsMenu.add(optionsAllowItfAreaHolesItem);
+        
+        optionsDisableConstraintValidationItem = new JCheckBoxMenuItem(rsrc.getString("MainFrame.OptionsDisableConstraintValidationItem"));
+        optionsMenu.add(optionsDisableConstraintValidationItem);
+        
+        optionsDisableAreaValidationItem = new JCheckBoxMenuItem(rsrc.getString("MainFrame.OptionsDisableAreaValidationItem"));
+        optionsMenu.add(optionsDisableAreaValidationItem);
+        
+        optionsTraceItem = new JCheckBoxMenuItem(rsrc.getString("MainFrame.OptionsTraceItem"));
+        optionsMenu.add(optionsTraceItem);
+        
         addWindowListener(new WindowAdapter() {
             public void windowClosing(WindowEvent e) {
               saveSettings(getSettings());
@@ -467,6 +501,28 @@ public class MainFrame extends JFrame {
 		newSettings.setValue(Validator.SETTING_APPHOME, appHome);
 		newSettings.setValue(ch.interlis.ili2c.gui.UserSettings.HTTP_PROXY_HOST,proxyHost);
 		newSettings.setValue(ch.interlis.ili2c.gui.UserSettings.HTTP_PROXY_PORT,proxyPort);
+		
+		if (optionsSkipPolygonBuildingItem.isSelected()) {
+		    newSettings.setValue(ch.interlis.iox_j.validator.Validator.CONFIG_DO_ITF_LINETABLES, ch.interlis.iox_j.validator.Validator.CONFIG_DO_ITF_LINETABLES_DO);
+		}
+		if (optionsMultiplicityOffItem.isSelected()) {
+		    newSettings.setValue(Validator.SETTING_MULTIPLICITY_VALIDATION,ch.interlis.iox_j.validator.ValidationConfig.OFF);
+		}
+		if (optionsAllowItfAreaHolesItem.isSelected()) {
+		    newSettings.setValue(Validator.SETTING_ALLOW_ITF_AREA_HOLES,Validator.TRUE);
+		}
+		if (optionsTraceItem.isSelected()) {
+		    EhiLogger.getInstance().setTraceFilter(false);
+		} else {
+		    EhiLogger.getInstance().setTraceFilter(true);
+		}
+		if (optionsDisableConstraintValidationItem.isSelected()) {
+		    newSettings.setValue(Validator.SETTING_DISABLE_CONSTRAINT_VALIDATION,Validator.TRUE);
+		}
+		if (optionsDisableAreaValidationItem.isSelected()) {
+		    newSettings.setValue(Validator.SETTING_DISABLE_AREA_VALIDATION,Validator.TRUE);
+		}
+		
 		return newSettings;
 	}
 	public void setSettings(Settings settings)
