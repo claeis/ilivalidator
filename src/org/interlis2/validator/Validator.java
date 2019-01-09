@@ -140,7 +140,6 @@ public class Validator {
 				EhiLogger.logState("pluginFolder <"+pluginFolder+">");
 			}
 		
-			TransferDescription sourceTd=null;
 			TransferDescription td=null;
 			
 			skipPolygonBuilding = ch.interlis.iox_j.validator.Validator.CONFIG_DO_ITF_LINETABLES_DO.equals(settings.getValue(ch.interlis.iox_j.validator.Validator.CONFIG_DO_ITF_LINETABLES));
