@@ -34,7 +34,7 @@ public class CreateIliDataToolTest {
         do {
             event = reader.read();
             if (event instanceof ObjectEvent) {
-                checkObjectEvent(reader, event);
+                checkResult(reader, event);
             }
         } while (!(event instanceof EndTransferEvent));
 
@@ -60,7 +60,7 @@ public class CreateIliDataToolTest {
         do {
             event = reader.read();
             if (event instanceof ObjectEvent) {
-                checkObjectEvent(reader, event);
+                checkResult(reader, event);
             }
         } while (!(event instanceof EndTransferEvent));
         
@@ -69,7 +69,8 @@ public class CreateIliDataToolTest {
         assertTrue(runValidation);
     }
     
-    public void checkObjectEvent(XtfReader reader, IoxEvent event) throws IoxException {
+    public void checkResult(XtfReader reader, IoxEvent event) throws IoxException {
+        
         //
         // 1. Objekt
         //
@@ -129,6 +130,5 @@ public class CreateIliDataToolTest {
         assertEquals("Beispiel2.GebaeudeRegister", model2.getattrvalue(ch.interlis.models.DatasetIdx16.ModelLink.tag_name));
         assertEquals(CreateIliDataTool.getOwnerByCurrentUser(), baskets2.getattrvalue(ch.interlis.models.DatasetIdx16.Metadata.tag_owner));
         assertEquals("1", baskets2.getattrvalue(ch.interlis.models.DatasetIdx16.Metadata.tag_version));
-        //return event;
     }
 }
