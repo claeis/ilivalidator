@@ -28,21 +28,9 @@ public class CreateIliDataToolTest {
         boolean ret = CreateIliDataTool.start(settings);
         assertTrue(ret);
         
-        XtfReader reader = new XtfReader(new File(ILIDATA_XML));
-        
-        IoxEvent event = null;
-        do {
-            event = reader.read();
-            if (event instanceof ObjectEvent) {
-                checkResult(reader, event);
-            }
-        } while (!(event instanceof EndTransferEvent));
-
-        // Validate generated IliDataXml
-        boolean runValidation = Validator.runValidation(new String[] { ILIDATA_XML }, null);
-        assertTrue(runValidation);
+        validateResult();
     }
-    
+
     @Test
     public void repository() throws Iox2jtsException, IoxException {
         Settings settings = new Settings();
@@ -54,81 +42,82 @@ public class CreateIliDataToolTest {
         boolean ret = CreateIliDataTool.start(settings);
         assertTrue(ret);
         
+        validateResult();
+    }
+    
+    private void validateResult() throws IoxException {
         XtfReader reader = new XtfReader(new File(ILIDATA_XML));
         
         IoxEvent event = null;
         do {
             event = reader.read();
             if (event instanceof ObjectEvent) {
-                checkResult(reader, event);
+                IoxEvent event1 = event;
+                //
+                // 1. Objekt
+                //
+                IomObject iomObject = ((ObjectEvent) event1).getIomObject();
+                // ID
+                assertEquals("Beispiel1a", iomObject.getattrvalue(ch.interlis.models.DatasetIdx16.Metadata.tag_id));
+                
+                // File/FileFormat
+                IomObject files = iomObject.getattrobj(ch.interlis.models.DatasetIdx16.DataIndex.DatasetMetadata.tag_files, 0);
+                IomObject file = files.getattrobj(ch.interlis.models.DatasetIdx16.DataFile.tag_file, 0);
+                assertEquals("sub/Beispiel1a.itf", file.getattrvalue(ch.interlis.models.DatasetIdx16.File.tag_path));
+                assertEquals("5f8caefa9e3c2c98d4bedda903da1c86", file.getattrvalue(ch.interlis.models.DatasetIdx16.File.tag_md5));
+                assertEquals("application/interlis+txt;version=1.0", files.getattrvalue(ch.interlis.models.DatasetIdx16.DataFile.tag_fileFormat));
+                
+                // Owner
+                assertEquals(CreateIliDataTool.getOwnerByCurrentUser(), iomObject.getattrvalue(ch.interlis.models.DatasetIdx16.Metadata.tag_owner));
+                
+                // Baskets
+                IomObject baskets = iomObject.getattrobj(ch.interlis.models.DatasetIdx16.DataIndex.DatasetMetadata.tag_baskets, 0);
+                // ModelName 
+                IomObject model = baskets.getattrobj(ch.interlis.models.DatasetIdx16.Metadata.tag_model, 0);
+                assertEquals("Beispiel1.Bodenbedeckung", model.getattrvalue(ch.interlis.models.DatasetIdx16.ModelLink.tag_name));
+                assertEquals(CreateIliDataTool.getOwnerByCurrentUser(), baskets.getattrvalue(ch.interlis.models.DatasetIdx16.Metadata.tag_owner));
+                assertEquals("itf0", baskets.getattrvalue(ch.interlis.models.DatasetIdx16.DataIndex.BasketMetadata.tag_localId));
+                assertEquals("1", baskets.getattrvalue(ch.interlis.models.DatasetIdx16.Metadata.tag_version));
+                
+                //
+                // 2. Objekt
+                //
+                event1 = reader.read();
+                iomObject = ((ObjectEvent) event1).getIomObject();
+                // ID
+                assertEquals("Beispiel2a", iomObject.getattrvalue(ch.interlis.models.DatasetIdx16.Metadata.tag_id));
+                
+                // File/FileFormat
+                files = iomObject.getattrobj(ch.interlis.models.DatasetIdx16.DataIndex.DatasetMetadata.tag_files, 0);
+                file = files.getattrobj(ch.interlis.models.DatasetIdx16.DataFile.tag_file, 0);
+                assertEquals("sub/Beispiel2a.xtf", file.getattrvalue(ch.interlis.models.DatasetIdx16.File.tag_path));
+                assertEquals("application/interlis+xml;version=2.3", files.getattrvalue(ch.interlis.models.DatasetIdx16.DataFile.tag_fileFormat));
+                
+                // Owner
+                assertEquals(CreateIliDataTool.getOwnerByCurrentUser(), iomObject.getattrvalue(ch.interlis.models.DatasetIdx16.Metadata.tag_owner));
+                
+                // Baskets
+                baskets = iomObject.getattrobj(ch.interlis.models.DatasetIdx16.DataIndex.DatasetMetadata.tag_baskets, 0);
+                // ModelName
+                model = baskets.getattrobj(ch.interlis.models.DatasetIdx16.Metadata.tag_model, 0);
+                assertEquals("Beispiel2.Bodenbedeckung", model.getattrvalue(ch.interlis.models.DatasetIdx16.ModelLink.tag_name));
+                assertEquals(CreateIliDataTool.getOwnerByCurrentUser(), baskets.getattrvalue(ch.interlis.models.DatasetIdx16.Metadata.tag_owner));
+                assertEquals("b1", baskets.getattrvalue(ch.interlis.models.DatasetIdx16.DataIndex.BasketMetadata.tag_localId));
+                assertEquals("1", baskets.getattrvalue(ch.interlis.models.DatasetIdx16.Metadata.tag_version));
+                
+                // 2. Basket
+                IomObject baskets2 = iomObject.getattrobj(ch.interlis.models.DatasetIdx16.DataIndex.DatasetMetadata.tag_baskets, 1);
+                assertEquals("cb3817b2-ebb9-4346-a406-0e30c81eff7d", baskets2.getattrvalue(ch.interlis.models.DatasetIdx16.Metadata.tag_id));
+                IomObject model2 = baskets2.getattrobj(ch.interlis.models.DatasetIdx16.Metadata.tag_model, 0);
+                assertEquals("Beispiel2.GebaeudeRegister", model2.getattrvalue(ch.interlis.models.DatasetIdx16.ModelLink.tag_name));
+                assertEquals(CreateIliDataTool.getOwnerByCurrentUser(), baskets2.getattrvalue(ch.interlis.models.DatasetIdx16.Metadata.tag_owner));
+                assertEquals("1", baskets2.getattrvalue(ch.interlis.models.DatasetIdx16.Metadata.tag_version));
             }
         } while (!(event instanceof EndTransferEvent));
-        
+
         // Validate generated IliDataXml
         boolean runValidation = Validator.runValidation(new String[] { ILIDATA_XML }, null);
         assertTrue(runValidation);
     }
     
-    public void checkResult(XtfReader reader, IoxEvent event) throws IoxException {
-        
-        //
-        // 1. Objekt
-        //
-        IomObject iomObject = ((ObjectEvent) event).getIomObject();
-        // ID
-        assertEquals("Beispiel1a", iomObject.getattrvalue(ch.interlis.models.DatasetIdx16.Metadata.tag_id));
-        
-        // File/FileFormat
-        IomObject files = iomObject.getattrobj(ch.interlis.models.DatasetIdx16.DataIndex.DatasetMetadata.tag_files, 0);
-        IomObject file = files.getattrobj(ch.interlis.models.DatasetIdx16.DataFile.tag_file, 0);
-        assertEquals("sub/Beispiel1a.itf", file.getattrvalue(ch.interlis.models.DatasetIdx16.File.tag_path));
-        assertEquals("5f8caefa9e3c2c98d4bedda903da1c86", file.getattrvalue(ch.interlis.models.DatasetIdx16.File.tag_md5));
-        assertEquals("application/interlis+txt;version=1.0", files.getattrvalue(ch.interlis.models.DatasetIdx16.DataFile.tag_fileFormat));
-        
-        // Owner
-        assertEquals(CreateIliDataTool.getOwnerByCurrentUser(), iomObject.getattrvalue(ch.interlis.models.DatasetIdx16.Metadata.tag_owner));
-        
-        // Baskets
-        IomObject baskets = iomObject.getattrobj(ch.interlis.models.DatasetIdx16.DataIndex.DatasetMetadata.tag_baskets, 0);
-        // ModelName 
-        IomObject model = baskets.getattrobj(ch.interlis.models.DatasetIdx16.Metadata.tag_model, 0);
-        assertEquals("Beispiel1.Bodenbedeckung", model.getattrvalue(ch.interlis.models.DatasetIdx16.ModelLink.tag_name));
-        assertEquals(CreateIliDataTool.getOwnerByCurrentUser(), baskets.getattrvalue(ch.interlis.models.DatasetIdx16.Metadata.tag_owner));
-        assertEquals("itf0", baskets.getattrvalue(ch.interlis.models.DatasetIdx16.DataIndex.BasketMetadata.tag_localId));
-        assertEquals("1", baskets.getattrvalue(ch.interlis.models.DatasetIdx16.Metadata.tag_version));
-        
-        //
-        // 2. Objekt
-        //
-        event = reader.read();
-        iomObject = ((ObjectEvent) event).getIomObject();
-        // ID
-        assertEquals("Beispiel2a", iomObject.getattrvalue(ch.interlis.models.DatasetIdx16.Metadata.tag_id));
-
-        // File/FileFormat
-        files = iomObject.getattrobj(ch.interlis.models.DatasetIdx16.DataIndex.DatasetMetadata.tag_files, 0);
-        file = files.getattrobj(ch.interlis.models.DatasetIdx16.DataFile.tag_file, 0);
-        assertEquals("sub/Beispiel2a.xtf", file.getattrvalue(ch.interlis.models.DatasetIdx16.File.tag_path));
-        assertEquals("application/interlis+xml;version=2.3", files.getattrvalue(ch.interlis.models.DatasetIdx16.DataFile.tag_fileFormat));
-
-        // Owner
-        assertEquals(CreateIliDataTool.getOwnerByCurrentUser(), iomObject.getattrvalue(ch.interlis.models.DatasetIdx16.Metadata.tag_owner));
-
-        // Baskets
-        baskets = iomObject.getattrobj(ch.interlis.models.DatasetIdx16.DataIndex.DatasetMetadata.tag_baskets, 0);
-        // ModelName
-        model = baskets.getattrobj(ch.interlis.models.DatasetIdx16.Metadata.tag_model, 0);
-        assertEquals("Beispiel2.Bodenbedeckung", model.getattrvalue(ch.interlis.models.DatasetIdx16.ModelLink.tag_name));
-        assertEquals(CreateIliDataTool.getOwnerByCurrentUser(), baskets.getattrvalue(ch.interlis.models.DatasetIdx16.Metadata.tag_owner));
-        assertEquals("b1", baskets.getattrvalue(ch.interlis.models.DatasetIdx16.DataIndex.BasketMetadata.tag_localId));
-        assertEquals("1", baskets.getattrvalue(ch.interlis.models.DatasetIdx16.Metadata.tag_version));
-        
-        // 2. Basket
-        IomObject baskets2 = iomObject.getattrobj(ch.interlis.models.DatasetIdx16.DataIndex.DatasetMetadata.tag_baskets, 1);
-        assertEquals("cb3817b2-ebb9-4346-a406-0e30c81eff7d", baskets2.getattrvalue(ch.interlis.models.DatasetIdx16.Metadata.tag_id));
-        IomObject model2 = baskets2.getattrobj(ch.interlis.models.DatasetIdx16.Metadata.tag_model, 0);
-        assertEquals("Beispiel2.GebaeudeRegister", model2.getattrvalue(ch.interlis.models.DatasetIdx16.ModelLink.tag_name));
-        assertEquals(CreateIliDataTool.getOwnerByCurrentUser(), baskets2.getattrvalue(ch.interlis.models.DatasetIdx16.Metadata.tag_owner));
-        assertEquals("1", baskets2.getattrvalue(ch.interlis.models.DatasetIdx16.Metadata.tag_version));
-    }
 }
