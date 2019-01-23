@@ -113,7 +113,8 @@ public class Main {
 					System.err.println("--disableConstraintValidation  disable constraint validation.");
 					System.err.println("--allObjectsAccessible  assume that all objects are known to the validator.");
 					System.err.println("--multiplicityOff     disable all multiplicity validation.");
-					System.err.println("--createIliData filename      reads all .xtf and .itf files in the srcfolder and creates the file.xml (ilidata formatted).");
+					System.err.println("--createIliData       create a new ilidata.xml by reading/analyzing existing xtf files.");
+					System.err.println("--srcfiles            reads a list of relative file names and reads all these files from the remote location and creates new xml(ilidata formatted)");
 					System.err.println("--skipPolygonBuilding skip polygon building (only ITF).");
 					System.err.println("--allowItfAreaHoles   allow empty holes (unassigned inner boundaries) in ITF AREA attributes.");
 				    System.err.println("--log file            text file, that receives validation results.");
