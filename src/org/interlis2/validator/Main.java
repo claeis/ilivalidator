@@ -46,7 +46,7 @@ public class Main {
 		for(;argi<args.length;argi++){
 			String arg=args[argi];
 			if(arg.equals("--trace")){
-				EhiLogger.getInstance().setTraceFilter(false); 
+				EhiLogger.getInstance().setTraceFilter(false);
 			}else if(arg.equals("--gui")){
 				readSettings(settings);
 				doGui=true;
