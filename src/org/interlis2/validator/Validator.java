@@ -470,6 +470,15 @@ public class Validator {
 	/** the main folder of program.
 	 */
 	public static final String SETTING_APPHOME="org.interlis2.validator.appHome";
+    /** Name of the ilidata file (XTF format) that receives the scan results.
+     */
+    public static final String SETTING_ILIDATA_XML="org.interlis2.validator.ilidata";
+    /** Name of file with the list of filenames to scan
+     */
+    public static final String SETTING_REMOTEFILE_LIST="org.interlis2.validator.filelist";
+    /** Repository base url to scan for itf and xtf files
+     */
+    public static final String SETTING_REPOSITORY_TO_SCAN="org.interlis2.validator.baseUrl";
 	/** Last used folder in the GUI.
 	 */
 	public static final String SETTING_DIRUSED="org.interlis2.validator.dirused";
