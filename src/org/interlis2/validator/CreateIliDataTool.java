@@ -16,7 +16,6 @@ import java.util.regex.Pattern;
 
 import ch.ehi.basics.logging.EhiLogger;
 import ch.ehi.basics.settings.Settings;
-import ch.interlis.ili2c.Ili2cException;
 import ch.interlis.ili2c.metamodel.Model;
 import ch.interlis.ili2c.metamodel.Topic;
 import ch.interlis.ili2c.metamodel.TransferDescription;
@@ -52,7 +51,7 @@ public class CreateIliDataTool {
     private boolean createIliData(Settings settings) {
         String destinationFile = settings.getValue(Validator.SETTING_ILIDATA_XML);
         String srcFilelist = settings.getValue(Validator.SETTING_REMOTEFILE_LIST);
-        String baseUrl = settings.getValue(Validator.SETTING_REPOSITORY_TO_SCAN);
+        String baseUrl = settings.getValue(Validator.SETTING_REPOSITORY);
 
         try {
             Set<File> visitedFiles = new HashSet<File>();
@@ -83,109 +82,11 @@ public class CreateIliDataTool {
             StartBasketEvent startBasketEvent = new StartBasketEvent(ch.interlis.models.DATASETIDX16.DataIndex, "b1");
             ioxWriter.write(startBasketEvent);
             int oid = 1;
-            IoxReader ioxReader = null;
+            //IoxReader ioxReader = null;
+            final String version = "1";
             for (File currentFile : allFiles) {
-                ch.interlis.models.DatasetIdx16.DataIndex.DatasetMetadata datasetMetadata = new ch.interlis.models.DatasetIdx16.DataIndex.DatasetMetadata(Integer.toString(oid++));
-                ch.interlis.models.DatasetIdx16.File file = new ch.interlis.models.DatasetIdx16.File();
-                DataFile dataFile = new DataFile();
-
-                file.setpath(getURLRelativePath(currentFile));
-                dataFile.addfile(file);
-                datasetMetadata.addfiles(dataFile);
-                
-                // Convert CurrentFileName to DatasetMetadata.id format
-                datasetMetadata.setid(getFileNameWithoutPfadExtensionAndDate(currentFile));
-                String owner = getOwnerByCurrentUser();
-                datasetMetadata.setowner(owner);
-                datasetMetadata.setversion("1");
-                
-                File localFile=null;
-                if (isRemoteRepository(baseUrl)) {
-                    RepositoryAccess reposAccess=new RepositoryAccess();                
-                    localFile = reposAccess.getLocalFileLocation(baseUrl, getURLRelativePath(currentFile), 0, null);
-                    if(localFile==null) {
-                        throw new IllegalStateException("failed to download remote file "+baseUrl+" "+currentFile.getPath());
-                    }
-                }else {
-                    localFile=new File(new File(baseUrl), currentFile.getPath());
-                }
-                
-                // Get Model names from local File
-                List<String> models = IoxUtility.getModels(localFile);
-                TransferDescription td = null;
-                try {
-                    td = compileIli(models, settings);
-                } catch (Exception e) {
-                    throw new Exception("An error occurred while reading the file: " + localFile.getAbsolutePath() + e);
-                }
-                
-                if (td == null) {
-                    throw new Exception("Transfer Description can not be null for the file: " + localFile.getAbsolutePath());
-                }
-                String md5=RepositoryAccess.calcMD5(localFile);
-                file.setmd5(md5);
-                
-                ioxReader = createReader(localFile.getPath());
-                if (ioxReader instanceof ItfReader) {
-                    dataFile.setfileFormat("application/interlis+txt;version=1.0");
-                } else {
-                    dataFile.setfileFormat("application/interlis+xml;version=2.3");
-                }
-                try {
-                    IoxEvent event = null;
-                    Model model=null;
-                    do {
-                        event = ioxReader.read();
-                        if (event instanceof StartBasketEvent) {
-                            StartBasketEvent basketEvent=(StartBasketEvent)event;
-                            // fill expected values to BasketMetaData
-                            ch.interlis.models.DatasetIdx16.DataIndex.BasketMetadata basketMetaData = new ch.interlis.models.DatasetIdx16.DataIndex.BasketMetadata();
-                            Topic topic=(Topic) td.getElement(basketEvent.getType());
-                            if(model==null) {
-                                model=(Model) topic.getContainer();
-                                
-                                String idgeoiv=model.getMetaValue("IDGeoIV");
-                                if (idgeoiv != null) {
-                                    String ids[]=idgeoiv.split("\\,");
-                                    for(String geoid:ids) {
-                                        Code_ idgeoivCode=new Code_();
-                                        idgeoivCode.setvalue("https://ids.geo.admin.ch/geoiv/"+geoid.trim());
-                                        datasetMetadata.addcategories(idgeoivCode);
-                                    }
-                                }
-                                if (model.getMetaValue("furtherInformation") != null) {
-                                    datasetMetadata.setfurtherInformation(model.getMetaValue("furtherInformation"));
-                                }        
-                                if (model.getMetaValue("technicalContact") != null) {
-                                    datasetMetadata.settechnicalContact(model.getMetaValue("technicalContact"));
-                                }
-                                
-                                setShortDescription(datasetMetadata, model.getDocumentation());
-                            }
-                            
-                            ModelLink modelLink = new ModelLink();
-                            modelLink.setname(basketEvent.getType());
-                            basketMetaData.setmodel(modelLink);
-                            basketMetaData.setowner(owner);
-                            basketMetaData.setversion("1");
-                            if(topic.getBasketOid()!=null) {
-                                basketMetaData.setid(basketEvent.getBid());
-                            }else {
-                                basketMetaData.setlocalId(basketEvent.getBid());
-                            }
-                            datasetMetadata.addbaskets(basketMetaData);
-                        }
-                    } while (!(event instanceof EndTransferEvent));
-                } finally {
-                    if (ioxReader != null) {
-                        try {
-                            ioxReader.close();
-                        } catch (Exception e) {
-                            EhiLogger.logState("An error occurred while closing the file." + e);
-                        }
-                        ioxReader = null;
-                    }
-                }
+//                ch.interlis.models.DatasetIdx16.DataIndex.DatasetMetadata datasetMetadata = generateNewDatasetMetaData(currentFile, settings, baseUrl, version, oid++, "C", null, null);
+                ch.interlis.models.DatasetIdx16.DataIndex.DatasetMetadata datasetMetadata = generateNewDatasetMetaData(currentFile, settings, baseUrl, version, oid++);
                 ioxWriter.write(new ObjectEvent(datasetMetadata));
             }                
         } finally {
@@ -197,7 +98,117 @@ public class CreateIliDataTool {
         }
     }
 
-    public static String getOwnerByCurrentUser() {
+    protected DatasetMetadata generateNewDatasetMetaData(File currentFile, Settings settings, String baseUrl, String version, int oid) throws Exception {
+        IoxReader ioxReader = null;
+        ch.interlis.models.DatasetIdx16.DataIndex.DatasetMetadata datasetMetadata = new ch.interlis.models.DatasetIdx16.DataIndex.DatasetMetadata(Integer.toString(oid));
+        ch.interlis.models.DatasetIdx16.File file = new ch.interlis.models.DatasetIdx16.File();
+        DataFile dataFile = new DataFile();
+        
+        String filePath = getURLRelativePath(currentFile);
+        file.setpath(filePath);
+        dataFile.addfile(file);
+        datasetMetadata.addfiles(dataFile);
+        
+        // Convert CurrentFileName to DatasetMetadata.id format
+        String id = getFileNameWithoutPfadExtensionAndDate(currentFile);
+
+        datasetMetadata.setid(id);
+        String owner = getOwnerByCurrentUser();
+        datasetMetadata.setowner(owner);
+        datasetMetadata.setversion(version);
+
+        File localFile=null;
+        if (isRemoteRepository(baseUrl)) {
+            RepositoryAccess reposAccess = new RepositoryAccess();
+            localFile = reposAccess.getLocalFileLocation(baseUrl, getURLRelativePath(currentFile), 0, null);
+            if (localFile == null) {
+                throw new IllegalStateException (
+                        "failed to download remote file " + baseUrl + " " + currentFile.getPath());
+            }
+        } else {
+            localFile = new File(new File(baseUrl), currentFile.getPath());
+        }           
+
+        // Get Model names from local File
+        List<String> models = IoxUtility.getModels(localFile);
+        TransferDescription td = null;
+        try {
+            td = compileIli(models, settings.getValue(Validator.SETTING_ILIDIRS));
+        } catch (Exception e) {
+            throw new Exception("An error occurred while reading the file: " + localFile.getAbsolutePath() + e);
+        }
+        
+        if (td == null) {
+            throw new Exception("Transfer Description can not be null for the file: " + localFile.getAbsolutePath());
+        }
+        String md5=RepositoryAccess.calcMD5(localFile);
+        file.setmd5(md5);
+        
+        ioxReader = createReader(localFile);
+        if (ioxReader instanceof ItfReader) {
+            dataFile.setfileFormat("application/interlis+txt;version=1.0");
+        } else {
+            dataFile.setfileFormat("application/interlis+xml;version=2.3");
+        }
+        try {
+            IoxEvent event = null;
+            Model model=null;
+            do {
+                event = ioxReader.read();
+                if (event instanceof StartBasketEvent) {
+                    StartBasketEvent basketEvent=(StartBasketEvent)event;
+                    // fill expected values to BasketMetaData
+                    ch.interlis.models.DatasetIdx16.DataIndex.BasketMetadata basketMetaData = new ch.interlis.models.DatasetIdx16.DataIndex.BasketMetadata();
+                    Topic topic=(Topic) td.getElement(basketEvent.getType());
+                    if(model==null) {
+                        model=(Model) topic.getContainer();
+                        
+                        String idgeoiv=model.getMetaValue("IDGeoIV");
+                        if (idgeoiv != null) {
+                            String ids[]=idgeoiv.split("\\,");
+                            for(String geoid:ids) {
+                                Code_ idgeoivCode=new Code_();
+                                idgeoivCode.setvalue("https://ids.geo.admin.ch/geoiv/"+geoid.trim());
+                                datasetMetadata.addcategories(idgeoivCode);
+                            }
+                        }
+                        if (model.getMetaValue("furtherInformation") != null) {
+                            datasetMetadata.setfurtherInformation(model.getMetaValue("furtherInformation"));
+                        }        
+                        if (model.getMetaValue("technicalContact") != null) {
+                            datasetMetadata.settechnicalContact(model.getMetaValue("technicalContact"));
+                        }
+                        
+                        setShortDescription(datasetMetadata, model.getDocumentation());
+                    }
+                    
+                    ModelLink modelLink = new ModelLink();
+                    modelLink.setname(basketEvent.getType());
+                    basketMetaData.setmodel(modelLink);
+                    basketMetaData.setowner(owner);
+                    basketMetaData.setversion(version);
+                    if(topic.getBasketOid()!=null) {
+                        basketMetaData.setid(basketEvent.getBid());
+                    }else {
+                        basketMetaData.setlocalId(basketEvent.getBid());
+                    }
+                    datasetMetadata.addbaskets(basketMetaData);
+                }
+            } while (!(event instanceof EndTransferEvent));
+        } finally {
+            if (ioxReader != null) {
+                try {
+                    ioxReader.close();
+                } catch (Exception e) {
+                    EhiLogger.logState("An error occurred while closing the file." + e);
+                }
+                ioxReader = null;
+            }
+        }
+        return datasetMetadata;
+    }
+
+    protected static String getOwnerByCurrentUser() {
         return "mailto:" + System.getProperty("user.name") + "@localhost";
     }
 
@@ -209,7 +220,7 @@ public class CreateIliDataTool {
         return false;
     }
 
-    private void setShortDescription(DatasetMetadata datasetMetadata, String documentation) {
+    protected static void setShortDescription(DatasetMetadata datasetMetadata, String documentation) {
         if (documentation != null) {
             MultilingualMText mText = new MultilingualMText();
             LocalisedMText localisedMText = new LocalisedMText();
@@ -219,7 +230,7 @@ public class CreateIliDataTool {
         }
     }
 
-    private String getFileNameWithoutPfadExtensionAndDate(File currentFile) throws IllegalArgumentException {
+    protected static String getFileNameWithoutPfadExtensionAndDate(File currentFile) throws IllegalArgumentException {
         String filename = currentFile.getName();
         if (filename.endsWith(".xml")) {
             filename = filename.replace(".xml", "");
@@ -244,17 +255,18 @@ public class CreateIliDataTool {
         return filename;
     }
 
-    private TransferDescription compileIli(List<String> models, Settings settings) throws Ili2cException {
+    protected static TransferDescription compileIli(List<String> models, /*Settings settings,*/ String ilidirs) throws Exception {
         ArrayList<String> modeldirv = new ArrayList<String>();
         ArrayList<String> modelv = new ArrayList<String>();
         if (models != null) {
             modelv.addAll(models);
         }
-
-        String ilidirs = settings.getValue(Validator.SETTING_ILIDIRS);
+        //String ilidirs = null;
+        //ilidirs = settings.getValue(Validator.SETTING_ILIDIRS);
         if (ilidirs == null) {
             ilidirs = Validator.SETTING_DEFAULT_ILIDIRS;
         }
+
         EhiLogger.logState("ilidirs <" + ilidirs + ">");
         String modeldirs[] = ilidirs.split(";");
         for (int modeli = 0; modeli < modeldirs.length; modeli++) {
@@ -272,7 +284,7 @@ public class CreateIliDataTool {
         return ch.interlis.ili2c.Ili2c.runCompiler(ili2cConfig);
     }
 
-    private String getURLRelativePath(File currentFile) {
+    protected static String getURLRelativePath(File currentFile) {
         return currentFile.getPath().replace(File.separatorChar, '/');
     }
 
@@ -306,15 +318,15 @@ public class CreateIliDataTool {
         }
     }
 
-    private IoxReader createReader(String filename) throws IoxException {
-        IoxReader ioxReader = new ReaderFactory().createReader(new java.io.File(filename), new LogEventFactory());
+    protected static IoxReader createReader(File filename) throws IoxException {
+        IoxReader ioxReader = new ReaderFactory().createReader(filename, new LogEventFactory());
         if (ioxReader instanceof ItfReader2) {
-            ioxReader = new ItfReader(new java.io.File(filename));
+            ioxReader = new ItfReader(filename);
         }
         return ioxReader;
     }
     
-    private static boolean isItfORXtfFilename(String filename) {
+    private boolean isItfORXtfFilename(String filename) {
         String xtfExt=ch.ehi.basics.view.GenericFileFilter.getFileExtension(new java.io.File(filename)).toLowerCase();
         if("itf".equals(xtfExt) || "xtf".equals(xtfExt)){
             return true;
