@@ -23,7 +23,7 @@ public class CreateIliDataToolTest {
     public void localFolder() throws IoxException {
         Settings settings = new Settings();
         settings.setValue(Validator.SETTING_ILIDATA_XML, ILIDATA_XML);
-        settings.setValue(Validator.SETTING_REPOSITORY_TO_SCAN, "test/data/createIliDataTool/localfolder");
+        settings.setValue(Validator.SETTING_REPOSITORY, "test/data/createIliDataTool/localfolder");
         settings.setValue(Validator.SETTING_ILIDIRS, "test/data/createIliDataTool");
         boolean ret = CreateIliDataTool.start(settings);
         assertTrue(ret);
@@ -36,7 +36,7 @@ public class CreateIliDataToolTest {
         Settings settings = new Settings();
         settings.setValue(Validator.SETTING_ILIDATA_XML, ILIDATA_XML);
         settings.setValue(Validator.SETTING_REMOTEFILE_LIST, "test/data/createIliDataTool/filelist.txt");
-        settings.setValue(Validator.SETTING_REPOSITORY_TO_SCAN, "test/data/createIliDataTool/repos1");
+        settings.setValue(Validator.SETTING_REPOSITORY, "test/data/createIliDataTool/repos1");
         settings.setValue(Validator.SETTING_ILIDIRS, "test/data/createIliDataTool");
         
         boolean ret = CreateIliDataTool.start(settings);
