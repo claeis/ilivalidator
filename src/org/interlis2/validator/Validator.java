@@ -480,6 +480,9 @@ public class Validator {
     /** Name of the ilidata file (XTF format) that receives the scan results via given DatasetID
      */
     public static final String SETTING_UPDATE_ILIDATA="org.interlis2.validator.updateIliData";
+    /** Checks and validates all data in the given repository
+     */
+    public static final String SETTING_CHECK_REPO_DATA="org.interlis2.validator.checkRepoIliData";
     /** Dataset ID to Update
      */
     public static final String SETTING_DATASETID_TO_UPDATE = "org.interlis2.validator.datasetIDToUpdate";
