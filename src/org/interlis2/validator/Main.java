@@ -79,6 +79,15 @@ public class Main {
 			}else if (arg.equals("--srcfiles")) {
 			    argi++;
 			    settings.setValue(Validator.SETTING_REMOTEFILE_LIST, args[argi++]);
+			}else if (arg.equals("--updateIliData")) {
+			    argi++;
+			    settings.setValue(Validator.SETTING_UPDATE_ILIDATA, args[argi]);
+			}else if (arg.equals("--check-repo-data")) {
+			    argi++;
+			    settings.setValue(Validator.SETTING_CHECK_REPO_DATA, args[argi]);
+			}else if (arg.equals("--dataset")) {
+			    argi++;
+			    settings.setValue(Validator.SETTING_DATASETID_TO_UPDATE, args[argi]);
 			}else if(arg.equals("--log")) {
 			    argi++;
 			    settings.setValue(Validator.SETTING_LOGFILE, args[argi]);
@@ -115,6 +124,8 @@ public class Main {
 					System.err.println("--multiplicityOff     disable all multiplicity validation.");
 					System.err.println("--createIliData(formedFilename, sourceFolder)   create a new xml file by reading/analyzing existing xtf/itf files.");
 					System.err.println("--srcfiles (formedFilename, filename, remoteLocation)   reads a list of relative file names and reads all these files from the remote location and creates new xml(ilidata formatted)");
+					System.err.println("--updateIliData       Ili data to be updated");
+					System.err.println("--dataset             The requested Dataset ID to be updated");
 					System.err.println("--skipPolygonBuilding skip polygon building (only ITF).");
 					System.err.println("--allowItfAreaHoles   allow empty holes (unassigned inner boundaries) in ITF AREA attributes.");
 				    System.err.println("--log file            text file, that receives validation results.");
@@ -153,27 +164,32 @@ public class Main {
 		                EhiLogger.logError(APP_NAME+": wrong number of arguments");
 		                System.exit(2);                 
 				    }
-				    settings.setValue(Validator.SETTING_REPOSITORY_TO_SCAN, xtfFile[0]);
+				    settings.setValue(Validator.SETTING_REPOSITORY, xtfFile[0]);
                     ok = CreateIliDataTool.start(settings);
+				}else if (settings.getValue(Validator.SETTING_UPDATE_ILIDATA)!=null) {
+				    if (dataFileCount != 2) {
+                        EhiLogger.logError(APP_NAME+": wrong number of arguments");
+                        System.exit(2);				        
+				    }
+				    settings.setValue(Validator.SETTING_REPOSITORY, xtfFile[0]);
+				    settings.setValue(Validator.SETTING_NEW_VERSION_OF_DATA, xtfFile[1]);
+				    ok = UpdateIliDataTool.update(settings);
 				}else {
 	                ok = Validator.runValidation(xtfFile,settings);
 				}
 				System.exit(ok ? 0 : 1);
 			}else{
-                EhiLogger.logError(APP_NAME+": wrong number of arguments");
-                System.exit(2);                 
+			    if (settings.getValue(Validator.SETTING_CHECK_REPO_DATA) != null) {
+			        boolean ok = CheckRepoDataTool.launch(settings);
+			        System.exit(ok ? 0 : 1);
+			    } else {
+	                EhiLogger.logError(APP_NAME+": wrong number of arguments");
+	                System.exit(2);			        
+			    }
 			}
 		}
 		
 	}
-	private static boolean isTheExternal(String[] args) {
-        for (String value : args) {
-            if (value.equals("--srcfiles")) {
-                return true;
-            }
-        }
-        return false;
-    }
     private static String[] getDataFiles(String[] args, int argi, int dataFileCount) {
 		String[] xtfFile;
 		xtfFile=new String[dataFileCount];

@@ -476,9 +476,21 @@ public class Validator {
     /** Name of file with the list of filenames to scan
      */
     public static final String SETTING_REMOTEFILE_LIST="org.interlis2.validator.filelist";
-    /** Repository base url to scan for itf and xtf files
+    /** Name of the ilidata file (XTF format) that receives the scan results via given DatasetID
      */
-    public static final String SETTING_REPOSITORY_TO_SCAN="org.interlis2.validator.baseUrl";
+    public static final String SETTING_UPDATE_ILIDATA="org.interlis2.validator.updateIliData";
+    /** Checks and validates all data in the given repository
+     */
+    public static final String SETTING_CHECK_REPO_DATA="org.interlis2.validator.checkRepoIliData";
+    /** Dataset ID to Update
+     */
+    public static final String SETTING_DATASETID_TO_UPDATE = "org.interlis2.validator.datasetIDToUpdate";
+    /** New Version of Ili Data
+     */
+    public static final String SETTING_NEW_VERSION_OF_DATA = "org.interlis2.validator.newVersionOfData";
+    /** Repository base url to scan for itf and xtf files or to read ilidata.xml from
+     */
+    public static final String SETTING_REPOSITORY="org.interlis2.validator.baseUrl";
 	/** Last used folder in the GUI.
 	 */
 	public static final String SETTING_DIRUSED="org.interlis2.validator.dirused";
