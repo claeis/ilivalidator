@@ -82,6 +82,9 @@ public class Main {
 			}else if (arg.equals("--updateIliData")) {
 			    argi++;
 			    settings.setValue(Validator.SETTING_UPDATE_ILIDATA, args[argi]);
+			}else if (arg.equals("--check-repo-data")) {
+			    argi++;
+			    settings.setValue(Validator.SETTING_CHECK_REPO_DATA, args[argi]);
 			}else if (arg.equals("--dataset")) {
 			    argi++;
 			    settings.setValue(Validator.SETTING_DATASETID_TO_UPDATE, args[argi]);
@@ -176,8 +179,13 @@ public class Main {
 				}
 				System.exit(ok ? 0 : 1);
 			}else{
-                EhiLogger.logError(APP_NAME+": wrong number of arguments");
-                System.exit(2);                 
+			    if (settings.getValue(Validator.SETTING_CHECK_REPO_DATA) != null) {
+			        boolean ok = CheckRepoDataTool.launch(settings);
+			        System.exit(ok ? 0 : 1);
+			    } else {
+	                EhiLogger.logError(APP_NAME+": wrong number of arguments");
+	                System.exit(2);			        
+			    }
 			}
 		}
 		

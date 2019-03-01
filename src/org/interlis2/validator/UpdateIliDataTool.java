@@ -325,7 +325,7 @@ public class UpdateIliDataTool {
         return datasetMetadata;
     }
 
-    private IomObject[] readIliData(File localCopyOfRemoteOriginalIliDataXml) throws Exception {
+    protected static IomObject[] readIliData(File localCopyOfRemoteOriginalIliDataXml) throws Exception {
         
         XtfReader reader = null;
         List<IomObject> orginalIomObject = new ArrayList<IomObject>(); 
