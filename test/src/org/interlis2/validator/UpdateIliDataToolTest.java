@@ -59,7 +59,7 @@ public class UpdateIliDataToolTest {
                     IomObject files = iomObject.getattrobj(ch.interlis.models.DatasetIdx16.DataIndex.DatasetMetadata.tag_files, 0);
                     IomObject file = files.getattrobj(ch.interlis.models.DatasetIdx16.DataFile.tag_file, 0);
                     assertEquals("sub/newVersionOfData.xtf", file.getattrvalue(ch.interlis.models.DatasetIdx16.File.tag_path));
-                    assertEquals("c55e611e5896f50cace4d2a5db1c4d34", file.getattrvalue(ch.interlis.models.DatasetIdx16.File.tag_md5));
+                    assertNotNull(file.getattrvalue(ch.interlis.models.DatasetIdx16.File.tag_md5));
                     assertEquals("application/interlis+xml;version=2.3", files.getattrvalue(ch.interlis.models.DatasetIdx16.DataFile.tag_fileFormat));                    
                     
                     // Owner
@@ -85,7 +85,7 @@ public class UpdateIliDataToolTest {
                 }
             }
         } while (!(event instanceof EndTransferEvent));
-        // Wenn kein Test durchgeführt wurde
+        // Wenn kein Test durchgefuehrt wurde
         assertTrue(isTheTestDone);
         
         // Validate Updated IliDataXml

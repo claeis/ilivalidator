@@ -29,12 +29,12 @@ public class CheckRepoDataTool {
             RepositoryAccess reposAccess = new RepositoryAccess();                
             File localCopyOfRemoteOriginalIliDataXml = reposAccess.getLocalFileLocation(repository, IliManager.ILIDATA_XML, 0, null);
             if(localCopyOfRemoteOriginalIliDataXml == null) {
-                throw new Exception("IliData could not be found in the given repository!");
+                throw new Exception(IliManager.ILIDATA_XML+" could not be found in <"+repository+">");
             }
             
             IomObject[] ilidataContents = UpdateIliDataTool.readIliData(localCopyOfRemoteOriginalIliDataXml);
             if (ilidataContents == null) {
-                throw new Exception("Contents of the IliData should not be empty!");
+                throw new Exception("Contents of the "+IliManager.ILIDATA_XML+" should not be empty!");
             }
             
             IomObject[] actualIliDatas = findActualIliDatas(ilidataContents);
