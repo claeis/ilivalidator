@@ -10,6 +10,7 @@ Interlis-Transferdatei (itf oder xtf) gemäss einem Interlis-Modell
 (ili) überprüft.
 
 Es bestehen u.a. folgende Konfigurationsmöglichkeiten:
+
 - einzelne Prüfungen ein oder auszuschalten
 - eigene Fehlermeldungen inkl. Attributwerte zu definieren
 - zusätzliche Bedingung zu definieren
