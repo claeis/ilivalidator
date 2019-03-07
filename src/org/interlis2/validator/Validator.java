@@ -470,25 +470,16 @@ public class Validator {
 	/** the main folder of program.
 	 */
 	public static final String SETTING_APPHOME="org.interlis2.validator.appHome";
-    /** Name of the ilidata file (XTF format) that receives the scan results.
+    /** Name of the ilidata file (XTF format) to write.
      */
     public static final String SETTING_ILIDATA_XML="org.interlis2.validator.ilidata";
-    /** Name of file with the list of filenames to scan
+    /** Name of file with the list of filenames.
      */
     public static final String SETTING_REMOTEFILE_LIST="org.interlis2.validator.filelist";
-    /** Name of the ilidata file (XTF format) that receives the scan results via given DatasetID
-     */
-    public static final String SETTING_UPDATE_ILIDATA="org.interlis2.validator.updateIliData";
-    /** Checks and validates all data in the given repository
-     */
-    public static final String SETTING_CHECK_REPO_DATA="org.interlis2.validator.checkRepoIliData";
-    /** Dataset ID to Update
+    /** Dataset ID of the data.
      */
     public static final String SETTING_DATASETID_TO_UPDATE = "org.interlis2.validator.datasetIDToUpdate";
-    /** New Version of Ili Data
-     */
-    public static final String SETTING_NEW_VERSION_OF_DATA = "org.interlis2.validator.newVersionOfData";
-    /** Repository base url to scan for itf and xtf files or to read ilidata.xml from
+    /** Repository URL
      */
     public static final String SETTING_REPOSITORY="org.interlis2.validator.baseUrl";
 	/** Last used folder in the GUI.

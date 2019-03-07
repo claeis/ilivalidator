@@ -21,11 +21,11 @@ public class UpdateIliDataToolTest {
     @Test
     public void update() throws IoxException {
         Settings settings = new Settings();
-        settings.setValue(Validator.SETTING_UPDATE_ILIDATA, ILIDATA_XML);
+        settings.setValue(Validator.SETTING_ILIDATA_XML, ILIDATA_XML);
         settings.setValue(Validator.SETTING_DATASETID_TO_UPDATE, "Beispiel2a");
-        settings.setValue(Validator.SETTING_NEW_VERSION_OF_DATA, "test/data/updateIliDataTool/newVersionOfData.xtf");
         settings.setValue(Validator.SETTING_REPOSITORY, "test/data/updateIliDataTool/repos1");
-        boolean ret = UpdateIliDataTool.update(settings);
+        settings.setValue(Validator.SETTING_ILIDIRS, "test/data/updateIliDataTool");
+        boolean ret = UpdateIliDataTool.update(new File("test/data/updateIliDataTool/newVersionOfData.xtf"),settings);
         assertTrue(ret);
         
         validateResult();

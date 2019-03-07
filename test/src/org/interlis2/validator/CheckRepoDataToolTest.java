@@ -19,7 +19,7 @@ public class CheckRepoDataToolTest {
     @Test
     public void update_OK() throws IoxException {
         Settings settings = new Settings();
-        settings.setValue(Validator.SETTING_CHECK_REPO_DATA, REPOSITORY);
+        settings.setValue(Validator.SETTING_REPOSITORY, REPOSITORY);
         boolean ret = CheckRepoDataTool.launch(settings);
         assertTrue(ret);
     }

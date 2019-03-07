@@ -33,16 +33,16 @@ import ch.interlis.models.DatasetIdx16.DataIndex.DatasetMetadata;
 
 public class UpdateIliDataTool {
 
-    public static boolean update(Settings settings) {
-        return new UpdateIliDataTool().updateIliData(settings);
+    public static boolean update(File newVersionOfData,Settings settings) {
+        return new UpdateIliDataTool().updateIliData(newVersionOfData,settings);
     }
     
-    private boolean updateIliData(Settings settings) {
+    private boolean updateIliData(File newVersionOfDataXml,Settings settings) {
         
         try {
-            String ilidataXmlFileToWrite = settings.getValue(Validator.SETTING_UPDATE_ILIDATA);
+            String ilidataXmlFileToWrite = settings.getValue(Validator.SETTING_ILIDATA_XML);
             if (ilidataXmlFileToWrite == null || ilidataXmlFileToWrite.isEmpty()) {
-                throw new Exception("The desired province to update data can not be null!");
+                throw new Exception("Name of ouptut file required");
             }
             
             String datasetID = settings.getValue(Validator.SETTING_DATASETID_TO_UPDATE);
@@ -50,9 +50,8 @@ public class UpdateIliDataTool {
                 throw new Exception("Dataset ID should be given as a parameter!");
             }
             
-            String newVersionOfDataXml = settings.getValue(Validator.SETTING_NEW_VERSION_OF_DATA);
-            if (newVersionOfDataXml == null || newVersionOfDataXml.isEmpty()) {
-                throw new Exception("New version of ili data should be given as a parameter.");
+            if (newVersionOfDataXml ==null) {
+                throw new Exception("New version of data file should be given as a parameter.");
             }
             
             String repository = settings.getValue(Validator.SETTING_REPOSITORY);
@@ -64,11 +63,11 @@ public class UpdateIliDataTool {
             RepositoryAccess reposAccess = new RepositoryAccess();                
             File localCopyOfRemoteOriginalIliDataXml = reposAccess.getLocalFileLocation(repository, IliManager.ILIDATA_XML, 0, null);
             if(localCopyOfRemoteOriginalIliDataXml == null) {
-                throw new Exception("IliData could not be found in the given repository!");
+                throw new Exception(IliManager.ILIDATA_XML+" could not be found in <"+repository+">");
             }
             
             IomObject[] oldIlidataContents = readIliData(localCopyOfRemoteOriginalIliDataXml);
-            ch.interlis.models.DatasetIdx16.DataIndex.DatasetMetadata newMetadata = readDataFile(new File(newVersionOfDataXml), settings);
+            ch.interlis.models.DatasetIdx16.DataIndex.DatasetMetadata newMetadata = readDataFile(newVersionOfDataXml, settings);
 
             // Update ID
             newMetadata.setid(datasetID);
@@ -102,8 +101,10 @@ public class UpdateIliDataTool {
             }
             newMetadata.setversion(newVersion);
             
-            // Set PrecursorVersion
-            newMetadata.setprecursorVersion(precursorVersion);
+            if (latestVersion != null) {
+                // Set PrecursorVersion
+                newMetadata.setprecursorVersion(precursorVersion);
+            }
             
             // Write the Result in ilidata.xml
             writeNewIliData(new File(ilidataXmlFileToWrite), newMetadata, oldIlidataContents, localCopyOfRemoteOriginalIliDataXml);
@@ -249,13 +250,13 @@ public class UpdateIliDataTool {
         List<String> models = IoxUtility.getModels(newFileVersion);
         TransferDescription td = null;
         try {
-            td = CreateIliDataTool.compileIli(models, new File(settings.getValue(Validator.SETTING_UPDATE_ILIDATA)).getParent());
+            td = CreateIliDataTool.compileIli(models, settings.getValue(Validator.SETTING_ILIDIRS));
         } catch (Exception e) {
-            throw new Exception("An error occurred while reading the file: " + newFileVersion.getAbsolutePath() + e);
+            throw new Exception("Failed to compile models for " + newFileVersion.getAbsolutePath(),e);
         }
         
         if (td == null) {
-            throw new Exception("Transfer Description can not be null for the file: " + newFileVersion.getAbsolutePath());
+            throw new Exception("Failed to compile models for " + newFileVersion.getAbsolutePath());
         }
         String md5 = RepositoryAccess.calcMD5(newFileVersion);
         file.setmd5(md5);

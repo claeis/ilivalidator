@@ -135,7 +135,7 @@ public class CreateIliDataTool {
         try {
             td = compileIli(models, settings.getValue(Validator.SETTING_ILIDIRS));
         } catch (Exception e) {
-            throw new Exception("An error occurred while reading the file: " + localFile.getAbsolutePath() + e);
+            throw new Exception("Failed to read file <" + localFile.getAbsolutePath()+">",e);
         }
         
         if (td == null) {

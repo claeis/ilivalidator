@@ -18,6 +18,11 @@ public class Main {
 	/** version of application.
 	 */
 	private static String version=null;
+	private static int FC_VALIDATE=0;
+    private static int FC_CHECK_REPO_DATA=1;
+    private static int FC_CREATE_ILIDATA_XML=2;
+    private static int FC_UPDATE_ILIDATA_XML=3;
+	
 	/** main program entry.
 	 * @param args command line arguments.
 	 */
@@ -42,6 +47,7 @@ public class Main {
 			return;
 		}
 		int argi=0;
+		int function=FC_VALIDATE;
 		boolean doGui=false;
 		for(;argi<args.length;argi++){
 			String arg=args[argi];
@@ -74,20 +80,25 @@ public class Main {
 			}else if(arg.equals("--skipPolygonBuilding")){
 				settings.setValue(ch.interlis.iox_j.validator.Validator.CONFIG_DO_ITF_LINETABLES, ch.interlis.iox_j.validator.Validator.CONFIG_DO_ITF_LINETABLES_DO);
 			}else if (arg.equals("--createIliData")){
-			    argi++;
-			    settings.setValue(Validator.SETTING_ILIDATA_XML, args[argi++]);
+			    function=FC_CREATE_ILIDATA_XML;
+            }else if (arg.equals("--updateIliData")) {
+                function=FC_UPDATE_ILIDATA_XML;
+            }else if (arg.equals("--check-repo-data")) {
+                function=FC_CHECK_REPO_DATA;
+                argi++;
+                settings.setValue(Validator.SETTING_REPOSITORY, args[argi]);
+            }else if (arg.equals("--ilidata")) {
+                argi++;
+			    settings.setValue(Validator.SETTING_ILIDATA_XML, args[argi]);
 			}else if (arg.equals("--srcfiles")) {
 			    argi++;
-			    settings.setValue(Validator.SETTING_REMOTEFILE_LIST, args[argi++]);
-			}else if (arg.equals("--updateIliData")) {
-			    argi++;
-			    settings.setValue(Validator.SETTING_UPDATE_ILIDATA, args[argi]);
-			}else if (arg.equals("--check-repo-data")) {
-			    argi++;
-			    settings.setValue(Validator.SETTING_CHECK_REPO_DATA, args[argi]);
-			}else if (arg.equals("--dataset")) {
+			    settings.setValue(Validator.SETTING_REMOTEFILE_LIST, args[argi]);
+			}else if (arg.equals("--datasetId")) {
 			    argi++;
 			    settings.setValue(Validator.SETTING_DATASETID_TO_UPDATE, args[argi]);
+            }else if (arg.equals("--repos")) {
+                argi++;
+                settings.setValue(Validator.SETTING_REPOSITORY, args[argi]);
 			}else if(arg.equals("--log")) {
 			    argi++;
 			    settings.setValue(Validator.SETTING_LOGFILE, args[argi]);
@@ -156,37 +167,36 @@ public class Main {
 			}
 			MainFrame.main(xtfFile,settings);
 		}else{
-			if(dataFileCount>0) {
-				xtfFile = getDataFiles(args, argi, dataFileCount);
-				boolean ok=false;
-				if(settings.getValue(Validator.SETTING_ILIDATA_XML)!=null) {
-				    if(dataFileCount>1) {
-		                EhiLogger.logError(APP_NAME+": wrong number of arguments");
-		                System.exit(2);                 
-				    }
-				    settings.setValue(Validator.SETTING_REPOSITORY, xtfFile[0]);
-                    ok = CreateIliDataTool.start(settings);
-				}else if (settings.getValue(Validator.SETTING_UPDATE_ILIDATA)!=null) {
-				    if (dataFileCount != 2) {
-                        EhiLogger.logError(APP_NAME+": wrong number of arguments");
-                        System.exit(2);				        
-				    }
-				    settings.setValue(Validator.SETTING_REPOSITORY, xtfFile[0]);
-				    settings.setValue(Validator.SETTING_NEW_VERSION_OF_DATA, xtfFile[1]);
-				    ok = UpdateIliDataTool.update(settings);
-				}else {
-	                ok = Validator.runValidation(xtfFile,settings);
-				}
-				System.exit(ok ? 0 : 1);
-			}else{
-			    if (settings.getValue(Validator.SETTING_CHECK_REPO_DATA) != null) {
-			        boolean ok = CheckRepoDataTool.launch(settings);
-			        System.exit(ok ? 0 : 1);
-			    } else {
-	                EhiLogger.logError(APP_NAME+": wrong number of arguments");
-	                System.exit(2);			        
-			    }
-			}
+            xtfFile = getDataFiles(args, argi, dataFileCount);
+            boolean ok=false;
+		    if(function==FC_VALIDATE) {
+                if (dataFileCount == 0) {
+                    EhiLogger.logError(APP_NAME+": wrong number of arguments");
+                    System.exit(2);                     
+                }
+                ok = Validator.runValidation(xtfFile,settings);
+		    }else if(function==FC_CREATE_ILIDATA_XML) {
+                if(dataFileCount!=0) {
+                    EhiLogger.logError(APP_NAME+": wrong number of arguments");
+                    System.exit(2);                 
+                }
+                ok = CreateIliDataTool.start(settings);
+            }else if (function==FC_UPDATE_ILIDATA_XML) {
+                if (dataFileCount != 1) {
+                    EhiLogger.logError(APP_NAME+": wrong number of arguments");
+                    System.exit(2);                     
+                }
+                ok = UpdateIliDataTool.update(new File(xtfFile[0]),settings);
+            }else if(function==FC_CHECK_REPO_DATA) {
+                if (dataFileCount != 0) {
+                    EhiLogger.logError(APP_NAME+": wrong number of arguments");
+                    System.exit(2);                     
+                }
+                ok = CheckRepoDataTool.launch(settings);
+            }else {
+                throw new IllegalStateException("function=="+function);
+            }
+            System.exit(ok ? 0 : 1);
 		}
 		
 	}

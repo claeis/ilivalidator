@@ -20,7 +20,7 @@ public class CheckRepoDataTool {
     
     private boolean checkRepoData(Settings settings) {
         try {
-            String repository = settings.getValue(Validator.SETTING_CHECK_REPO_DATA);
+            String repository = settings.getValue(Validator.SETTING_REPOSITORY);
             if (repository == null || repository.isEmpty()) {
                 throw new Exception("Repository should be given as a parameter!");
             }
