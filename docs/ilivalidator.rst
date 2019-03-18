@@ -255,7 +255,11 @@ TOML-Globale Konfigurationen
 |                                 | disableRounding="true"                    | numerischen Werten aus (inkl. Koordinaten).                                       |
 |                                 |                                           | Mögliche Einstellungen sind: "true", "false". DEFAULT ist "false".                |
 +---------------------------------+-------------------------------------------+-----------------------------------------------------------------------------------+
-
+| verifyModelVersion              | ["PARAMETER"]                             | "true" es wird geprüft, ob die VERSIONs Angabe zum Model in der HEADERSECTION     |
+|                                 | verifyModelVersion="true"                 | der XTF-Datei mit der Angabe im Modell (.ili-Datei)  übereinstimmt.               |
+|                                 |                                           | Wenn die Angabe nicht übereinstimmt, erfolt eine Info-Meldung.                    |
+|                                 |                                           | Mögliche Einstellungen sind: "true", "false". DEFAULT ist "false".                |
++---------------------------------+-------------------------------------------+-----------------------------------------------------------------------------------+
 
 INTERLIS-Metaattribute
 ~~~~~~~~~~~~~~~~~~~~~~

@@ -309,7 +309,7 @@ public class Validator {
         if (configFilename != null) {
             ValidationConfig modelConfig=new ValidationConfig();
             modelConfig.mergeConfigFile(new File(configFilename));
-            String versionControl = modelConfig.getConfigValue(ValidationConfig.PARAMETER, ValidationConfig.VERSION_CONTROL);
+            String versionControl = modelConfig.getConfigValue(ValidationConfig.PARAMETER, ValidationConfig.VERIFY_MODEL_VERSION);
             return versionControl != null ? versionControl.equals("true") ? true : false : false;
         }
         return false;
