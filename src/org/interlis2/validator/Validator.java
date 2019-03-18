@@ -171,6 +171,10 @@ public class Validator {
 			if(configFilename!=null){
 				try {
 					modelNamesFromConfig=getModelsFromConfigFile(configFilename);
+					boolean versionControl = getVersionControlFormConfigFile(configFilename);
+					if (versionControl) {
+					    settings.setValue(ch.interlis.iox_j.validator.Validator.CONFIG_DO_XTF_VERSIONCONTROL, ch.interlis.iox_j.validator.Validator.CONFIG_DO_XTF_VERSIONCONTROL_DO);
+					}
 					modelnames.addAll(modelNamesFromConfig);
 				} catch (IOException e) {
 					EhiLogger.logError("failed to read config file <"+configFilename+">", e);
@@ -301,7 +305,17 @@ public class Validator {
 		return ret;
 	}
 
-	/** template method to allow for any other IoxReader
+	private boolean getVersionControlFormConfigFile(String configFilename) throws IOException {
+        if (configFilename != null) {
+            ValidationConfig modelConfig=new ValidationConfig();
+            modelConfig.mergeConfigFile(new File(configFilename));
+            String versionControl = modelConfig.getConfigValue(ValidationConfig.PARAMETER, ValidationConfig.VERSION_CONTROL);
+            return versionControl != null ? versionControl.equals("true") ? true : false : false;
+        }
+        return false;
+    }
+
+    /** template method to allow for any other IoxReader
 	 */
 	protected IoxReader createReader(String filename, TransferDescription td,LogEventFactory errFactory,Settings settings,PipelinePool pool) throws IoxException {
 		IoxReader ioxReader=new ReaderFactory().createReader(new java.io.File(filename), errFactory);

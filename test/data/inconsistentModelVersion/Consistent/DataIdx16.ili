@@ -1,0 +1,253 @@
+INTERLIS 2.3;
+
+MODEL DatasetIdx16 (de)
+AT "mailto:ce@eisenhutinformatik.ch"
+VERSION "2018-11-21" =
+  DOMAIN
+
+  	LanguageCode_ISO639_1 = TEXT*2;
+  
+    AbsoluteLocation = URI;
+
+    GlobalDataId = TEXT;
+    
+    LocalBasketId = TEXT;
+    
+    Code = URI;
+    
+    /** Any identification of a version, for example a name, number or date.
+     */
+    DataVersion = TEXT;
+
+    RelativeFilePath = TEXT;
+
+    WebService = URI;
+
+    WebSite = URI;
+  STRUCTURE Code_ = value : MANDATORY Code; END Code_;
+  STRUCTURE WebService_ = value : MANDATORY WebService; END WebService_;
+  STRUCTURE WebSite_ = value : MANDATORY WebSite; END WebSite_;
+
+  STRUCTURE File = 
+  	path : MANDATORY RelativeFilePath;
+  	md5 : TEXT*32;
+  END File;
+
+  /** a link to dataset or a link to a basket.
+   * If it is a link to a basket, this might be by the globalId of the basket or 
+   * by the combination of the datasetId and the localBasketId.
+   */
+  STRUCTURE DataLink = 
+  	basketId : GlobalDataId; 
+  	datasetId : GlobalDataId;
+  	localBasketId : LocalBasketId;
+  	MANDATORY CONSTRAINT (DEFINED(basketId) AND NOT(DEFINED(localBasketId))) OR DEFINED(datasetId);
+  END DataLink;
+
+  STRUCTURE ModelLink = 
+  	name : MANDATORY TEXT;  !! Name or Namespace 
+  	locationHint : URI; !! repo
+  	versionHint : TEXT;
+  END ModelLink;
+  
+  STRUCTURE LocalisedText =
+    Language: LanguageCode_ISO639_1;
+    Text: MANDATORY TEXT;
+  END LocalisedText;
+  
+  STRUCTURE LocalisedMText =
+    Language: LanguageCode_ISO639_1;
+    Text: MANDATORY MTEXT;
+  END LocalisedMText;
+
+  STRUCTURE MultilingualText =
+    LocalisedText : BAG {1..*} OF LocalisedText;
+    UNIQUE (LOCAL) LocalisedText:Language;
+  END MultilingualText;  
+  
+  STRUCTURE MultilingualMText =
+    LocalisedText : BAG {1..*} OF LocalisedMText;
+    UNIQUE (LOCAL) LocalisedText:Language;
+  END MultilingualMText;
+  
+
+  STRUCTURE QualityResult = 
+	/** Validation result as a short summery.
+	*/
+  	summary : MANDATORY MultilingualText;
+	/** Validation result as a code.
+	*/
+  	code : Code;
+	/** Reference to document or website with validation result.
+	*/
+	information : WebSite;
+	/** Reference to machine readable data with validation result.
+	*/
+	data : URI;
+  END QualityResult;
+  
+  STRUCTURE DataFile = 
+  	  /** Mimetype of file format
+       */
+      fileFormat : MANDATORY TEXT;
+      /** path of data-file, as it is in the repository e.g. "BFE/91.1_TypeOfReactorCatalogue_12-09-10.xml".
+       *  More than one entry if it is split into multiple parts.
+       */
+      file : LIST {1..*} OF DatasetIdx16.File;
+  END DataFile;
+  
+  STRUCTURE BoundingBox =
+	  westlimit: MANDATORY -180.0000..180.0000;
+	  southlimit: MANDATORY -90.0000..90.0000;
+	  eastlimit: MANDATORY -180.0000..180.0000;
+	  northlimit: MANDATORY -90.0000..90.0000;
+  END BoundingBox;
+  
+    STRUCTURE Metadata =
+      /** Stable and unique Id of the basket/data e.g. "ch.bfe.kernkraftwerke.1".
+       */
+      id : DatasetIdx16.GlobalDataId;
+      /** Id of the data, as known by the owner of the data.
+       */
+      originalId : TEXT;
+      /** Version of the data; e.g. "2016-11-14"
+       */
+      version : DatasetIdx16.DataVersion;
+      /** Comment about this version (such as "Draft")
+       */
+      versionComment : TEXT*20;
+      /** Precursor version of this data e.g. "2015-10-18".
+       * Must be in the same repository.
+       */
+      precursorVersion : DatasetIdx16.DataVersion;
+      /** Follow-up data of this data e.g. "ch.bfe.kernkraftwerke.1"
+       * Might be in the different repository.
+       */
+      followupData : BAG {0..*} OF DatasetIdx16.DataLink;
+      /** any known derived data.
+       * Might be in the different repository.
+       */
+      derivedData : BAG {0..*} OF DatasetIdx16.DataLink;
+      /** If this is derived (manually or autoamtically) data, the source of it.
+       * Might be in the different repository.
+       */
+      sourceData : BAG {0..*} OF DatasetIdx16.DataLink;
+      /** machine readable model/schema of this data. Qualified TOPIC name
+       * for INTERLIS baskets.
+       */
+      model : DatasetIdx16.ModelLink;
+  	  /** Reference system (CRS) of the data. 
+  	   * Undefined for data without geometry (e.g. catalogs) or data that include geometry in multiple CRS.
+       */
+      epsgCode : TEXT;
+      /** Code that identifies the area that this dataset (eventually) covers.
+       */
+      geoScope : Code;
+      /** Target level of detail as denmoniator of scale. (eg. 50000; the number below in 1:5000)
+       */
+      resolutionScope : 1 .. 35000000;
+      /** date of last publication of this version e.g. "2004-06-04". This should change even with the most minor editorial changes.
+       */
+      publishingDate : FORMAT INTERLIS.XMLDate "1990-1-1" .. "2100-12-31";
+      /** date of last editing/change of this version e.g. "2004-06-04". This should change even with the most minor editorial changes.
+       */
+      lastEditingDate : FORMAT INTERLIS.XMLDate "1990-1-1" .. "2100-12-31";
+      /** Where the owner of the data publishes it.
+       * Absolute URL of repository (e.g. "http://data.geo.admin.ch/") or data-file ("http://data.geo.admin.ch/ch.bfe.kernkraftwerke/data.zip")
+       */
+      original : DatasetIdx16.AbsoluteLocation;
+      /** Restrictions (how to use/not use) on this data.
+       */
+      restrictions : BAG {0..*} OF DatasetIdx16.Code_;
+      /** results of quality checks.
+       */
+      qualityResults : BAG {0..*} OF DatasetIdx16.QualityResult;
+      /** Who owns this data e.g. "http://www.bfe.admin.ch/geoinformation/"
+       */
+      owner : URI;
+      /** bounding box of the actual available data.
+       */
+      boundary : BoundingBox;
+    END Metadata;
+  
+  
+  TOPIC DataIndex =
+
+    STRUCTURE BasketMetadata EXTENDS DatasetIdx16.Metadata =
+      /** Id (transient or stable) of the basket, that is local (unique) to the dataset.
+       */
+      localId : DatasetIdx16.LocalBasketId;
+    
+    	MANDATORY CONSTRAINT DEFINED(id) OR DEFINED(localId);
+    	MANDATORY CONSTRAINT DEFINED(version);
+    	MANDATORY CONSTRAINT DEFINED(owner);
+    END BasketMetadata;
+
+    CLASS DatasetMetadata EXTENDS DatasetIdx16.Metadata =
+      /** Title of data e.g. "Amtliche Vermessung"
+       */
+      title : MultilingualText;
+      /** A short description of this data.
+       */
+      shortDescription : MultilingualMText;
+      /** Comma seperated list of keywords/tags associated with this data e.g. "DM01"
+       */
+      keywords : TEXT;
+      /** List of category codes associated with this data.
+       */
+      categories : LIST {0..*} OF Code_;
+      /** Who manages/maintains this data e.g. "http://www.swisstopo.admin.ch/"
+       */
+      servicer : URI;
+      /** Who should be adressed with technical questions e.g. "mailto:info@bfe.admin.ch"
+       */
+      technicalContact : URI;
+      /** Reference to document or website with further information, for example UML diagrams, software etc.
+       */
+      furtherInformation : WebSite;
+      /** Reference to machine readable data with further information about the data
+       */
+      furtherMetadata : URI;
+      /** any known WMS that serves this data
+       */
+      knownWMS : BAG {0..*} OF DatasetIdx16.WebService_;
+      /** any knwon WFS that serves this data
+       */
+      knownWFS : BAG {0..*} OF DatasetIdx16.WebService_;
+      /** any known ATOM service that serves this data
+       */
+      atomWS : BAG {0..*} OF DatasetIdx16.WebService_;
+      /** any known other type of WS that provides or processes this data
+       */
+      furtherWS : BAG {0..*} OF DatasetIdx16.WebService_;
+      /** any known portal where a user could view or download this data
+       */
+      knownPortal : BAG {0..*} OF DatasetIdx16.WebSite_;
+      /** the data (one entry per file-format)
+       */
+      files : BAG {0..*} OF DatasetIdx16.DataFile;
+      /** Basktes that togethere are this dataset.
+       */
+      baskets : BAG {0..*} OF BasketMetadata;
+      MANDATORY CONSTRAINT DEFINED(id);
+      MANDATORY CONSTRAINT DEFINED(version);
+      MANDATORY CONSTRAINT DEFINED(owner);
+      UNIQUE id, version;
+      UNIQUE baskets->id, baskets->version;
+      UNIQUE (LOCAL) baskets: localId;
+    END DatasetMetadata;
+    
+    /** Metadata about this metadata.
+     */
+    CLASS Metadata EXTENDS DatasetIdx16.Metadata =
+      /** Who should be adressed with technical questions e.g. "mailto:support@kogis.ch"
+       */
+      technicalContact : URI;
+      MANDATORY CONSTRAINT DEFINED(id);
+      MANDATORY CONSTRAINT DEFINED(version);
+      MANDATORY CONSTRAINT DEFINED(owner);
+    END Metadata;
+    
+  END DataIndex;
+
+END DatasetIdx16.
