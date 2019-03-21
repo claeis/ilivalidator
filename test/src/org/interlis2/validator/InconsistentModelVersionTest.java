@@ -43,7 +43,7 @@ public class InconsistentModelVersionTest {
         ArrayList<LogEvent> errs = logCollector.getErrs();
         for (LogEvent err : errs) {
             if (err instanceof LogEventImpl) {
-                String infoMsg = "The Iliversion (2018-11-19) in a Model (DatasetIdx16) and the XML Model version (2018-11-21) in a model (DatasetIdx16) do not match.";
+                String infoMsg = "The Iliversion in model (Beispiel2Zusatz) and transferfile do not match (2016-03-29!=2011-12-22)";
                 if (err.getEventMsg().equals(infoMsg)) {
                     return true;
                 }
