@@ -9,7 +9,6 @@ import org.junit.Test;
 import ch.ehi.basics.logging.EhiLogger;
 import ch.ehi.basics.logging.LogEvent;
 import ch.ehi.basics.settings.Settings;
-import ch.interlis.iom_j.itf.LogCollector;
 import ch.interlis.iox.IoxException;
 import ch.interlis.iox_j.logging.LogEventImpl;
 
