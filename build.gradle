@@ -16,11 +16,11 @@ configurations {
 // to get the latest SNAPSHOT uncomment the following lines
 //configurations.all {
     // check for updates every build
-//    resolutionStrategy.cacheChangingModulesFor 0, 'seconds'
+    // resolutionStrategy.cacheChangingModulesFor 0, 'seconds'
 //}
 
 dependencies {
-    compile group: 'ch.interlis', name: 'iox-ili', version: '1.20.10'
+    compile group: 'ch.interlis', name: 'iox-ili', version: '1.20.11+'
     compile group: 'ch.interlis', name: 'ili2c-tool', version: "4.7.10"
     testCompile group: 'junit', name: 'junit', version: '4.12'
     deployerJars "org.apache.maven.wagon:wagon-ftp:3.0.0"
