@@ -173,7 +173,7 @@ public class Validator {
 					modelNamesFromConfig=getModelsFromConfigFile(configFilename);
 					boolean versionControl = getVersionControlFormConfigFile(configFilename);
 					if (versionControl) {
-					    settings.setValue(ch.interlis.iox_j.validator.Validator.CONFIG_DO_XTF_VERSIONCONTROL, ch.interlis.iox_j.validator.Validator.CONFIG_DO_XTF_VERSIONCONTROL_DO);
+					    settings.setValue(ch.interlis.iox_j.validator.Validator.CONFIG_DO_XTF_VERIFYMODEL, ch.interlis.iox_j.validator.Validator.CONFIG_DO_XTF_VERIFYMODEL_DO);
 					}
 					modelnames.addAll(modelNamesFromConfig);
 				} catch (IOException e) {

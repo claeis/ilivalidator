@@ -23,7 +23,7 @@ public class InconsistentModelVersionTest {
         EhiLogger.getInstance().addListener(logCollector);
         Settings settings = new Settings();
         settings.setValue(Validator.SETTING_CONFIGFILE, CONFIG_FILE); 
-        boolean ret = Validator.runValidation("test/data/inconsistentModelVersion/Consistent/ilidata.xml", settings);        
+        boolean ret = Validator.runValidation("test/data/inconsistentModelVersion/ConsistentIlidata.xml", settings);        
         assertTrue(ret);
         assertFalse(hasAnInfoLogMsgForTheInconsistentVersion(logCollector));
     }
@@ -34,7 +34,7 @@ public class InconsistentModelVersionTest {
         EhiLogger.getInstance().addListener(logCollector);
         Settings settings = new Settings();
         settings.setValue(Validator.SETTING_CONFIGFILE, CONFIG_FILE); 
-        boolean ret = Validator.runValidation("test/data/inconsistentModelVersion/Inconsistent/ilidata.xml", settings);        
+        boolean ret = Validator.runValidation("test/data/inconsistentModelVersion/InconsistentIlidata.xml", settings);        
         assertTrue(ret);
         assertTrue(hasAnInfoLogMsgForTheInconsistentVersion(logCollector));
     }
@@ -43,7 +43,7 @@ public class InconsistentModelVersionTest {
         ArrayList<LogEvent> errs = logCollector.getErrs();
         for (LogEvent err : errs) {
             if (err instanceof LogEventImpl) {
-                String infoMsg = "The Iliversion in model (Beispiel2Zusatz) and transferfile do not match (2016-03-29!=2011-12-22)";
+                String infoMsg = "The VERSION in model (Beispiel2) and transferfile do not match (2011-12-22!=2011-12-23)";
                 if (err.getEventMsg().equals(infoMsg)) {
                     return true;
                 }
