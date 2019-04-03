@@ -140,7 +140,6 @@ public class Validator {
 				EhiLogger.logState("pluginFolder <"+pluginFolder+">");
 			}
 		
-			TransferDescription sourceTd=null;
 			TransferDescription td=null;
 			
 			skipPolygonBuilding = ch.interlis.iox_j.validator.Validator.CONFIG_DO_ITF_LINETABLES_DO.equals(settings.getValue(ch.interlis.iox_j.validator.Validator.CONFIG_DO_ITF_LINETABLES));
@@ -171,6 +170,10 @@ public class Validator {
 			if(configFilename!=null){
 				try {
 					modelNamesFromConfig=getModelsFromConfigFile(configFilename);
+					boolean versionControl = getVersionControlFormConfigFile(configFilename);
+					if (versionControl) {
+					    settings.setValue(ch.interlis.iox_j.validator.Validator.CONFIG_DO_XTF_VERIFYMODEL, ch.interlis.iox_j.validator.Validator.CONFIG_DO_XTF_VERIFYMODEL_DO);
+					}
 					modelnames.addAll(modelNamesFromConfig);
 				} catch (IOException e) {
 					EhiLogger.logError("failed to read config file <"+configFilename+">", e);
@@ -301,7 +304,17 @@ public class Validator {
 		return ret;
 	}
 
-	/** template method to allow for any other IoxReader
+	private boolean getVersionControlFormConfigFile(String configFilename) throws IOException {
+        if (configFilename != null) {
+            ValidationConfig modelConfig=new ValidationConfig();
+            modelConfig.mergeConfigFile(new File(configFilename));
+            String versionControl = modelConfig.getConfigValue(ValidationConfig.PARAMETER, ValidationConfig.VERIFY_MODEL_VERSION);
+            return versionControl != null ? versionControl.equals(TRUE) ? true : false : false;
+        }
+        return false;
+    }
+
+    /** template method to allow for any other IoxReader
 	 */
 	protected IoxReader createReader(String filename, TransferDescription td,LogEventFactory errFactory,Settings settings,PipelinePool pool) throws IoxException {
 		IoxReader ioxReader=new ReaderFactory().createReader(new java.io.File(filename), errFactory);
@@ -471,6 +484,18 @@ public class Validator {
 	/** the main folder of program.
 	 */
 	public static final String SETTING_APPHOME="org.interlis2.validator.appHome";
+    /** Name of the ilidata file (XTF format) to write.
+     */
+    public static final String SETTING_ILIDATA_XML="org.interlis2.validator.ilidata";
+    /** Name of file with the list of filenames.
+     */
+    public static final String SETTING_REMOTEFILE_LIST="org.interlis2.validator.filelist";
+    /** Dataset ID of the data.
+     */
+    public static final String SETTING_DATASETID_TO_UPDATE = "org.interlis2.validator.datasetIDToUpdate";
+    /** Repository URL
+     */
+    public static final String SETTING_REPOSITORY="org.interlis2.validator.baseUrl";
 	/** Last used folder in the GUI.
 	 */
 	public static final String SETTING_DIRUSED="org.interlis2.validator.dirused";

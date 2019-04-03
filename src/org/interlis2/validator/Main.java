@@ -18,6 +18,11 @@ public class Main {
 	/** version of application.
 	 */
 	private static String version=null;
+	private static int FC_VALIDATE=0;
+    private static int FC_CHECK_REPO_DATA=1;
+    private static int FC_CREATE_ILIDATA_XML=2;
+    private static int FC_UPDATE_ILIDATA_XML=3;
+	
 	/** main program entry.
 	 * @param args command line arguments.
 	 */
@@ -42,11 +47,12 @@ public class Main {
 			return;
 		}
 		int argi=0;
+		int function=FC_VALIDATE;
 		boolean doGui=false;
 		for(;argi<args.length;argi++){
 			String arg=args[argi];
 			if(arg.equals("--trace")){
-				EhiLogger.getInstance().setTraceFilter(false); 
+				EhiLogger.getInstance().setTraceFilter(false);
 			}else if(arg.equals("--gui")){
 				readSettings(settings);
 				doGui=true;
@@ -73,6 +79,26 @@ public class Main {
 				settings.setValue(Validator.SETTING_ALLOW_ITF_AREA_HOLES,Validator.TRUE);
 			}else if(arg.equals("--skipPolygonBuilding")){
 				settings.setValue(ch.interlis.iox_j.validator.Validator.CONFIG_DO_ITF_LINETABLES, ch.interlis.iox_j.validator.Validator.CONFIG_DO_ITF_LINETABLES_DO);
+			}else if (arg.equals("--createIliData")){
+			    function=FC_CREATE_ILIDATA_XML;
+            }else if (arg.equals("--updateIliData")) {
+                function=FC_UPDATE_ILIDATA_XML;
+            }else if (arg.equals("--check-repo-data")) {
+                function=FC_CHECK_REPO_DATA;
+                argi++;
+                settings.setValue(Validator.SETTING_REPOSITORY, args[argi]);
+            }else if (arg.equals("--ilidata")) {
+                argi++;
+			    settings.setValue(Validator.SETTING_ILIDATA_XML, args[argi]);
+			}else if (arg.equals("--srcfiles")) {
+			    argi++;
+			    settings.setValue(Validator.SETTING_REMOTEFILE_LIST, args[argi]);
+			}else if (arg.equals("--datasetId")) {
+			    argi++;
+			    settings.setValue(Validator.SETTING_DATASETID_TO_UPDATE, args[argi]);
+            }else if (arg.equals("--repos")) {
+                argi++;
+                settings.setValue(Validator.SETTING_REPOSITORY, args[argi]);
 			}else if(arg.equals("--log")) {
 			    argi++;
 			    settings.setValue(Validator.SETTING_LOGFILE, args[argi]);
@@ -107,6 +133,10 @@ public class Main {
 					System.err.println("--disableConstraintValidation  disable constraint validation.");
 					System.err.println("--allObjectsAccessible  assume that all objects are known to the validator.");
 					System.err.println("--multiplicityOff     disable all multiplicity validation.");
+					System.err.println("--createIliData(formedFilename, sourceFolder)   create a new xml file by reading/analyzing existing xtf/itf files.");
+					System.err.println("--srcfiles (formedFilename, filename, remoteLocation)   reads a list of relative file names and reads all these files from the remote location and creates new xml(ilidata formatted)");
+					System.err.println("--updateIliData       Ili data to be updated");
+					System.err.println("--dataset             The requested Dataset ID to be updated");
 					System.err.println("--skipPolygonBuilding skip polygon building (only ITF).");
 					System.err.println("--allowItfAreaHoles   allow empty holes (unassigned inner boundaries) in ITF AREA attributes.");
 				    System.err.println("--log file            text file, that receives validation results.");
@@ -137,18 +167,40 @@ public class Main {
 			}
 			MainFrame.main(xtfFile,settings);
 		}else{
-			if(dataFileCount>0) {
-				xtfFile = getDataFiles(args, argi, dataFileCount);
-				final boolean ok = Validator.runValidation(xtfFile,settings);
-				System.exit(ok ? 0 : 1);
-			}else{
-				EhiLogger.logError(APP_NAME+": wrong number of arguments");
-				System.exit(2);
-			}
+            xtfFile = getDataFiles(args, argi, dataFileCount);
+            boolean ok=false;
+		    if(function==FC_VALIDATE) {
+                if (dataFileCount == 0) {
+                    EhiLogger.logError(APP_NAME+": wrong number of arguments");
+                    System.exit(2);                     
+                }
+                ok = Validator.runValidation(xtfFile,settings);
+		    }else if(function==FC_CREATE_ILIDATA_XML) {
+                if(dataFileCount!=0) {
+                    EhiLogger.logError(APP_NAME+": wrong number of arguments");
+                    System.exit(2);                 
+                }
+                ok = CreateIliDataTool.start(settings);
+            }else if (function==FC_UPDATE_ILIDATA_XML) {
+                if (dataFileCount != 1) {
+                    EhiLogger.logError(APP_NAME+": wrong number of arguments");
+                    System.exit(2);                     
+                }
+                ok = UpdateIliDataTool.update(new File(xtfFile[0]),settings);
+            }else if(function==FC_CHECK_REPO_DATA) {
+                if (dataFileCount != 0) {
+                    EhiLogger.logError(APP_NAME+": wrong number of arguments");
+                    System.exit(2);                     
+                }
+                ok = CheckRepoDataTool.launch(settings);
+            }else {
+                throw new IllegalStateException("function=="+function);
+            }
+            System.exit(ok ? 0 : 1);
 		}
 		
 	}
-	private static String[] getDataFiles(String[] args, int argi, int dataFileCount) {
+    private static String[] getDataFiles(String[] args, int argi, int dataFileCount) {
 		String[] xtfFile;
 		xtfFile=new String[dataFileCount];
 		int fileCount=0;
