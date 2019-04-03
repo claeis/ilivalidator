@@ -10,6 +10,7 @@ Interlis-Transferdatei (itf oder xtf) gemäss einem Interlis-Modell
 (ili) überprüft.
 
 Es bestehen u.a. folgende Konfigurationsmöglichkeiten:
+
 - einzelne Prüfungen ein oder auszuschalten
 - eigene Fehlermeldungen inkl. Attributwerte zu definieren
 - zusätzliche Bedingung zu definieren
@@ -310,7 +311,11 @@ TOML-Globale Konfigurationen
 |                                 | disableRounding="true"                    | numerischen Werten aus (inkl. Koordinaten).                                       |
 |                                 |                                           | Mögliche Einstellungen sind: "true", "false". DEFAULT ist "false".                |
 +---------------------------------+-------------------------------------------+-----------------------------------------------------------------------------------+
-
+| verifyModelVersion              | ["PARAMETER"]                             | "true" es wird geprüft, ob die VERSIONs Angabe zum Model in der HEADERSECTION     |
+|                                 | verifyModelVersion="true"                 | der XTF-Datei mit der Angabe im Modell (.ili-Datei)  übereinstimmt.               |
+|                                 |                                           | Wenn die Angabe nicht übereinstimmt, erfolt eine Info-Meldung.                    |
+|                                 |                                           | Mögliche Einstellungen sind: "true", "false". DEFAULT ist "false".                |
++---------------------------------+-------------------------------------------+-----------------------------------------------------------------------------------+
 
 INTERLIS-Metaattribute
 ~~~~~~~~~~~~~~~~~~~~~~
