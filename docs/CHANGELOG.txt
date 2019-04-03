@@ -1,6 +1,21 @@
 LATEST VERSION
 -----------------------------
 
+ilivalidator 1.11.0 (2019-04-03)
+-----------------------------
+- incomplete attribute path in error message
+- new config parameter to report inconsistent model version
+- new function --check-repo-data
+- new function --updateIliData
+- new function --createIliData
+- GUI: create menu items for cmdline options
+- localize validation messages
+- fixed: Xtflog contains not all messages
+- fixed: invalid ring lines Error - failed to build polygons
+- fixed: Constraints in association: compare objects not possible
+- iox-ili-1.20.11
+- ili2c-5.0.0
+
 ilivalidator 1.10.0 (2018-12-09)
 -----------------------------
 - GUI: use model names as additionalModels
