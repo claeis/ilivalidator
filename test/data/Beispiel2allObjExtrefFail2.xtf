@@ -1,0 +1,15 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<TRANSFER xmlns="http://www.interlis.ch/INTERLIS2.3">
+	<HEADERSECTION SENDER="ili2pg-3.6.0-20161230" VERSION="2.3">
+		<MODELS>
+			<MODEL NAME="Beispiel2" VERSION="2016-07-08" URI="mailto:ceis@localhost"></MODEL>
+		</MODELS>
+	</HEADERSECTION>
+	<DATASECTION>
+		<Beispiel2.GebaeudeRegister BID="Beispiel2.GebaeudeRegister">
+			<Beispiel2.GebaeudeRegister.GebaeudeDetail TID="100">
+				<Gebaeude REF="10"></Gebaeude>
+			</Beispiel2.GebaeudeRegister.GebaeudeDetail>
+		</Beispiel2.GebaeudeRegister>
+	</DATASECTION>
+</TRANSFER>
