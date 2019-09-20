@@ -168,6 +168,26 @@ public class ValidatorTest {
 		boolean ret=Validator.runValidation("test/data/Beispiel2refFail.xtf", null);
 		assertFalse(ret);
 	}
+    @Test
+    public void xtfAllObjExtrefOk() {
+        Settings settings=new Settings();
+        settings.setValue(Validator.SETTING_ALL_OBJECTS_ACCESSIBLE, Validator.TRUE);
+        boolean ret=Validator.runValidation(new String[] {
+                "test/data/Beispiel2allObjExtrefOk1.xtf",
+                "test/data/Beispiel2allObjExtrefOk2.xtf"
+        }, settings);
+        assertTrue(ret);
+    }
+    @Test
+    public void xtfAllObjExtrefFail() {
+        Settings settings=new Settings();
+        settings.setValue(Validator.SETTING_ALL_OBJECTS_ACCESSIBLE, Validator.TRUE);
+        boolean ret=Validator.runValidation(new String[] {
+                "test/data/Beispiel2allObjExtrefOk1.xtf",
+                "test/data/Beispiel2allObjExtrefFail2.xtf"
+        }, settings);
+        assertFalse(ret);
+    }
 	@Test
 	public void ili2cFail() {
 		Settings settings=new Settings();
