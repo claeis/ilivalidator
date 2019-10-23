@@ -3,6 +3,7 @@ LATEST VERSION
 
 ilivalidator 1.11.1 (2019-09-20)
 -----------------------------
+- fails to report superfluous TIDs (#201)
 - ili2c-5.0.2
 - iox-ili-1.20.13
 
