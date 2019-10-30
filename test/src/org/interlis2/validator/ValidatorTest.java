@@ -2,9 +2,22 @@ package org.interlis2.validator;
 
 import static org.junit.Assert.*;
 import java.io.File;
+import java.util.ArrayList;
+import java.util.HashMap;
+
+import org.junit.Assert;
 import org.junit.Test;
 import ch.ehi.basics.logging.EhiLogger;
 import ch.ehi.basics.settings.Settings;
+import ch.interlis.iom.IomObject;
+import ch.interlis.iom_j.xtf.XtfReader;
+import ch.interlis.iom_j.xtf.XtfStartTransferEvent;
+import ch.interlis.iox.EndBasketEvent;
+import ch.interlis.iox.EndTransferEvent;
+import ch.interlis.iox.IoxEvent;
+import ch.interlis.iox.ObjectEvent;
+import ch.interlis.iox.StartBasketEvent;
+import ch.interlis.iox.StartTransferEvent;
 
 public class ValidatorTest {
 	private static final String PLUGINPATH_DEMOPLUGIN=new File("demoplugin/build/libs").getAbsolutePath();
@@ -119,6 +132,40 @@ public class ValidatorTest {
 		boolean ret=Validator.runValidation("test/data/Beispiel2b.xtf", null);
 		assertFalse(ret);
 	}
+    @Test
+    public void xtfFailWithXtflog() throws Exception {
+        Settings settings=new Settings();
+        File xtflog=new File("test/data/Beispiel4a.log");
+        settings.setValue(Validator.SETTING_XTFLOG,xtflog.getPath());
+        boolean ret=Validator.runValidation("test/data/Beispiel4a.xtf", settings);
+        assertFalse(ret);
+        HashMap<String,IomObject> objs=new HashMap<String,IomObject>();
+        XtfReader reader=null;
+        try {
+            reader=new XtfReader(xtflog);
+            IoxEvent event=null;
+             do{
+                event=reader.read();
+                if(event instanceof StartTransferEvent){
+                }else if(event instanceof StartBasketEvent){
+                }else if(event instanceof ObjectEvent){
+                    IomObject iomObj=((ObjectEvent)event).getIomObject();
+                    if(iomObj.getobjectoid()!=null && "Error".equals(iomObj.getattrvalue("Type"))){
+                        objs.put(iomObj.getobjectoid(), iomObj);
+                    }
+                }else if(event instanceof EndBasketEvent){
+                }else if(event instanceof EndTransferEvent){
+                }
+             }while(!(event instanceof EndTransferEvent));
+            assertEquals(1,objs.size());
+            assertEquals("Beschreibung fehlt (\u00E4\u00F6\u00FC)",objs.values().iterator().next().getattrvalue("Message"));
+        }finally {
+            if(reader!=null) {
+                reader.close();
+                reader=null;
+            }
+        }
+    }
 	@Test
 	public void xtfFailWithSettings() {
 		Settings settings=new Settings();

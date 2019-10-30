@@ -1,0 +1,25 @@
+INTERLIS 2.3;
+
+CONTRACTED MODEL Beispiel4
+  AT "mailto:ceis@localhost"
+  VERSION "2019-10-30" =
+
+  DOMAIN
+    Art = TEXT*6;
+
+  TOPIC Bodenbedeckung =
+
+    CLASS GebaeudeArt =
+      Art : MANDATORY Art;
+      Beschreibung : MTEXT;
+    END GebaeudeArt;
+
+    CONSTRAINTS OF GebaeudeArt =
+      !!@ ilivalid.msg="Beschreibung fehlt (äöü)"
+      MANDATORY CONSTRAINT DEFINED(Beschreibung);
+    END;
+    
+  END Bodenbedeckung;
+
+
+END Beispiel4.
