@@ -1,0 +1,14 @@
+<?xml version="1.0" encoding="UTF-8"?><TRANSFER xmlns="http://www.interlis.ch/INTERLIS2.3">
+<HEADERSECTION SENDER="ili2c-4.5.22-20160520" VERSION="2.3"><MODELS><MODEL NAME="Beispiel4" VERSION="2011-12-22" URI="http://interlis.ch"></MODEL></MODELS></HEADERSECTION>
+<DATASECTION>
+<Beispiel4.Bodenbedeckung BID="b1">
+	<Beispiel4.Bodenbedeckung.GebaeudeArt TID="ok1">
+		<Art>5</Art>
+		<Beschreibung>Text</Beschreibung>
+	</Beispiel4.Bodenbedeckung.GebaeudeArt>
+	<Beispiel4.Bodenbedeckung.GebaeudeArt TID="fail1">
+		<Art>5</Art>
+	</Beispiel4.Bodenbedeckung.GebaeudeArt>
+</Beispiel4.Bodenbedeckung>
+</DATASECTION>
+</TRANSFER>

@@ -1,8 +1,8 @@
 package org.interlis2.validator;
 
 import java.io.File;
-import java.io.FileNotFoundException;
 import java.io.IOException;
+import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.HashSet;
 import java.util.List;
@@ -12,31 +12,20 @@ import org.interlis2.validator.impl.ErrorTracker;
 
 import ch.ehi.basics.logging.AbstractStdListener;
 import ch.ehi.basics.logging.EhiLogger;
-import ch.ehi.basics.logging.LogListener;
 import ch.ehi.basics.logging.StdListener;
 import ch.ehi.basics.settings.Settings;
-import ch.interlis.ili2c.Ili2c;
 import ch.interlis.ili2c.Ili2cException;
 import ch.interlis.ili2c.Ili2cFailure;
 import ch.interlis.ili2c.gui.UserSettings;
-import ch.interlis.ili2c.metamodel.Model;
 import ch.interlis.ili2c.metamodel.TransferDescription;
-import ch.interlis.iom_j.csv.CsvReader;
-import ch.interlis.iom_j.iligml.Iligml20Reader;
 import ch.interlis.iom_j.itf.ItfReader;
 import ch.interlis.iom_j.itf.ItfReader2;
-import ch.interlis.iom_j.xtf.Xtf24Reader;
-import ch.interlis.iom_j.xtf.XtfReader;
-import ch.interlis.iox.EndBasketEvent;
 import ch.interlis.iox.EndTransferEvent;
 import ch.interlis.iox.IoxEvent;
 import ch.interlis.iox.IoxException;
 import ch.interlis.iox.IoxLogging;
 import ch.interlis.iox.IoxReader;
-import ch.interlis.iox.StartBasketEvent;
-import ch.interlis.iox.StartTransferEvent;
 import ch.interlis.iox_j.IoxIliReader;
-import ch.interlis.iox_j.IoxUtility;
 import ch.interlis.iox_j.PipelinePool;
 import ch.interlis.iox_j.logging.FileLogger;
 import ch.interlis.iox_j.logging.LogEventFactory;
@@ -126,6 +115,10 @@ public class Validator {
 			EhiLogger.logState(Main.APP_NAME+"-"+Main.getVersion());
 			EhiLogger.logState("ili2c-"+ch.interlis.ili2c.Ili2c.getVersion());
 			EhiLogger.logState("iox-ili-"+ch.interlis.iox_j.IoxUtility.getVersion());
+            EhiLogger.logState("User <"+java.lang.System.getProperty("user.name")+">");
+            String DATE_FORMAT = "yyyy-MM-dd HH:mm";
+            SimpleDateFormat dateFormat = new java.text.SimpleDateFormat(DATE_FORMAT);
+            EhiLogger.logState("Start date "+dateFormat.format(new java.util.Date()));
 			EhiLogger.logState("maxMemory "+java.lang.Runtime.getRuntime().maxMemory()/1024L+" KB");
 			for(String dataFile:dataFiles){
 				EhiLogger.logState("dataFile <"+dataFile+">");
