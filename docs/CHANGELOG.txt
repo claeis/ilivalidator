@@ -1,6 +1,7 @@
 LATEST VERSION
 -----------------------------
 - fix objectCount(UNDEFINED) (#203)
+- add User+start date/time to log
 - iox-ili-1.20.14
 
 ilivalidator 1.11.1 (2019-09-20)
