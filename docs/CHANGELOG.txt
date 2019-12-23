@@ -1,9 +1,12 @@
 LATEST VERSION
 -----------------------------
+
+ilivalidator 1.11.3 (2019-12-23)
+-----------------------------
 - Unable to detect out model name for ili22 (#214)
 - NPE when reference to main table is missing in surface table (ili1) (#213)
 - Error: polygons overlay (#202)
-- iox-ili-1.20.15-SNAPSHOT
+- iox-ili-1.20.15
 
 ilivalidator 1.11.2 (2019-11-08)
 -----------------------------
