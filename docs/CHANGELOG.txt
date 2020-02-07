@@ -1,6 +1,8 @@
 LATEST VERSION
 -----------------------------
 - Command line: use options without a data-file (#223)
+- iox-ili-1.20.17-SNAPSHOT
+- ili2c-5.0.5
 
 ilivalidator 1.11.3 (2019-12-23)
 -----------------------------
