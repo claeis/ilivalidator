@@ -126,7 +126,7 @@ public class Main {
 					System.err.println();
 					System.err.println("OPTIONS");
 					System.err.println();
-					//System.err.println("--gui                 start GUI.");
+					System.err.println("--gui                 start GUI.");
 				    System.err.println("--config file         config file to control validation.");
 					System.err.println("--forceTypeValidation  restrict customization of validation related to \"multiplicity\".");
 					System.err.println("--disableAreaValidation  disable AREA validation.");
@@ -162,8 +162,6 @@ public class Main {
 		if(doGui){
 			if(dataFileCount>0) {
 				xtfFile = getDataFiles(args, argi, dataFileCount);
-			}else {
-				EhiLogger.logAdaption(APP_NAME+": wrong number of arguments; ignored");
 			}
 			MainFrame.main(xtfFile,settings);
 		}else{
