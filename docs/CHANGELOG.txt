@@ -1,6 +1,7 @@
 LATEST VERSION
 -----------------------------
 - Command line: use options without a data-file (#223)
+- java.lang.NullPointerException when starting filelist (#224)
 - iox-ili-1.20.17-SNAPSHOT
 - ili2c-5.0.5
 

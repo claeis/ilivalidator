@@ -32,6 +32,16 @@ public class CreateIliDataToolTest {
     }
 
     @Test
+    public void localFolderNonExisiting_Fail() throws IoxException {
+        Settings settings = new Settings();
+        settings.setValue(Validator.SETTING_ILIDATA_XML, ILIDATA_XML);
+        settings.setValue(Validator.SETTING_REPOSITORY, "test/data/createIliDataTool/nonExistingFolder");
+        settings.setValue(Validator.SETTING_ILIDIRS, "test/data/createIliDataTool");
+        boolean ret = CreateIliDataTool.start(settings);
+        assertFalse(ret);
+    }
+    
+    @Test
     public void repository() throws Iox2jtsException, IoxException {
         Settings settings = new Settings();
         settings.setValue(Validator.SETTING_ILIDATA_XML, ILIDATA_XML);
