@@ -1,7 +1,7 @@
 LATEST VERSION
 -----------------------------
 
-ilivalidator 1.11.4 (2020-02-03)
+ilivalidator 1.11.4 (2020-03-02)
 -----------------------------
 - Command line: use options without a data-file (#223)
 - java.lang.NullPointerException when starting filelist (#224)
