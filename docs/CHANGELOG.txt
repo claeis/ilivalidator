@@ -1,6 +1,14 @@
 LATEST VERSION
 -----------------------------
 
+ilivalidator 1.11.4 (2020-02-03)
+-----------------------------
+- Command line: use options without a data-file (#223)
+- java.lang.NullPointerException when starting filelist (#224)
+- Unique constraints violation throws NPE (ili1) (#225)
+- iox-ili-1.20.17
+- ili2c-5.0.6
+
 ilivalidator 1.11.3 (2019-12-23)
 -----------------------------
 - Unable to detect out model name for ili22 (#214)

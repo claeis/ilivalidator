@@ -427,15 +427,17 @@ public class MainFrame extends JFrame {
 		return partArr;
 	}
 	public void setXtfFile(String[] xtfFileList){
-		StringBuilder stringBuilder = new StringBuilder();
-		String newLine="";
-		for(int i=0;i<xtfFileList.length;i++){
-			if(xtfFileList[i]!=null) {
-				stringBuilder.append(newLine);
-				stringBuilder.append(xtfFileList[i]);
-				newLine = "\n";
-			}
-		}
+        StringBuilder stringBuilder = new StringBuilder();
+	    if(xtfFileList!=null) {
+	        String newLine="";
+	        for(int i=0;i<xtfFileList.length;i++){
+	            if(xtfFileList[i]!=null) {
+	                stringBuilder.append(newLine);
+	                stringBuilder.append(xtfFileList[i]);
+	                newLine = "\n";
+	            }
+	        }
+	    }
 		getXtfFileUi().setText(stringBuilder.toString());
 	}
 	// selected model names

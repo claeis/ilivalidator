@@ -58,6 +58,11 @@ public class CreateIliDataTool {
             if (srcFilelist != null) {
                 visitAllFilesWithUrl(srcFilelist, baseUrl, visitedFiles);
             } else {
+                File reposFolder=new File(baseUrl);
+                if(!reposFolder.exists() || !reposFolder.isDirectory() || !reposFolder.canRead()) {
+                    EhiLogger.logError("can't read repos folder <"+baseUrl+">");
+                    return false;
+                }
                 visitAllFiles(baseUrl, null, visitedFiles);
             }
             readFilesFromSourceFolder(new File(destinationFile), visitedFiles, baseUrl, settings);
