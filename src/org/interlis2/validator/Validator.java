@@ -91,12 +91,34 @@ public class Validator {
 		try{
 			// setup logging of validation results
 			if(logFilename!=null){
-				logfile=new FileLogger(new java.io.File(logFilename));
-				EhiLogger.getInstance().addListener(logfile);
+			    File f=new java.io.File(logFilename);
+			    try {
+                    if(isWriteable(f)) {
+                        logfile=new FileLogger(f);
+                        EhiLogger.getInstance().addListener(logfile);
+                    }else {
+                        EhiLogger.logError("failed to write to logfile <"+f.getPath()+">");
+                        return false;
+                    }
+                } catch (IOException e) {
+                    EhiLogger.logError("failed to write to logfile <"+f.getPath()+">",e);
+                    return false;
+                }
 			}
 			if(xtflogFilename!=null){
-				xtflog=new XtfErrorsLogger(new java.io.File(xtflogFilename), Main.APP_NAME+"-"+Main.getVersion());
-				EhiLogger.getInstance().addListener(xtflog);
+			    File f=new java.io.File(xtflogFilename);
+                try {
+                    if(isWriteable(f)) {
+                        xtflog=new XtfErrorsLogger(f, Main.APP_NAME+"-"+Main.getVersion());
+                        EhiLogger.getInstance().addListener(xtflog);
+                    }else {
+                        EhiLogger.logError("failed to write to logfile <"+f.getPath()+">");
+                        return false;
+                    }
+                } catch (IOException e) {
+                    EhiLogger.logError("failed to write to logfile <"+f.getPath()+">",e);
+                    return false;
+                }
 			}
 			if(!TRUE.equals(settings.getValue(SETTING_DISABLE_STD_LOGGER))) {
 				logStderr=new StdLogger(logFilename);
@@ -297,7 +319,12 @@ public class Validator {
 		return ret;
 	}
 
-	private boolean getVersionControlFormConfigFile(String configFilename) throws IOException {
+	private static boolean isWriteable(File f) throws IOException {
+        f.createNewFile();
+        return f.canWrite();
+    }
+
+    private boolean getVersionControlFormConfigFile(String configFilename) throws IOException {
         if (configFilename != null) {
             ValidationConfig modelConfig=new ValidationConfig();
             modelConfig.mergeConfigFile(new File(configFilename));
