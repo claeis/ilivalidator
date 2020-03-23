@@ -3,6 +3,10 @@ LATEST VERSION
 - Missing check when write to "unwriteable" log-file (#228)
 - NPE with ili23 / RoadsExgm2ien_Symbols-20160121.xml (#231)
 - ArrayIndexOutOfBoundsException with n-ary association (#232)
+- Xtf24: wrong xmlns for extended attributes (#235)
+- Xtf24: fails to read STRUCTUREs defined at model level (#236)
+- Xtf24: missing line number in messages (#237)
+- Xtf24: fails to read ref of embedded assoc with attrs (#238)
 - ili2c-5.0.7-SNAPSHOT
 - ehibasics-1.3.0-SNAPSHOT
 - iox-ili-1.20.18-SNAPSHOT
