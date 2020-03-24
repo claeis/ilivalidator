@@ -1,6 +1,7 @@
 package org.interlis2.validator.gui;
 
 import java.awt.Insets;
+import java.awt.Toolkit;
 import java.awt.event.ActionListener;
 import java.awt.event.ItemEvent;
 import java.awt.event.KeyEvent;
@@ -577,7 +578,9 @@ public class MainFrame extends JFrame {
 					SwingWorker worker = new SwingWorker() {
 						public Object construct() {
 							try {
-								Validator.runValidation(getXtfFile(),getSettings());
+								boolean ret=Validator.runValidation(getXtfFile(),getSettings());
+								Toolkit.getDefaultToolkit().beep();
+                                JOptionPane.showMessageDialog(MainFrame.this, ret?Validator.MSG_VALIDATION_DONE:Validator.MSG_VALIDATION_FAILED);                                   
 							} catch (Exception ex) {
 								EhiLogger.logError(rsrc.getString("MainFrame.generalError"),ex);
 							}

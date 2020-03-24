@@ -42,7 +42,9 @@ import ch.interlis.iox_j.validator.ValidationConfig;
  */
 public class Validator {
 	
-	public static boolean runValidation(
+	public static final String MSG_VALIDATION_DONE = "...validation done";
+    public static final String MSG_VALIDATION_FAILED = "...validation failed";
+    public static boolean runValidation(
 			String dataFilename,
 			Settings settings
 		) {
@@ -280,9 +282,9 @@ public class Validator {
 				statistics.write2logger();
 				// check for errors
 				if(logStderr.hasSeenErrors()){
-					EhiLogger.logState("...validation failed");
+					EhiLogger.logState(MSG_VALIDATION_FAILED);
 				}else{
-					EhiLogger.logState("...validation done");
+					EhiLogger.logState(MSG_VALIDATION_DONE);
 					ret=true;
 				}
 			}catch(Throwable ex){
@@ -290,7 +292,7 @@ public class Validator {
 					statistics.write2logger();
 				}
 				EhiLogger.logError(ex);
-				EhiLogger.logState("...validation failed");
+				EhiLogger.logState(MSG_VALIDATION_FAILED);
 			}finally{
 				if(validator!=null){
 					validator.close();
