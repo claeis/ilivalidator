@@ -7,7 +7,8 @@ LATEST VERSION
 - Xtf24: fails to read STRUCTUREs defined at model level (#236)
 - Xtf24: missing line number in messages (#237)
 - Xtf24: fails to read ref of embedded assoc with attrs (#238)
-- "Job done" message in GUI (#234)
+- GUI: "Job done" message in GUI (#234)
+- GUI: scroll log area to end (#234)
 - ili2c-5.0.7-SNAPSHOT
 - ehibasics-1.3.0-SNAPSHOT
 - iox-ili-1.20.18-SNAPSHOT

@@ -579,6 +579,7 @@ public class MainFrame extends JFrame {
 						public Object construct() {
 							try {
 								boolean ret=Validator.runValidation(getXtfFile(),getSettings());
+                                getLogUi().setCaretPosition(getLogUi().getDocument().getLength());
 								Toolkit.getDefaultToolkit().beep();
                                 JOptionPane.showMessageDialog(MainFrame.this, ret?Validator.MSG_VALIDATION_DONE:Validator.MSG_VALIDATION_FAILED);                                   
 							} catch (Exception ex) {
