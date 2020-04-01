@@ -1,7 +1,22 @@
 LATEST VERSION
 -----------------------------
 
-ilivalidator 1.11.4 (2020-02-03)
+ilivalidator 1.11.5 (2020-04-01)
+-----------------------------
+- Missing check when write to "unwriteable" log-file (#228)
+- NPE with ili23 / RoadsExgm2ien_Symbols-20160121.xml (#231)
+- ArrayIndexOutOfBoundsException with n-ary association (#232)
+- Xtf24: wrong xmlns for extended attributes (#235)
+- Xtf24: fails to read STRUCTUREs defined at model level (#236)
+- Xtf24: missing line number in messages (#237)
+- Xtf24: fails to read ref of embedded assoc with attrs (#238)
+- GUI: "Job done" message in GUI (#234)
+- GUI: scroll log area to end (#234)
+- ili2c-5.0.8
+- ehibasics-1.3.0
+- iox-ili-1.20.18
+
+ilivalidator 1.11.4 (2020-03-02)
 -----------------------------
 - Command line: use options without a data-file (#223)
 - java.lang.NullPointerException when starting filelist (#224)
