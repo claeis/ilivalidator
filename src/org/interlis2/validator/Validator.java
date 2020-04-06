@@ -17,9 +17,13 @@ import ch.ehi.basics.settings.Settings;
 import ch.interlis.ili2c.Ili2cException;
 import ch.interlis.ili2c.Ili2cFailure;
 import ch.interlis.ili2c.gui.UserSettings;
+import ch.interlis.ili2c.metamodel.Model;
 import ch.interlis.ili2c.metamodel.TransferDescription;
 import ch.interlis.iom_j.itf.ItfReader;
 import ch.interlis.iom_j.itf.ItfReader2;
+import ch.interlis.iom_j.xtf.Xtf23Reader;
+import ch.interlis.iom_j.xtf.Xtf24Reader;
+import ch.interlis.iom_j.xtf.XtfReader;
 import ch.interlis.iox.EndTransferEvent;
 import ch.interlis.iox.IoxEvent;
 import ch.interlis.iox.IoxException;
@@ -27,6 +31,7 @@ import ch.interlis.iox.IoxLogging;
 import ch.interlis.iox.IoxReader;
 import ch.interlis.iox_j.IoxIliReader;
 import ch.interlis.iox_j.PipelinePool;
+import ch.interlis.iox_j.StartTransferEvent;
 import ch.interlis.iox_j.logging.FileLogger;
 import ch.interlis.iox_j.logging.LogEventFactory;
 import ch.interlis.iox_j.logging.StdLogger;
@@ -204,9 +209,14 @@ public class Validator {
 				userFunctions=PluginLoader.getInterlisFunctions(loader.getAllPlugins());
 				settings.setTransientObject(ch.interlis.iox_j.validator.Validator.CONFIG_CUSTOM_FUNCTIONS, userFunctions);
 			}
+            IoxLogging errHandler=new ch.interlis.iox_j.logging.Log2EhiLogger();
+            LogEventFactory errFactory=new LogEventFactory();
+            errFactory.setLogger(errHandler);
+            
+			String modelVersion = getModelVersion(dataFiles, errFactory);
 			
 			// read ili models
-			td=compileIli(modelnames, null,new File(dataFiles[0]).getAbsoluteFile().getParentFile().getAbsolutePath(),appHome, settings);
+			td=compileIli(modelVersion,modelnames, null,new File(dataFiles[0]).getAbsoluteFile().getParentFile().getAbsolutePath(),appHome, settings);
 			if(td==null){
 				return false;
 			}
@@ -244,9 +254,6 @@ public class Validator {
 				    }
 				}
 				
-				IoxLogging errHandler=new ch.interlis.iox_j.logging.Log2EhiLogger();
-				LogEventFactory errFactory=new LogEventFactory();
-				errFactory.setLogger(errHandler);
 				PipelinePool pool=new PipelinePool();
 				validator=new ch.interlis.iox_j.validator.Validator(td,modelConfig, errHandler, errFactory, pool,settings);
 				validator.setAutoSecondPass(false);
@@ -321,6 +328,37 @@ public class Validator {
 		return ret;
 	}
 
+    public String getModelVersion(String[] dataFiles, LogEventFactory errFactory)
+            throws IoxException 
+    {
+        String modelVersion=null;
+        String dataFile=dataFiles[0];
+        IoxReader ioxReader=null;
+        try {
+            ioxReader=new ReaderFactory().createReader(new java.io.File(dataFile), errFactory);
+            if(ioxReader instanceof Xtf24Reader) {
+                modelVersion=Model.ILI2_4;
+            }else if(ioxReader instanceof XtfReader) {
+                modelVersion=Model.ILI2_3;
+                IoxEvent event = ioxReader.read();
+                if(event instanceof StartTransferEvent && ((StartTransferEvent) event).getVersion().equals("2.2")) {
+                    modelVersion=Model.ILI2_2;
+                }
+            }else if(ioxReader instanceof Xtf23Reader) {
+                modelVersion=Model.ILI2_3;
+            }else if(ioxReader instanceof ItfReader) {
+                modelVersion=Model.ILI1;
+            }else if(ioxReader instanceof ItfReader2) {
+                modelVersion=Model.ILI1;
+            }
+        }finally {
+            if(ioxReader!=null) {
+                ioxReader.close();
+            }
+        }
+        return modelVersion;
+    }
+
 	private static boolean isWriteable(File f) throws IOException {
         f.createNewFile();
         return f.canWrite();
@@ -382,6 +420,7 @@ public class Validator {
 	}
 
 	/** Compiles the required Interlis models.
+	 * @param iliVersion version of required ili model (null, "1.0","2.2", "2.3", "2.4")
 	 * @param aclass Interlis qualified class name of a required class.
 	 * @param ilifile Interlis model file to read. null if not known.
 	 * @param itfDir Folder with Interlis model files or null.
@@ -390,7 +429,7 @@ public class Validator {
 	 * @return root object of java representation of Interlis model.
 	 * @see #SETTING_ILIDIRS
 	 */
-	public static TransferDescription compileIli(List<String> modelNames,File ilifile,String itfDir,String appHome,Settings settings) {
+	public static TransferDescription compileIli(String iliVersion,List<String> modelNames,File ilifile,String itfDir,String appHome,Settings settings) {
 		ArrayList modeldirv=new ArrayList();
 		String ilidirs=settings.getValue(Validator.SETTING_ILIDIRS);
 		if(ilidirs==null){
@@ -453,10 +492,14 @@ public class Validator {
 				modelv.addAll(modelNames);
 			}
 			try {
+			    double version=0.0;
+			    if(iliVersion!=null) {
+			        version=Double.parseDouble(iliVersion);
+			    }
 				//ili2cConfig=ch.interlis.ili2c.ModelScan.getConfig(modeldirv, modelv);
 				ch.interlis.ilirepository.IliManager modelManager=new ch.interlis.ilirepository.IliManager();
 				modelManager.setRepositories((String[])modeldirv.toArray(new String[]{}));
-				ili2cConfig=modelManager.getConfig(modelv, 0.0);
+				ili2cConfig=modelManager.getConfig(modelv, version);
 				ili2cConfig.setGenerateWarnings(false);
 			} catch (Ili2cException ex) {
 				EhiLogger.logError(ex);

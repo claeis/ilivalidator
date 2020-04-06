@@ -1,5 +1,6 @@
 LATEST VERSION
 -----------------------------
+- fails to lookup ili24 model if xtf24 transfer file (#239)
 
 ilivalidator 1.11.5 (2020-04-01)
 -----------------------------
