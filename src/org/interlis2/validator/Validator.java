@@ -38,6 +38,7 @@ import ch.interlis.iox_j.logging.StdLogger;
 import ch.interlis.iox_j.logging.XtfErrorsLogger;
 import ch.interlis.iox_j.plugins.PluginLoader;
 import ch.interlis.iox_j.statistics.IoxStatistics;
+import ch.interlis.iox_j.utility.IoxUtility;
 import ch.interlis.iox_j.utility.ReaderFactory;
 import ch.interlis.iox_j.validator.ValidationConfig;
 
@@ -143,7 +144,7 @@ public class Validator {
 		    // give user important info (such as input files or program version)
 			EhiLogger.logState(Main.APP_NAME+"-"+Main.getVersion());
 			EhiLogger.logState("ili2c-"+ch.interlis.ili2c.Ili2c.getVersion());
-			EhiLogger.logState("iox-ili-"+ch.interlis.iox_j.IoxUtility.getVersion());
+			EhiLogger.logState("iox-ili-"+ch.interlis.iox_j.utility.IoxUtility.getVersion());
             EhiLogger.logState("User <"+java.lang.System.getProperty("user.name")+">");
             String DATE_FORMAT = "yyyy-MM-dd HH:mm";
             SimpleDateFormat dateFormat = new java.text.SimpleDateFormat(DATE_FORMAT);
@@ -213,7 +214,7 @@ public class Validator {
             LogEventFactory errFactory=new LogEventFactory();
             errFactory.setLogger(errHandler);
             
-			String modelVersion = getModelVersion(dataFiles, errFactory);
+			String modelVersion = IoxUtility.getModelVersion(dataFiles, errFactory);
 			
 			// read ili models
 			td=compileIli(modelVersion,modelnames, null,new File(dataFiles[0]).getAbsoluteFile().getParentFile().getAbsolutePath(),appHome, settings);
@@ -328,36 +329,6 @@ public class Validator {
 		return ret;
 	}
 
-    public String getModelVersion(String[] dataFiles, LogEventFactory errFactory)
-            throws IoxException 
-    {
-        String modelVersion=null;
-        String dataFile=dataFiles[0];
-        IoxReader ioxReader=null;
-        try {
-            ioxReader=new ReaderFactory().createReader(new java.io.File(dataFile), errFactory);
-            if(ioxReader instanceof Xtf24Reader) {
-                modelVersion=Model.ILI2_4;
-            }else if(ioxReader instanceof XtfReader) {
-                modelVersion=Model.ILI2_3;
-                IoxEvent event = ioxReader.read();
-                if(event instanceof StartTransferEvent && ((StartTransferEvent) event).getVersion().equals("2.2")) {
-                    modelVersion=Model.ILI2_2;
-                }
-            }else if(ioxReader instanceof Xtf23Reader) {
-                modelVersion=Model.ILI2_3;
-            }else if(ioxReader instanceof ItfReader) {
-                modelVersion=Model.ILI1;
-            }else if(ioxReader instanceof ItfReader2) {
-                modelVersion=Model.ILI1;
-            }
-        }finally {
-            if(ioxReader!=null) {
-                ioxReader.close();
-            }
-        }
-        return modelVersion;
-    }
 
 	private static boolean isWriteable(File f) throws IOException {
         f.createNewFile();

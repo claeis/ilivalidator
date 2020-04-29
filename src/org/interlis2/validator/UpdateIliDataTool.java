@@ -22,7 +22,7 @@ import ch.interlis.iox.EndTransferEvent;
 import ch.interlis.iox.IoxEvent;
 import ch.interlis.iox.IoxReader;
 import ch.interlis.iox_j.EndBasketEvent;
-import ch.interlis.iox_j.IoxUtility;
+import ch.interlis.iox_j.utility.IoxUtility;
 import ch.interlis.iox_j.ObjectEvent;
 import ch.interlis.iox_j.StartBasketEvent;
 import ch.interlis.models.DatasetIdx16.Code_;
