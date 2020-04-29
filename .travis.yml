@@ -12,7 +12,7 @@ script:
 deploy:
   - provider: script
     skip_cleanup: true
-    script: gradle -Drepos_pwd=${repos_pwd} -Drepos_usr=jql_jars-INTE -Ddownloads_pwd=${downloads_pwd} -Ddownloads_usr=jql_downloads upload uploadBin
+    script: gradle -Drepos_pwd=${repos_pwd} -Drepos_usr=jql_jars-INTE -Ddownloads_pwd=${downloads_pwd} -Ddownloads_usr=jql_downloads uploadArchives uploadBin
     on:
       branch: master
   - provider: script
