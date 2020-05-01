@@ -7,10 +7,11 @@ allprojects {
 	targetCompatibility = "1.6"
 }
 
-version '1.11.5'+System.getProperty('release','-SNAPSHOT')
+version '1.11.6'+System.getProperty('release','-SNAPSHOT')
 
 configurations {
     deployerJars
+    ftpAntTask
 }
 
 // to get the latest SNAPSHOT uncomment the following lines
@@ -21,12 +22,14 @@ configurations {
 
 dependencies {
     compile group: 'ch.ehi', name: 'ehibasics', version: '1.3.0'
-    compile group: 'ch.interlis', name: 'iox-ili', version: '1.20.18'
-    compile group: 'ch.interlis', name: 'ili2c-tool', version: "5.0.8"
-    compile group: 'ch.interlis', name: 'ili2c-core', version: "5.0.8"
+    compile group: 'ch.interlis', name: 'iox-ili', version: '1.21.0'
+    compile group: 'ch.interlis', name: 'ili2c-tool', version: "5.1.1"
+    compile group: 'ch.interlis', name: 'ili2c-core', version: "5.1.1"
     testCompile group: 'junit', name: 'junit', version: '4.12'
     deployerJars "org.apache.maven.wagon:wagon-ftp:3.3.3"
     deployerJars "org.apache.maven.wagon:wagon-ssh:3.3.3"
+    
+    ftpAntTask "org.apache.ant:ant-commons-net:1.10.7"
     
     testRuntime project('demoplugin')
 }
@@ -47,6 +50,8 @@ if(propFile.exists()){
 def git = System.getProperty('git',properties.get('git','git'))
 def repos_pwd = System.getProperty('repos_pwd',properties.get('repos_pwd','repos_pwd'))
 def repos_usr = System.getProperty('repos_usr',properties.get('repos_usr','repos_usr'))
+def downloads_pwd = System.getProperty('downloads_pwd',properties.get('downloads_pwd','downloads_pwd'))
+def downloads_usr = System.getProperty('downloads_usr',properties.get('downloads_usr','downloads_usr'))
 
 def generatedResources = "$buildDir/generated-resources/main"
 
@@ -142,4 +147,26 @@ uploadArchives {
             }
         }
     }
+}
+
+
+
+task uploadBin(dependsOn: bindist) {
+	doLast {
+		ant.taskdef(name: 'ftp',
+					classname: 'org.apache.tools.ant.taskdefs.optional.net.FTP',
+					classpath: configurations.ftpAntTask.asPath)
+		def dist= bindist.archiveFile.get().asFile.parent
+		def name=bindist.archiveFile.get().asFile.name
+		def json = groovy.json.JsonOutput.toJson([filename: 'https://downloads.interlis.ch/ilivalidator/'+name, version: project.version ,date: new Date().format( 'yyyy-MM-dd' )])
+		def releaseFile = new File(dist,project.name+"-release.json")
+		releaseFile.write(json)
+		ant.ftp(server: "jql.ftp.infomaniak.com", userid: downloads_usr, password: downloads_pwd, 
+			remoteDir: "/ilivalidator", passive:"yes") {
+				fileset(dir: dist ) {
+					include(name: name)
+					include(name: releaseFile.name)
+				}
+		}
+	}
 }
