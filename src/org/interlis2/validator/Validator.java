@@ -407,7 +407,7 @@ public class Validator {
 			ilidirs=Validator.SETTING_DEFAULT_ILIDIRS;
 		}
 	
-		EhiLogger.logState("ilidirs <"+ilidirs+">");
+		EhiLogger.logState("modeldir <"+ilidirs+">");
 		String modeldirs[]=ilidirs.split(";");
 		HashSet ilifiledirs=new HashSet();
 		for(int modeli=0;modeli<modeldirs.length;modeli++){
