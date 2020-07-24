@@ -353,7 +353,7 @@ public class Validator {
 			ioxReader=new ItfReader(new java.io.File(filename));
 		}
 		if(ioxReader instanceof ItfReader2){
-			((ItfReader2) ioxReader).setAllowItfAreaHoles(skipGeometryErrors);
+			((ItfReader2) ioxReader).setIgnorePolygonBuildingErrors(skipGeometryErrors);
             ((ItfReader2) ioxReader).setAllowItfAreaHoles(allowItfAreaHoles);
 		    ((ItfReader2) ioxReader).setIoxDataPool(pool);
 		}

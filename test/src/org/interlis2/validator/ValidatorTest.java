@@ -77,6 +77,13 @@ public class ValidatorTest {
 		boolean ret=Validator.runValidation("test/data/Beispiel1d.itf", null);
 		assertFalse(ret);
 	}
+    @Test
+    public void itfWithValidationConfig_DefaultGeometryTypeValidationOff_Ok() {
+        Settings settings=new Settings();
+        settings.setValue(Validator.SETTING_CONFIGFILE, "test/data/defaultGeometryTypeValidationOff.toml");
+        boolean ret=Validator.runValidation("test/data/Beispiel1d.itf", settings);
+        assertTrue(ret);
+    }
 	@Test
 	public void xtfOk() {
 		boolean ret=Validator.runValidation("test/data/Beispiel2a.xtf", null);
