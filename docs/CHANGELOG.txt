@@ -1,6 +1,17 @@
 LATEST VERSION
 -----------------------------
 
+ilivalidator 1.11.7 (2020-09-29)
+-----------------------------
+- ili2c-5.1.3
+- iox-ili-1.21.2
+- log --modeldir value as modeldir (#256) 
+- Overlaying AREA not detected (#263)
+- ignore polygon building errors if defaultGeometryTypeValidation="off"
+- improve error messages in INI-file parsing (#271)
+- wrongly reports duplicate TIDs (#266)
+- Attempting to disable geometry validation with no success (#272)
+
 ilivalidator 1.11.6 (2020-05-01)
 -----------------------------
 - fails to lookup ili24 model if xtf24 transfer file (#239)

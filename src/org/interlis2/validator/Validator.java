@@ -353,7 +353,9 @@ public class Validator {
 			ioxReader=new ItfReader(new java.io.File(filename));
 		}
 		if(ioxReader instanceof ItfReader2){
-			((ItfReader2) ioxReader).setAllowItfAreaHoles(skipGeometryErrors);
+		    if(skipGeometryErrors) {
+	            ((ItfReader2) ioxReader).setIgnorePolygonBuildingErrors(ItfReader2.POLYGON_BUILDING_ERRORS_OFF);
+		    }
             ((ItfReader2) ioxReader).setAllowItfAreaHoles(allowItfAreaHoles);
 		    ((ItfReader2) ioxReader).setIoxDataPool(pool);
 		}
@@ -407,7 +409,7 @@ public class Validator {
 			ilidirs=Validator.SETTING_DEFAULT_ILIDIRS;
 		}
 	
-		EhiLogger.logState("ilidirs <"+ilidirs+">");
+		EhiLogger.logState("modeldir <"+ilidirs+">");
 		String modeldirs[]=ilidirs.split(";");
 		HashSet ilifiledirs=new HashSet();
 		for(int modeli=0;modeli<modeldirs.length;modeli++){
