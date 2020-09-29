@@ -1,7 +1,10 @@
 LATEST VERSION
 -----------------------------
-- ili2c-5.1.2-SNAPSHOT
-- iox-ili-1.21.2-SNAPSHOT
+
+ilivalidator 1.11.7 (2020-09-29)
+-----------------------------
+- ili2c-5.1.3
+- iox-ili-1.21.2
 - log --modeldir value as modeldir (#256) 
 - Overlaying AREA not detected (#263)
 - ignore polygon building errors if defaultGeometryTypeValidation="off"
