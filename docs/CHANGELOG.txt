@@ -1,5 +1,8 @@
 LATEST VERSION
 -----------------------------
+- fix java.io.NotSerializableException (#280)
+- ili2c-5.1.4-SNAPSHOT
+- iox-ili-1.21.3-SNAPSHOT
 
 ilivalidator 1.11.7 (2020-09-29)
 -----------------------------
