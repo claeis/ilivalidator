@@ -1,6 +1,12 @@
 LATEST VERSION
 -----------------------------
 
+ilivalidator 1.11.8 (2020-10-02)
+-----------------------------
+- fix java.io.NotSerializableException (#280)
+- ili2c-5.1.4
+- iox-ili-1.21.3
+
 ilivalidator 1.11.7 (2020-09-29)
 -----------------------------
 - ili2c-5.1.3
