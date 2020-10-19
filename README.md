@@ -17,7 +17,7 @@ For the current version of ilivalidator, you will need a JRE (Java Runtime Envir
 The JRE (Java Runtime Environment) can be downloaded for free from the Website <http://www.java.com/>.
 
 ## Software Download 
-<https://github.com/claeis/ilivalidator/releases>
+<https://downloads.interlis.ch/ilivalidator/>
 
 ## Installing ilivalidator
 To install the ilivalidator, choose a directory and extract the distribution file there. 
