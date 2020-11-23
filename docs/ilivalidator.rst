@@ -311,6 +311,15 @@ TOML-Globale Konfigurationen
 |                                 | disableRounding="true"                    | numerischen Werten aus (inkl. Koordinaten).                                       |
 |                                 |                                           | Mögliche Einstellungen sind: "true", "false". DEFAULT ist "false".                |
 +---------------------------------+-------------------------------------------+-----------------------------------------------------------------------------------+
+| disableAreAreasMessages         | ["PARAMETER"]                             | "true" schaltet die Meldungen bei areAreas() Funktionen aus, d.h. die Funktion    |
+|                                 | disableAreAreasMessages="true"            | gibt keine Meldung aus, und liefert nur via den Funktioneswert, ob die Daten die  |
+|                                 |                                           | AREA Bedingung erfüllen, oder nicht.                                              |
+|                                 |                                           | Bei "false" gibt die areAreas() Funktionen zusätzlich zum Funktionswert           |
+|                                 |                                           | Meldungen aus, wo die Daten die                                                   |
+|                                 |                                           | AREA Bedingung nicht erfüllen.                                                    |
+|                                 |                                           | Betrifft: INTERLIS.areAreas(), INTERLIS_ext.areAreas2(), INTERLIS_ext.areaAreas3()|
+|                                 |                                           | Mögliche Einstellungen sind: "true", "false". DEFAULT ist "false".                |
++---------------------------------+-------------------------------------------+-----------------------------------------------------------------------------------+
 | verifyModelVersion              | ["PARAMETER"]                             | "true" es wird geprüft, ob die VERSIONs Angabe zum Model in der HEADERSECTION     |
 |                                 | verifyModelVersion="true"                 | der XTF-Datei mit der Angabe im Modell (.ili-Datei)  übereinstimmt.               |
 |                                 |                                           | Wenn die Angabe nicht übereinstimmt, erfolt eine Info-Meldung.                    |
