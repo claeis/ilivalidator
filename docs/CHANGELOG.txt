@@ -1,8 +1,8 @@
 LATEST VERSION
 -----------------------------
+- fix check-repo-data fails with java.io.FileNotFoundException (#291)
 - Log-Faehigkeit der INTERLIS.areArea()-Funktion (#240)
 - iox-ili-1.21.4-SNAPSHOT
-
 
 ilivalidator 1.11.8 (2020-10-02)
 -----------------------------

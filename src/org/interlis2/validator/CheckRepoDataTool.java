@@ -41,10 +41,11 @@ public class CheckRepoDataTool {
             for (IomObject currentObj : actualIliDatas) {
                 IomObject files = currentObj.getattrobj(ch.interlis.models.DatasetIdx16.DataIndex.DatasetMetadata.tag_files, 0);
                 IomObject file = files.getattrobj(ch.interlis.models.DatasetIdx16.DataFile.tag_file, 0);
-                String filepath = repository + "/" + file.getattrvalue(ch.interlis.models.DatasetIdx16.File.tag_path);
+                String filepath = file.getattrvalue(ch.interlis.models.DatasetIdx16.File.tag_path);
+                File localCopyOfRemoteFile = reposAccess.getLocalFileLocation(repository, filepath, 0, null);
                 
                 // Validate IliDataXml
-                boolean runValidation = Validator.runValidation(new String[] { filepath }, null);
+                boolean runValidation = Validator.runValidation(new String[] { localCopyOfRemoteFile.getAbsolutePath() }, null);
                 if (!runValidation) {
                     return false;
                 }
@@ -60,25 +61,27 @@ public class CheckRepoDataTool {
         Map<String, List<IomObject>> actualIliDatas = new HashMap<String, List<IomObject>>();
         try {
             for (IomObject currentIomObj : ilidataContents) {
-                String currentID = currentIomObj.getattrvalue(ch.interlis.models.DatasetIdx16.Metadata.tag_id);
-                String currentpreVersion = currentIomObj.getattrvalue(ch.interlis.models.DatasetIdx16.Metadata.tag_precursorVersion);
-                if (currentpreVersion == null || currentpreVersion.isEmpty()) {
-                    // then it has a new DatasetID
-                    appendNewIomObj(actualIliDatas, currentIomObj, currentID);
-                } else {
-                    List<IomObject> iomObj = actualIliDatas.get(currentID);
-                    if (iomObj == null || iomObj.isEmpty()) {
-                        List<IomObject> objectList = new ArrayList<IomObject>();
-                        actualIliDatas.put(currentID, objectList);
-                    } else {
+                if(currentIomObj.getobjecttag().equals(ch.interlis.models.DatasetIdx16.DataIndex.DatasetMetadata.tag)) {
+                    String currentID = currentIomObj.getattrvalue(ch.interlis.models.DatasetIdx16.Metadata.tag_id);
+                    String currentpreVersion = currentIomObj.getattrvalue(ch.interlis.models.DatasetIdx16.Metadata.tag_precursorVersion);
+                    if (currentpreVersion == null || currentpreVersion.isEmpty()) {
+                        // then it has a new DatasetID
                         appendNewIomObj(actualIliDatas, currentIomObj, currentID);
-                        String[] precursorValues = findAllPrecursorVersions(iomObj);
-                        if (precursorValues != null) {
-                            for (int i = 0; i < iomObj.size(); i++) {
-                                String currentVersionName = iomObj.get(i).getattrvalue(ch.interlis.models.DatasetIdx16.Metadata.tag_version);
-                                for (String preValue : precursorValues) {
-                                    if (preValue.equals(currentVersionName)) {
-                                        iomObj.remove(i);
+                    } else {
+                        List<IomObject> iomObj = actualIliDatas.get(currentID);
+                        if (iomObj == null || iomObj.isEmpty()) {
+                            List<IomObject> objectList = new ArrayList<IomObject>();
+                            actualIliDatas.put(currentID, objectList);
+                        } else {
+                            appendNewIomObj(actualIliDatas, currentIomObj, currentID);
+                            String[] precursorValues = findAllPrecursorVersions(iomObj);
+                            if (precursorValues != null) {
+                                for (int i = 0; i < iomObj.size(); i++) {
+                                    String currentVersionName = iomObj.get(i).getattrvalue(ch.interlis.models.DatasetIdx16.Metadata.tag_version);
+                                    for (String preValue : precursorValues) {
+                                        if (preValue.equals(currentVersionName)) {
+                                            iomObj.remove(i);
+                                        }
                                     }
                                 }
                             }
