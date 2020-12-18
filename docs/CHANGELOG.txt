@@ -1,6 +1,7 @@
 LATEST VERSION
 -----------------------------
 - fix check-repo-data fails with java.io.FileNotFoundException (#291)
+- fix --createIliData fails with NPE if file in base folder (#292)
 - Log-Faehigkeit der INTERLIS.areArea()-Funktion (#240)
 - iox-ili-1.21.4-SNAPSHOT
 

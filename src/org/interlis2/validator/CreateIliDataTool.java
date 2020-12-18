@@ -50,22 +50,22 @@ public class CreateIliDataTool {
 
     private boolean createIliData(Settings settings) {
         String destinationFile = settings.getValue(Validator.SETTING_ILIDATA_XML);
-        String srcFilelist = settings.getValue(Validator.SETTING_REMOTEFILE_LIST);
+        String filelistFile = settings.getValue(Validator.SETTING_REMOTEFILE_LIST);
         String baseUrl = settings.getValue(Validator.SETTING_REPOSITORY);
 
         try {
-            Set<File> visitedFiles = new HashSet<File>();
-            if (srcFilelist != null) {
-                visitAllFilesWithUrl(srcFilelist, baseUrl, visitedFiles);
+            Set<File> filelist = new HashSet<File>();
+            if (filelistFile != null) {
+                readFilelistFromFile(filelistFile, filelist);
             } else {
-                File reposFolder=new File(baseUrl);
-                if(!reposFolder.exists() || !reposFolder.isDirectory() || !reposFolder.canRead()) {
+                File localFolder=new File(baseUrl);
+                if(!localFolder.exists() || !localFolder.isDirectory() || !localFolder.canRead()) {
                     EhiLogger.logError("can't read repos folder <"+baseUrl+">");
                     return false;
                 }
-                visitAllFiles(baseUrl, null, visitedFiles);
+                scanLocalFolder(localFolder, null, filelist);
             }
-            readFilesFromSourceFolder(new File(destinationFile), visitedFiles, baseUrl, settings);
+            readFilesFromSourceFolder(new File(destinationFile), filelist, baseUrl, settings);
         }catch (Exception e) {
             EhiLogger.logError(e);
             return false;
@@ -293,28 +293,28 @@ public class CreateIliDataTool {
         return currentFile.getPath().replace(File.separatorChar, '/');
     }
 
-    private void visitAllFiles(String baseFolder, File subFolder, Set<File> visitedFiles) {
-        File expectedFilePath = new File(baseFolder);
+    private void scanLocalFolder(File baseFolder, String subFolder, Set<File> visitedFiles) {
+        File expectedFilePath = subFolder==null ? baseFolder : new File(baseFolder,subFolder);
         File[] listOfFiles = expectedFilePath.listFiles();
         for (File file : listOfFiles) {
+            String relativeFileName = subFolder == null ? file.getName() : subFolder + "/" + file.getName();
             if (file.isFile()) {
                 if (isItfORXtfFilename(file.getName())) {
-                    visitedFiles.add(new File(subFolder.getPath() + File.separator + file.getName()));
+                    visitedFiles.add(new File(relativeFileName));
                 }
-            } else {
-                String concatenedFolderName = subFolder == null ? file.getName() : subFolder.getName() + File.separator + file.getName();
-                visitAllFiles(file.getPath(), new File(concatenedFolderName), visitedFiles);
+            } else if(file.isDirectory()){
+                scanLocalFolder(baseFolder, relativeFileName, visitedFiles);
             }
         }         
     }
     
-    private void visitAllFilesWithUrl(String srcFile, String baseUrl, Set<File> visitedFiles) throws IOException, FileNotFoundException {
+    private void readFilelistFromFile(String srcFile, Set<File> filelist) throws IOException, FileNotFoundException {
         BufferedReader br = null;
         try {
             br = new BufferedReader(new FileReader(srcFile));
             String readFile;
             while ((readFile = br.readLine()) != null) {
-                visitedFiles.add(new File(readFile));
+                filelist.add(new File(readFile));
             }   
         } finally {
             if (br != null) {
