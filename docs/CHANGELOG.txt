@@ -1,9 +1,13 @@
 LATEST VERSION
 -----------------------------
+
+ilivalidator 1.11.9 (2020-12-28)
+-----------------------------
 - fix check-repo-data fails with java.io.FileNotFoundException (#291)
 - fix --createIliData fails with NPE if file in base folder (#292)
 - Log-Faehigkeit der INTERLIS.areArea()-Funktion (#240)
-- iox-ili-1.21.4-SNAPSHOT
+- ili2c-5.1.5
+- iox-ili-1.21.4
 
 ilivalidator 1.11.8 (2020-10-02)
 -----------------------------
