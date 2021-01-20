@@ -477,6 +477,10 @@ Falls der Wert (rechts von ```=```) aus mehreren durch Leerstellen getrennten WÃ
 |                  |                          |                                                                                   |
 +------------------+--------------------------+-----------------------------------------------------------------------------------+
 
+Wenn ein ConstraintDef keinen expliziten Namen hat, wird fÃ¼r die 
+Referenzierung eine Name aus der interne Id des Constraints erzeugt. Die
+interne Id ist eine aufsteigende Zahl und beginnt pro Klasse mit 1. Das 
+erste Constraint einer Klasse heisst also ``Constraint1``, das Zweite ``Constraint2`` usw.
 
 Modell IliVErrors
 -----------------
