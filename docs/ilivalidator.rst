@@ -20,6 +20,29 @@ Es bestehen u.a. folgende Konfigurationsmöglichkeiten:
 Zusätzlich umfasst der IliValidator Hilfsfunktionen betrf. 
 Daten (z.B. Kataloge) in einem Repository.
 
+Log-Meldungen
+-------------
+Die Log-Meldungen sollen dem Benutzer zeigen, was das Programm macht.
+Am Anfang erscheinen Angaben zur Programm-Version.
+Falls das Programm ohne Fehler durchläuft, wird das am Ende ausgegeben.::
+	
+  Info: ilivalidator-1.0.0
+  ...
+  Info: compile models...
+  ...
+  Info: ...validation done
+
+Bei einem Fehler wird das am Ende des Programms vermerkt. Der eigentliche 
+Fehler wird aber in der Regel schon früher ausgegeben.::
+	
+  Info: ilivalidator-1.0.0
+  ...
+  Info: compile models...
+  ...
+  Error: DM01.Bodenbedeckung.BoFlaeche_Geometrie: intersection tids 48, 48
+  ...
+  Error: ...validation failed
+
 Laufzeitanforderungen
 ---------------------
 
