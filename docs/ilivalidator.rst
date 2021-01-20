@@ -48,6 +48,16 @@ Laufzeitanforderungen
 
 Das Programm setzt Java 1.6 voraus.
 
+Zur Validierung wird RAM benötigt. Für eine typische Transferdatei sollten 
+ca. 2 GB RAM ausreichen. Am Anfang des Logs steht, wieviel RAM (heapspace) 
+dem Programm zur Verfügung steht. Sollte das Programm mit einer Heapspace 
+Fehlermeldung abbrechen, kann mittels Java-Option versucht werden, mehr RAM 
+bereitzustellen (Für 3 GB z.B. ``java -Xmx3072m -jar ilivalidator.jar data.xtf``).
+Grundsätzlich ist nicht die Grösse der Datei kritisch, sondern andere Dinge 
+z.B. wieviele Objekte miteinander in Beziehung stehen, oder wieviele 
+Objekte bei UNIQUE Bedingungen geprüft werden müssen, aus wievielen 
+Rändern die Polygone bestehen, usw.
+
 Lizenz
 ------
 
