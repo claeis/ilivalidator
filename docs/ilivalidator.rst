@@ -58,6 +58,24 @@ z.B. wieviele Objekte miteinander in Beziehung stehen, oder wieviele
 Objekte bei UNIQUE Bedingungen geprüft werden müssen, aus wievielen 
 Rändern die Polygone bestehen, usw.
 
+Validierung in anderen Programmen
+---------------------------------
+Der ilivalidator wird auch von anderen Programmen verwendet (z.B. ili2fgdb). 
+Für die Validierung wird im ilivalidator und im anderen Programm (z.B. ili2fgdb)
+der selbe Code verwendet. Der gemeisame Nenner ist iox-ili. 
+Man muss also die Version von iox-ili vergleichen, um allenfalls 
+die Validierung aufeinander abstimmen zu können
+(am Anfang des Logs zeigen 
+beide Programme auch die Version von iox-ili, 
+und sonst steht es normalerweise im changelog.txt des jeweiligen Programms.)
+z.B.
+
+- ili2fgdb-4.4.5 benutzt iox-ili-1.21.4
+- ilivalidator-1.11.9 benutzt iox-ili-1.21.4
+
+Grundsätzlich sollten die Daten natürlich gültig sein gegenüber der 
+Spezifikation (also dem INTERLIS-Referenzhandbuch und dem Minimalen Geodatenmodell).
+
 Lizenz
 ------
 
