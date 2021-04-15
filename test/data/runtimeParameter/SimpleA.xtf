@@ -1,0 +1,20 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<TRANSFER xmlns="http://www.interlis.ch/INTERLIS2.3">
+	<HEADERSECTION SENDER="ili2fgdb-3.10.0-20170630" VERSION="2.3">
+		<MODELS>
+			<MODEL NAME="RuntimeSystem23" VERSION="2016-12-21" URI="mailto:ce@eisenhutinformatik.ch"></MODEL>
+		</MODELS>
+	</HEADERSECTION>
+	<DATASECTION>
+		<RuntimeSystem23.TopicA BID="b1">
+			<RuntimeSystem23.TopicA.ClassA TID="o1">
+				<attrA>test/data/runtimeParameter/SimpleA.xtf</attrA>
+			</RuntimeSystem23.TopicA.ClassA>
+		</RuntimeSystem23.TopicA>
+		<RuntimeSystem23.TopicB BID="b2">
+			<RuntimeSystem23.TopicB.ClassB TID="o2">
+				<attrA>test/data/runtimeParameter/SimpleA.xtf</attrA>
+			</RuntimeSystem23.TopicB.ClassB>
+		</RuntimeSystem23.TopicB>
+	</DATASECTION>
+</TRANSFER>

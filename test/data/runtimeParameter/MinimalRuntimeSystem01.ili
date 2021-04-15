@@ -1,0 +1,26 @@
+INTERLIS 2.3;
+
+CONTRACTED MODEL MinimalRuntimeSystem01
+  AT "mailto:ce@eisenhutinformatik.ch"
+  VERSION "2018-06-05" =
+  
+  PARAMETER
+  
+  	RuntimeSystemName : TEXT*150; !! z.B. "ili2pdf"
+  	
+  	RuntimeSystemVersion : TEXT*150; !! z.B. "1.0.0"
+  
+  	OperatingSystemName : TEXT*150; !! z.B. "Windows 10"
+
+  	HostName : TEXT*150; !! z.B. "services.interlis.ch"
+  	
+  	CurrentUserName : TEXT*150; !! z.B. "ceis"
+  	
+  	CurrentDateTime : INTERLIS.XMLDateTime; !! z.B. "2017-08-22T15:00:00.000"
+  	
+  	CurrentTransferfile : TEXT; !! z.B. "usr/data/dm01.xtf"
+
+  	FUNCTION getParameterValue(qualifiedIliName: TEXT): TEXT; !! function to get any not yet known value
+  	
+END MinimalRuntimeSystem01.
+

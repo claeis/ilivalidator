@@ -1,0 +1,24 @@
+INTERLIS 2.3;
+
+MODEL RuntimeSystem23
+  AT "mailto:ce@eisenhutinformatik.ch"
+  VERSION "2018-06-05" =
+  
+  IMPORTS MinimalRuntimeSystem01;
+  
+  TOPIC TopicA =
+    CLASS ClassA =
+      attrA : TEXT;
+      MANDATORY CONSTRAINT attrA==PARAMETER MinimalRuntimeSystem01.CurrentTransferfile;
+    END ClassA;
+  END TopicA;
+
+  TOPIC TopicB =
+    CLASS ClassB =
+      attrA : TEXT;
+      MANDATORY CONSTRAINT attrA==MinimalRuntimeSystem01.getParameterValue("MinimalRuntimeSystem01.CurrentTransferfile");
+    END ClassB;
+  END TopicB;
+  
+END RuntimeSystem23.
+

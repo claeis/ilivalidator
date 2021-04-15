@@ -221,6 +221,8 @@ public class Validator {
 			if(td==null){
 				return false;
 			}
+			td.setActualRuntimeParameter(ch.interlis.ili2c.metamodel.RuntimeParameters.MINIMAL_RUNTIME_SYSTEM01_RUNTIME_SYSTEM_NAME, Main.APP_NAME);
+            td.setActualRuntimeParameter(ch.interlis.ili2c.metamodel.RuntimeParameters.MINIMAL_RUNTIME_SYSTEM01_RUNTIME_SYSTEM_VERSION, Main.getVersion());
 			
 			// process data files
 			EhiLogger.logState("validate data...");
@@ -266,7 +268,7 @@ public class Validator {
 					ioxReader = createReader(filename, td,errFactory,settings,pool);
 					statistics.setFilename(filename);
 					errFactory.setDataSource(filename);
-					
+		            td.setActualRuntimeParameter(ch.interlis.ili2c.metamodel.RuntimeParameters.MINIMAL_RUNTIME_SYSTEM01_CURRENT_TRANSFERFILE, filename);
 					try{
 						IoxEvent event=null;
 						do{
