@@ -2,6 +2,7 @@ LATEST VERSION
 -----------------------------
 - implement INTERLIS RunTimeParameterDef (#221) 
 - remove static reference to GUI (Swing) classes from Main class (#265)
+- support Ahead-of-Time ilivalidator extension functions (#222)
 - iox-ili-1.21.6-SNAPSHOT
 - ili2c-5.2.1-SNAPSHOT
 

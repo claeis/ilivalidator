@@ -203,13 +203,14 @@ public class Validator {
 					return false;
 				}
 			}
-			Map<String,Class> userFunctions=null;
+			Map<String,Class> userFunctions=new java.util.HashMap<String,Class>();
+            PluginLoader loader=new PluginLoader();
+            loader.loadPlugins();
 			if(pluginFolder!=null){
-				PluginLoader loader=new PluginLoader();
 				loader.loadPlugins(new File(pluginFolder));
-				userFunctions=PluginLoader.getInterlisFunctions(loader.getAllPlugins());
-				settings.setTransientObject(ch.interlis.iox_j.validator.Validator.CONFIG_CUSTOM_FUNCTIONS, userFunctions);
 			}
+            userFunctions.putAll(PluginLoader.getInterlisFunctions(loader.getAllPlugins()));
+            settings.setTransientObject(ch.interlis.iox_j.validator.Validator.CONFIG_CUSTOM_FUNCTIONS, userFunctions);
             IoxLogging errHandler=new ch.interlis.iox_j.logging.Log2EhiLogger();
             LogEventFactory errFactory=new LogEventFactory();
             errFactory.setLogger(errHandler);
