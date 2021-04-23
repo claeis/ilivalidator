@@ -1,7 +1,9 @@
 package org.interlis2.validator;
 
 import java.io.File;
-import org.interlis2.validator.gui.MainFrame;
+import java.lang.reflect.InvocationTargetException;
+import java.lang.reflect.Method;
+
 import ch.ehi.basics.logging.EhiLogger;
 import ch.ehi.basics.settings.Settings;
 
@@ -36,6 +38,20 @@ public class Main {
 		}else{
 		    settings.setValue(Validator.SETTING_PLUGINFOLDER, new java.io.File("plugins").getAbsolutePath());
 		}
+		Class mainFrame=null;
+		try {
+		    mainFrame=Class.forName("org.interlis2.validator.gui.MainFrame");
+		}catch(ClassNotFoundException ex){
+		    // ignore; report later
+		}
+		Method mainFrameMain=null;
+		if(mainFrame!=null) {
+		    try {
+	            mainFrameMain = mainFrame.getMethod ("main",(new String[0]).getClass(),Settings.class);
+		    }catch(NoSuchMethodException ex) {
+	            // ignore; report later
+		    }
+		}
 		// arguments on export
 		String[] xtfFile=null;
 		String httpProxyHost = null;
@@ -43,7 +59,8 @@ public class Main {
 		if(args.length==0){
 			xtfFile=new String[0];
 			readSettings(settings);
-			MainFrame.main(xtfFile,settings);
+            // MainFrame.main(xtfFile,settings);
+			runGui(mainFrameMain, xtfFile, settings);     
 			return;
 		}
 		int argi=0;
@@ -163,7 +180,9 @@ public class Main {
 			if(dataFileCount>0) {
 				xtfFile = getDataFiles(args, argi, dataFileCount);
 			}
-			MainFrame.main(xtfFile,settings);
+			//MainFrame.main(xtfFile,settings);
+            runGui(mainFrameMain, xtfFile, settings);                     
+            return;
 		}else{
             xtfFile = getDataFiles(args, argi, dataFileCount);
             boolean ok=false;
@@ -198,6 +217,23 @@ public class Main {
 		}
 		
 	}
+    private static void runGui(Method mainFrameMain, String[] xtfFile, Settings settings) {
+        if(mainFrameMain!=null) {
+            try {
+                mainFrameMain.invoke(null, xtfFile,settings);
+                return;                 
+            } catch (IllegalArgumentException ex) {
+                EhiLogger.logError("failed to open GUI",ex);
+            } catch (IllegalAccessException ex) {
+                EhiLogger.logError("failed to open GUI",ex);
+            } catch (InvocationTargetException ex) {
+                EhiLogger.logError("failed to open GUI",ex);
+            }
+        }else {
+            EhiLogger.logError(APP_NAME+": no GUI available");
+        }
+        System.exit(2);
+    }
     private static String[] getDataFiles(String[] args, int argi, int dataFileCount) {
 		String[] xtfFile;
 		xtfFile=new String[dataFileCount];
