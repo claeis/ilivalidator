@@ -40,7 +40,8 @@ public class Main {
 		}
 		Class mainFrame=null;
 		try {
-		    mainFrame=Class.forName("org.interlis2.validator.gui.MainFrame");
+            //mainFrame=Class.forName("org.interlis2.validator.gui.MainFrame");
+            mainFrame=Class.forName(preventOptimziation("org.interlis2.validator.gui.MainFrame")); // avoid, that graalvm native-image detects a reference to MainFrame
 		}catch(ClassNotFoundException ex){
 		    // ignore; report later
 		}
@@ -217,6 +218,11 @@ public class Main {
 		}
 		
 	}
+    private static String preventOptimziation(String val) {
+        StringBuffer buf=new StringBuffer(val.length());
+        buf.append(val);
+        return buf.toString();
+    }
     private static void runGui(Method mainFrameMain, String[] xtfFile, Settings settings) {
         if(mainFrameMain!=null) {
             try {
