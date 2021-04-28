@@ -518,16 +518,14 @@ Modell IliVErrors
 
 
 INTERLIS 1
-~~~~~~~~~~
+----------
 
 Das Interlis 1 Modell wird intern in ein Interlis 2 Modell übersetzt. Tabellen werden zu Klassen, Attribute bleiben Attribute. 
 Referenzattribute werden zu Assoziationen. Für die Namen der Assoziation und Rollen gelten folgende Regeln.
 
 Normalerweise ist ein Rollenname der Name des Referenzattributes und der andere ist der Tabellenname, der das Referenzattribut enthält.
 Und der Assoziationsname ist die Verkettung der beiden (falls dies nicht zu einem Namenskonflikt führt). Zum Beispiel folgendes 
-Interlis 1 Modell:
-
-.. code:: class
+Interlis 1 Modell::
 
 	MODEL M =
 		TOPIC T =
@@ -542,10 +540,8 @@ Interlis 1 Modell:
 		END T.
 	END M.
 
-``AttrB2`` wird wie folgt übersetzt:
-
-.. code:: class
-
+``AttrB2`` wird wie folgt übersetzt::
+	
 	ASSOCIATION BAttrB2 =
 		B -- {0..*} B;
 		AttrB2 -- {1} A;
@@ -553,10 +549,9 @@ Interlis 1 Modell:
 
 Somit sind die qualifizierten Namen der Rollen (die sich aus dem Referenzattribut ergeben): ``M.T.BAttrB2.B`` und ``M.T.BAttrB2.AttrB2``.
 
-Wenn ein Namenskonflikt besteht (wie bei ``AttrB3`` im Beispiel), wird der Name um einen Index (beginnend bei 2 pro Tabelle) verlängert. ``AttrB3`` führt also zu:
-
-.. code:: class
-
+Wenn ein Namenskonflikt besteht (wie bei ``AttrB3`` im Beispiel), wird der 
+Name um einen Index (beginnend bei 2 pro Tabelle) verlängert. ``AttrB3`` führt also zu::
+	
    ASSOCIATION B2AttrB3 =
      B2 -- {0..*} B;
      AttrB3 -- {1} A;
@@ -566,7 +561,36 @@ Somit sind die qualifizierten Namen: ``M.T.B2AttrB3.B2`` und ``M.T.B2AttrB3.Attr
 
 Die qualifizierten Rollennamen werden auch im Log aufgeführt. z.B.
 
-.. code:: class
+::
+	
+  Info: validate target of role ``M.T.BAttrB2.B``...
+  Info: validate multiplicity of role ``M.T.BAttrB2.B``...
 
- Info: validate target of role ``M.T.BAttrB2.B``...
- Info: validate multiplicity of role ``M.T.BAttrB2.B``...
+Hinweise zu Fehlermeldungen
+---------------------------
+
+Intersection overlap
+~~~~~~~~~~~~~~~~~~~~
+Die Fehlermeldung erscheint, wenn sich zwei Liniensegmente überlappen (also zwei Schnittpunkte haben):
+
+Beispielmeldung::
+	
+   Error: Model.Topic.Class: Intersection overlap 3.2508012350263016E-4, coord1 (2612419.901, 1248771.194), coord2 (2612428.532, 1248767.551), tids o1, o2
+
+Das Mass der Überlappung (``overlap 3.2508012350263016E-4``), die beiden 
+Schnittpunkte (``coord1 (2612419.901, 1248771.194), coord2 (2612428.532, 1248767.551)``) 
+und die TIDs/OIDs der betroffenen Objekte (``tids o1, o2``) werden aufgeführt.
+
+Intersection
+~~~~~~~~~~~~
+Die Fehlermeldung erscheint, wenn sich zwei Liniensegmente schneiden (also einen Schnittpunkte haben):
+
+Beispielmeldung::
+
+   Error: Model.Topic.Class: Intersection coord1 (2612419.220, 1248771.482), tids o1/attrA[1]/flaeche[1], o2/attrA[2]/flaeche[1]
+
+Der Schnittpunkte (``coord1 (2612419.220, 1248771.482)``) 
+und die TIDs/OIDs der betroffenen Objekte (``tids o1/attrA[1]/flaeche[1], o2/attrA[2]/flaeche[1]``) werden aufgeführt.
+In diesem Fall sind die Geometrien innerhalb von Strukturen, darum wird der 
+ganze Pfad vom Objekt bis zur Geometrie aufgeführt (``o1/attrA[1]/flaeche[1]``:
+im Objekt ``o1`` das erste Strukturelement des Attributs ``attrA`` und darin das erste Element von ``flaeche``)
