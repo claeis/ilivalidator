@@ -1,5 +1,8 @@
 LATEST VERSION
 -----------------------------
+
+ilivalidator 1.11.10 (2020-04-30)
+-----------------------------
 - implement INTERLIS RunTimeParameterDef (#221) 
 - remove static reference to GUI (Swing) classes from Main class (#265)
 - support Ahead-of-Time ilivalidator extension functions (#222)
