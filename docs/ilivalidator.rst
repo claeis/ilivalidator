@@ -20,10 +20,61 @@ Es bestehen u.a. folgende Konfigurationsmöglichkeiten:
 Zusätzlich umfasst der IliValidator Hilfsfunktionen betrf. 
 Daten (z.B. Kataloge) in einem Repository.
 
+Log-Meldungen
+-------------
+Die Log-Meldungen sollen dem Benutzer zeigen, was das Programm macht.
+Am Anfang erscheinen Angaben zur Programm-Version.
+Falls das Programm ohne Fehler durchläuft, wird das am Ende ausgegeben.::
+	
+  Info: ilivalidator-1.0.0
+  ...
+  Info: compile models...
+  ...
+  Info: ...validation done
+
+Bei einem Fehler wird das am Ende des Programms vermerkt. Der eigentliche 
+Fehler wird aber in der Regel schon früher ausgegeben.::
+	
+  Info: ilivalidator-1.0.0
+  ...
+  Info: compile models...
+  ...
+  Error: DM01.Bodenbedeckung.BoFlaeche_Geometrie: intersection tids 48, 48
+  ...
+  Error: ...validation failed
+
 Laufzeitanforderungen
 ---------------------
 
 Das Programm setzt Java 1.6 voraus.
+
+Zur Validierung wird RAM benötigt. Für eine typische Transferdatei sollten 
+ca. 2 GB RAM ausreichen. Am Anfang des Logs steht, wieviel RAM (heapspace) 
+dem Programm zur Verfügung steht. Sollte das Programm mit einer Heapspace 
+Fehlermeldung abbrechen, kann mittels Java-Option versucht werden, mehr RAM 
+bereitzustellen (Für 3 GB z.B. ``java -Xmx3072m -jar ilivalidator.jar data.xtf``).
+Grundsätzlich ist nicht die Grösse der Datei kritisch, sondern andere Dinge 
+z.B. wieviele Objekte miteinander in Beziehung stehen, oder wieviele 
+Objekte bei UNIQUE Bedingungen geprüft werden müssen, aus wievielen 
+Rändern die Polygone bestehen, usw.
+
+Validierung in anderen Programmen
+---------------------------------
+Der ilivalidator wird auch von anderen Programmen verwendet (z.B. ili2fgdb). 
+Für die Validierung wird im ilivalidator und im anderen Programm (z.B. ili2fgdb)
+der selbe Code verwendet. Der gemeisame Nenner ist iox-ili. 
+Man muss also die Version von iox-ili vergleichen, um allenfalls 
+die Validierung aufeinander abstimmen zu können
+(am Anfang des Logs zeigen 
+beide Programme auch die Version von iox-ili, 
+und sonst steht es normalerweise im changelog.txt des jeweiligen Programms.)
+z.B.
+
+- ili2fgdb-4.4.5 benutzt iox-ili-1.21.4
+- ilivalidator-1.11.9 benutzt iox-ili-1.21.4
+
+Grundsätzlich sollten die Daten natürlich gültig sein gegenüber der 
+Spezifikation (also dem INTERLIS-Referenzhandbuch und dem Minimalen Geodatenmodell).
 
 Lizenz
 ------
@@ -152,6 +203,11 @@ Aufruf-Syntax
 
 Ohne Kommandozeilenargumente erscheint die Bildschirmmaske, mit deren Hilfe die zu validierende Datei 
 ausgewählt und die Validierung gestartet werden kann.
+
+Der Rückgabewert ist wie folgt:
+
+  - 0 Validierung ok, keine Fehler festgestellt
+  - !0 Validierung nicht ok, Fehler festgestellt
 
 Optionen:
 
@@ -449,6 +505,10 @@ Falls der Wert (rechts von ```=```) aus mehreren durch Leerstellen getrennten W�
 |                  |                          |                                                                                   |
 +------------------+--------------------------+-----------------------------------------------------------------------------------+
 
+Wenn ein ConstraintDef keinen expliziten Namen hat, wird für die 
+Referenzierung eine Name aus der interne Id des Constraints erzeugt. Die
+interne Id ist eine aufsteigende Zahl und beginnt pro Klasse mit 1. Das 
+erste Constraint einer Klasse heisst also ``Constraint1``, das Zweite ``Constraint2`` usw.
 
 Modell IliVErrors
 -----------------
@@ -458,16 +518,14 @@ Modell IliVErrors
 
 
 INTERLIS 1
-~~~~~~~~~~
+----------
 
 Das Interlis 1 Modell wird intern in ein Interlis 2 Modell übersetzt. Tabellen werden zu Klassen, Attribute bleiben Attribute. 
 Referenzattribute werden zu Assoziationen. Für die Namen der Assoziation und Rollen gelten folgende Regeln.
 
 Normalerweise ist ein Rollenname der Name des Referenzattributes und der andere ist der Tabellenname, der das Referenzattribut enthält.
 Und der Assoziationsname ist die Verkettung der beiden (falls dies nicht zu einem Namenskonflikt führt). Zum Beispiel folgendes 
-Interlis 1 Modell:
-
-.. code:: class
+Interlis 1 Modell::
 
 	MODEL M =
 		TOPIC T =
@@ -482,10 +540,8 @@ Interlis 1 Modell:
 		END T.
 	END M.
 
-``AttrB2`` wird wie folgt übersetzt:
-
-.. code:: class
-
+``AttrB2`` wird wie folgt übersetzt::
+	
 	ASSOCIATION BAttrB2 =
 		B -- {0..*} B;
 		AttrB2 -- {1} A;
@@ -493,10 +549,9 @@ Interlis 1 Modell:
 
 Somit sind die qualifizierten Namen der Rollen (die sich aus dem Referenzattribut ergeben): ``M.T.BAttrB2.B`` und ``M.T.BAttrB2.AttrB2``.
 
-Wenn ein Namenskonflikt besteht (wie bei ``AttrB3`` im Beispiel), wird der Name um einen Index (beginnend bei 2 pro Tabelle) verlängert. ``AttrB3`` führt also zu:
-
-.. code:: class
-
+Wenn ein Namenskonflikt besteht (wie bei ``AttrB3`` im Beispiel), wird der 
+Name um einen Index (beginnend bei 2 pro Tabelle) verlängert. ``AttrB3`` führt also zu::
+	
    ASSOCIATION B2AttrB3 =
      B2 -- {0..*} B;
      AttrB3 -- {1} A;
@@ -506,7 +561,36 @@ Somit sind die qualifizierten Namen: ``M.T.B2AttrB3.B2`` und ``M.T.B2AttrB3.Attr
 
 Die qualifizierten Rollennamen werden auch im Log aufgeführt. z.B.
 
-.. code:: class
+::
+	
+  Info: validate target of role ``M.T.BAttrB2.B``...
+  Info: validate multiplicity of role ``M.T.BAttrB2.B``...
 
- Info: validate target of role ``M.T.BAttrB2.B``...
- Info: validate multiplicity of role ``M.T.BAttrB2.B``...
+Hinweise zu Fehlermeldungen
+---------------------------
+
+Intersection overlap
+~~~~~~~~~~~~~~~~~~~~
+Die Fehlermeldung erscheint, wenn sich zwei Liniensegmente überlappen (also zwei Schnittpunkte haben):
+
+Beispielmeldung::
+	
+   Error: Model.Topic.Class: Intersection overlap 3.2508012350263016E-4, coord1 (2612419.901, 1248771.194), coord2 (2612428.532, 1248767.551), tids o1, o2
+
+Das Mass der Überlappung (``overlap 3.2508012350263016E-4``), die beiden 
+Schnittpunkte (``coord1 (2612419.901, 1248771.194), coord2 (2612428.532, 1248767.551)``) 
+und die TIDs/OIDs der betroffenen Objekte (``tids o1, o2``) werden aufgeführt.
+
+Intersection
+~~~~~~~~~~~~
+Die Fehlermeldung erscheint, wenn sich zwei Liniensegmente schneiden (also einen Schnittpunkte haben):
+
+Beispielmeldung::
+
+   Error: Model.Topic.Class: Intersection coord1 (2612419.220, 1248771.482), tids o1/attrA[1]/flaeche[1], o2/attrA[2]/flaeche[1]
+
+Der Schnittpunkte (``coord1 (2612419.220, 1248771.482)``) 
+und die TIDs/OIDs der betroffenen Objekte (``tids o1/attrA[1]/flaeche[1], o2/attrA[2]/flaeche[1]``) werden aufgeführt.
+In diesem Fall sind die Geometrien innerhalb von Strukturen, darum wird der 
+ganze Pfad vom Objekt bis zur Geometrie aufgeführt (``o1/attrA[1]/flaeche[1]``:
+im Objekt ``o1`` das erste Strukturelement des Attributs ``attrA`` und darin das erste Element von ``flaeche``)

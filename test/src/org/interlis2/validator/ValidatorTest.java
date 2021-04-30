@@ -249,5 +249,10 @@ public class ValidatorTest {
 		boolean ret=Validator.runValidation("test/data/Beispiel2a.xtf", settings);
 		assertFalse(ret);
 	}
+    @Test
+    public void xtfRuntimeParameterOk() {
+        boolean ret=Validator.runValidation("test/data/runtimeParameter/SimpleA.xtf", null);
+        assertTrue(ret);
+    }
 
 }

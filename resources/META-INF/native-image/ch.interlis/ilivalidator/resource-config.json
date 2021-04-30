@@ -1,0 +1,6 @@
+{
+  "bundles":[
+    {"name":"org.interlis2.validator.Version"},
+    {"name":"org.interlis2.validator.gui.IliValidatorTexts"}
+  ]
+}

@@ -7,7 +7,7 @@ allprojects {
 	targetCompatibility = "1.6"
 }
 
-version '1.11.9'+System.getProperty('release','-SNAPSHOT')
+version '1.11.10'+System.getProperty('release','-SNAPSHOT')
 
 configurations {
     deployerJars
@@ -21,10 +21,11 @@ configurations {
 //}
 
 dependencies {
-    compile group: 'ch.ehi', name: 'ehibasics', version: '1.4.0'
-    compile group: 'ch.interlis', name: 'iox-ili', version: '1.21.4'
-    compile group: 'ch.interlis', name: 'ili2c-tool', version: "5.1.5"
-    compile group: 'ch.interlis', name: 'ili2c-core', version: "5.1.5"
+    compile group: 'ch.ehi', name: 'ehibasics', version: '1.4.1'
+    compile group: 'ch.interlis', name: 'iox-api', version: '1.0.4'
+    compile group: 'ch.interlis', name: 'iox-ili', version: '1.21.6'
+    compile group: 'ch.interlis', name: 'ili2c-tool', version: "5.2.2"
+    compile group: 'ch.interlis', name: 'ili2c-core', version: "5.2.2"
     testCompile group: 'junit', name: 'junit', version: '4.12'
     deployerJars "org.apache.maven.wagon:wagon-ftp:3.3.3"
     deployerJars "org.apache.maven.wagon:wagon-ssh:3.3.3"
@@ -52,6 +53,8 @@ def repos_pwd = System.getProperty('repos_pwd',properties.get('repos_pwd','repos
 def repos_usr = System.getProperty('repos_usr',properties.get('repos_usr','repos_usr'))
 def downloads_pwd = System.getProperty('downloads_pwd',properties.get('downloads_pwd','downloads_pwd'))
 def downloads_usr = System.getProperty('downloads_usr',properties.get('downloads_usr','downloads_usr'))
+def python= System.getProperty('python',properties.get('python','python'))
+def rst2html= System.getProperty('rst2html',properties.get('rst2html','rst2html'))
 
 def generatedResources = "$buildDir/generated-resources/main"
 
@@ -71,7 +74,8 @@ sourceSets {
             srcDirs = ['src','gensrc']
         }
         resources {
-            srcDir "src"
+            srcDirs =[ 'src', 'resources']
+            include 'META-INF/native-image/**'
             include "**/*.properties"
             exclude "**/Version.properties"
         }
@@ -95,6 +99,21 @@ task generateMyResources {
 		versionPropsFile.getParentFile().mkdirs();
 		versionProps.store(versionPropsFile.newWriter(), null);
 	}
+}
+
+task usrdoc(type:Exec) {
+	group = JavaBasePlugin.DOCUMENTATION_GROUP
+    description = 'Builds the user documentation (html)'
+	def infile=new File(project.projectDir,'docs/ilivalidator.rst')
+	def outfile=new File('docs/ilivalidator.html')
+	inputs.file infile
+	outputs.file outfile
+	doFirst{
+		new File(project.buildDir,'docs').mkdir()
+	}
+		workingDir = project.buildDir
+		executable python
+		args = [rst2html, infile, outfile]
 }
 
 task bindist(type: Zip){

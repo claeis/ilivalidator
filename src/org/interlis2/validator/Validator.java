@@ -203,13 +203,14 @@ public class Validator {
 					return false;
 				}
 			}
-			Map<String,Class> userFunctions=null;
+			Map<String,Class> userFunctions=new java.util.HashMap<String,Class>();
+            PluginLoader loader=new PluginLoader();
+            loader.loadPlugins();
 			if(pluginFolder!=null){
-				PluginLoader loader=new PluginLoader();
 				loader.loadPlugins(new File(pluginFolder));
-				userFunctions=PluginLoader.getInterlisFunctions(loader.getAllPlugins());
-				settings.setTransientObject(ch.interlis.iox_j.validator.Validator.CONFIG_CUSTOM_FUNCTIONS, userFunctions);
 			}
+            userFunctions.putAll(PluginLoader.getInterlisFunctions(loader.getAllPlugins()));
+            settings.setTransientObject(ch.interlis.iox_j.validator.Validator.CONFIG_CUSTOM_FUNCTIONS, userFunctions);
             IoxLogging errHandler=new ch.interlis.iox_j.logging.Log2EhiLogger();
             LogEventFactory errFactory=new LogEventFactory();
             errFactory.setLogger(errHandler);
@@ -221,6 +222,8 @@ public class Validator {
 			if(td==null){
 				return false;
 			}
+			td.setActualRuntimeParameter(ch.interlis.ili2c.metamodel.RuntimeParameters.MINIMAL_RUNTIME_SYSTEM01_RUNTIME_SYSTEM_NAME, Main.APP_NAME);
+            td.setActualRuntimeParameter(ch.interlis.ili2c.metamodel.RuntimeParameters.MINIMAL_RUNTIME_SYSTEM01_RUNTIME_SYSTEM_VERSION, Main.getVersion());
 			
 			// process data files
 			EhiLogger.logState("validate data...");
@@ -266,7 +269,7 @@ public class Validator {
 					ioxReader = createReader(filename, td,errFactory,settings,pool);
 					statistics.setFilename(filename);
 					errFactory.setDataSource(filename);
-					
+		            td.setActualRuntimeParameter(ch.interlis.ili2c.metamodel.RuntimeParameters.MINIMAL_RUNTIME_SYSTEM01_CURRENT_TRANSFERFILE, filename);
 					try{
 						IoxEvent event=null;
 						do{
