@@ -1,6 +1,6 @@
 LATEST VERSION
 -----------------------------
-- ilidata repo tools: use proxy settings
+- ilidata repo tools:  use proxy settings
 - ili2c-5.2.3-SNAPSHOT
 
 ilivalidator 1.11.10 (2020-04-30)
