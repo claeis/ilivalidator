@@ -24,6 +24,7 @@ public class CheckRepoDataTool {
             if (repository == null || repository.isEmpty()) {
                 throw new Exception("Repository should be given as a parameter!");
             }
+            ch.interlis.ili2c.Main.setHttpProxySystemProperties(settings);
             
             // Get the IliDataXml from the Repository
             RepositoryAccess reposAccess = new RepositoryAccess();                
