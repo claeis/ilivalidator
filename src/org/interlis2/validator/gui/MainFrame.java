@@ -1,7 +1,9 @@
 package org.interlis2.validator.gui;
 
+import java.awt.Desktop;
 import java.awt.Insets;
 import java.awt.Toolkit;
+import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.awt.event.ItemEvent;
 import java.awt.event.KeyEvent;
@@ -15,6 +17,7 @@ import java.io.FileWriter;
 import java.io.IOException;
 import java.io.OutputStreamWriter;
 import java.lang.reflect.Array;
+import java.net.URI;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
@@ -28,6 +31,7 @@ import ch.ehi.basics.tools.StringUtility;
 
 import javax.swing.BorderFactory;
 import javax.swing.JCheckBoxMenuItem;
+import javax.swing.JDialog;
 import javax.swing.JFrame;
 import javax.swing.JMenu;
 import javax.swing.JMenuBar;
@@ -146,7 +150,27 @@ public class MainFrame extends JFrame {
         
         optionsTraceItem = new JCheckBoxMenuItem(rsrc.getString("MainFrame.OptionsTraceItem"));
         optionsMenu.add(optionsTraceItem);
-        
+
+        // Add Help Menu in the Menu Bar
+		JMenu helpMenu = new JMenu(rsrc.getString("MainFrame.HelpMenu"));
+		menuBar.add(helpMenu);
+
+		JMenuItem onlineDocumentation = new JMenuItem(rsrc.getString("MainFrame.OnlineHelpMenuItem"));
+		helpMenu.add(onlineDocumentation);
+		onlineDocumentation.addActionListener(new ActionListener(){
+			public void actionPerformed(ActionEvent e){
+				try {
+					Desktop currentDesktop = Desktop.getDesktop();
+					if (Desktop.isDesktopSupported() && currentDesktop.isSupported(Desktop.Action.BROWSE)) {
+						URI docUri = URI.create(rsrc.getString("MainFrame.DocURL"));
+						currentDesktop.browse(docUri);
+					}
+				} catch (IOException ioException) {
+					ioException.printStackTrace();
+				}
+			}
+		});
+
         addWindowListener(new WindowAdapter() {
             public void windowClosing(WindowEvent e) {
               saveSettings(getSettings());
