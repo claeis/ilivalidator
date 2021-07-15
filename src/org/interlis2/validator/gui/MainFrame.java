@@ -171,6 +171,15 @@ public class MainFrame extends JFrame {
 			}
 		});
 
+		final JDialog aboutDialog = new AboutDialog(this);
+		JMenuItem aboutMenuItem = new JMenuItem(rsrc.getString("MainFrame.AboutMenuItem"));
+		helpMenu.add(aboutMenuItem);
+		aboutMenuItem.addActionListener(new ActionListener() {
+			public void actionPerformed(ActionEvent e) {
+				aboutDialog.setVisible(true);
+			}
+		});
+
         addWindowListener(new WindowAdapter() {
             public void windowClosing(WindowEvent e) {
               saveSettings(getSettings());
