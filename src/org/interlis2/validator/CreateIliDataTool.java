@@ -201,8 +201,6 @@ public class CreateIliDataTool {
                     if(model==null) {
                         model=(Model) topic.getContainer();
                         
-                        String idgeoiv=model.getMetaValue(Ili2cMetaAttrs.ILIMODELSXML_ID_GEO_IV);
-                        addIdGeoIV(datasetMetadata, idgeoiv);
                         String furtherInformation=model.getMetaValue(Ili2cMetaAttrs.ILIMODELSXML_FURTHER_INFORMATION);
                         if (furtherInformation != null) {
                             datasetMetadata.setfurtherInformation(furtherInformation);
@@ -267,17 +265,6 @@ public class CreateIliDataTool {
             id=domainName+"."+id;
         }
         return id;
-    }
-
-    static protected void addIdGeoIV(ch.interlis.models.DatasetIdx16.DataIndex.DatasetMetadata datasetMetadata, String idgeoiv) {
-        if (idgeoiv != null) {
-            String ids[]=idgeoiv.split("\\,");
-            for(String geoid:ids) {
-                Code_ idgeoivCode=new Code_();
-                idgeoivCode.setvalue(CODES_GEOIV+geoid.trim());
-                datasetMetadata.addcategories(idgeoivCode);
-            }
-        }
     }
 
     private void addModelCodes(DatasetMetadata datasetMetadata, Model modelx, IliFiles ilifiles) {
