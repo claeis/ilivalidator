@@ -290,8 +290,6 @@ public class UpdateIliDataTool {
                     if(model == null) {
                         model=(Model) topic.getContainer();
                         
-                        String idgeoiv=model.getMetaValue(Ili2cMetaAttrs.ILIMODELSXML_ID_GEO_IV);
-                        CreateIliDataTool.addIdGeoIV(datasetMetadata, idgeoiv);
                         String furtherInformation=model.getMetaValue(Ili2cMetaAttrs.ILIMODELSXML_FURTHER_INFORMATION);
                         if (furtherInformation != null) {
                             datasetMetadata.setfurtherInformation(furtherInformation);
