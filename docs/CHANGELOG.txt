@@ -1,5 +1,6 @@
 LATEST VERSION
 -----------------------------
+- --check-repo-data continues validation (#314)
 - drag and drop for data files (#230)
 - new tab "Hilfe" (#279)
 - ilidata repo tools:  use proxy settings
