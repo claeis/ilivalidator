@@ -1,5 +1,7 @@
 LATEST VERSION
 -----------------------------
+- drag and drop for data files (#230)
+- new tab "Hilfe" (#279)
 - ilidata repo tools:  use proxy settings
 - ili2c-5.2.3-SNAPSHOT
 
