@@ -2,6 +2,8 @@ package org.interlis2.validator.gui;
 
 import java.awt.Insets;
 import java.awt.Toolkit;
+import java.awt.datatransfer.DataFlavor;
+import java.awt.datatransfer.UnsupportedFlavorException;
 import java.awt.event.ActionListener;
 import java.awt.event.ItemEvent;
 import java.awt.event.KeyEvent;
@@ -34,6 +36,7 @@ import javax.swing.JMenuBar;
 import javax.swing.JMenuItem;
 import javax.swing.JOptionPane;
 import javax.swing.JTextField;
+import javax.swing.TransferHandler;
 import javax.swing.border.EtchedBorder;
 import javax.swing.filechooser.FileNameExtensionFilter;
 
@@ -348,6 +351,7 @@ public class MainFrame extends JFrame {
 	private javax.swing.JTextArea getXtfFileUi() {
 		if(xtfFileUi == null) {
 			xtfFileUi = new javax.swing.JTextArea();
+			xtfFileUi.setTransferHandler(getDragAndDropHandler());
 		}
 		return xtfFileUi;
 	}
@@ -400,6 +404,34 @@ public class MainFrame extends JFrame {
 			allObjectsAccessibleUi.setText(rsrc.getString("MainFrame.allObjectsAccessible"));
 		}
 		return allObjectsAccessibleUi;
+	}
+	private TransferHandler getDragAndDropHandler() {
+		return new TransferHandler() {
+			public boolean canImport(TransferHandler.TransferSupport support) {
+				return support.isDataFlavorSupported(DataFlavor.javaFileListFlavor);
+			}
+
+			public boolean importData(TransferHandler.TransferSupport support) {
+				if (!canImport(support)){
+					return false;
+				}
+
+				try {
+					List<File> files = (List<File>)support.getTransferable().getTransferData(DataFlavor.javaFileListFlavor);
+					String[] absolutePaths = new String[files.size()];
+					for(int i = 0; i < files.size(); i++){
+						absolutePaths[i] = files.get(i).getAbsolutePath();
+					}
+					setXtfFile(absolutePaths);
+				} catch (UnsupportedFlavorException e) {
+					return false;
+				} catch (IOException e) {
+					return false;
+				}
+
+				return true;
+			}
+		};
 	}
 	// selected files
 	public String[] getXtfFile(){
