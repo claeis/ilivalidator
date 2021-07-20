@@ -2,6 +2,11 @@ package org.interlis2.validator.gui;
 
 import java.awt.Desktop;
 import java.awt.Insets;
+import java.awt.Dimension;
+import java.awt.GraphicsDevice;
+import java.awt.GraphicsEnvironment;
+import java.awt.Point;
+import java.awt.Rectangle;
 import java.awt.Toolkit;
 import java.awt.event.ActionEvent;
 import java.awt.datatransfer.DataFlavor;
@@ -50,6 +55,11 @@ import org.interlis2.validator.Validator;
 /** GUI of ilivalidator.
  */
 public class MainFrame extends JFrame {
+	private static final String WINDOW_HEIGHT = "org.interlis2.validator.gui.MainFrame.windowHeight";
+	private static final String WINDOW_WIDTH = "org.interlis2.validator.gui.MainFrame.windowWidth";
+	private static final String WINDOW_X = "org.interlis2.validator.gui.MainFrame.windowX";
+	private static final String WINDOW_Y = "org.interlis2.validator.gui.MainFrame.windowY";
+
 	private java.util.ResourceBundle rsrc=java.util.ResourceBundle.getBundle("org.interlis2.validator.gui.IliValidatorTexts");
 	private Settings settings=null;
 	private javax.swing.JPanel jContentPane = null;
@@ -93,6 +103,7 @@ public class MainFrame extends JFrame {
 	}
 	private void initialize() {
 		this.setSize(500, 361);
+		this.setLocationByPlatform(true);
 		this.setContentPane(getJContentPane());
 		this.setDefaultCloseOperation(javax.swing.JFrame.EXIT_ON_CLOSE);
 		this.setName(Main.APP_NAME);
@@ -115,6 +126,7 @@ public class MainFrame extends JFrame {
 				dlg.setIlidirs(settings.getValue(Validator.SETTING_ILIDIRS));
 				dlg.setHttpProxyHost(settings.getValue(ch.interlis.ili2c.gui.UserSettings.HTTP_PROXY_HOST));
 				dlg.setHttpProxyPort(settings.getValue(ch.interlis.ili2c.gui.UserSettings.HTTP_PROXY_PORT));
+				dlg.setLocationRelativeTo(getJContentPane());
 				if(dlg.showDialog()==ch.interlis.ili2c.gui.RepositoriesDialog.OK_OPTION){
 					String ilidirs=dlg.getIlidirs();
 					if(ilidirs==null){
@@ -179,6 +191,7 @@ public class MainFrame extends JFrame {
 		helpMenu.add(aboutMenuItem);
 		aboutMenuItem.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent e) {
+				aboutDialog.setLocationRelativeTo(getJContentPane());
 				aboutDialog.setVisible(true);
 			}
 		});
@@ -200,6 +213,11 @@ public class MainFrame extends JFrame {
 		toSave.setValue(Validator.SETTING_ALL_OBJECTS_ACCESSIBLE,settings.getValue(Validator.SETTING_ALL_OBJECTS_ACCESSIBLE));
 		toSave.setValue(ch.interlis.ili2c.gui.UserSettings.HTTP_PROXY_HOST,settings.getValue(ch.interlis.ili2c.gui.UserSettings.HTTP_PROXY_HOST));
 		toSave.setValue(ch.interlis.ili2c.gui.UserSettings.HTTP_PROXY_PORT,settings.getValue(ch.interlis.ili2c.gui.UserSettings.HTTP_PROXY_PORT));
+		toSave.setValue(WINDOW_WIDTH, settings.getValue(WINDOW_WIDTH));
+		toSave.setValue(WINDOW_HEIGHT, settings.getValue(WINDOW_HEIGHT));
+		toSave.setValue(WINDOW_X, settings.getValue(WINDOW_X));
+		toSave.setValue(WINDOW_Y, settings.getValue(WINDOW_Y));
+
 		Main.writeSettings(toSave);
 	}
 	private javax.swing.JPanel getJContentPane() {
@@ -556,6 +574,14 @@ public class MainFrame extends JFrame {
 		String ilidirs=settings.getValue(Validator.SETTING_ILIDIRS);
         String appHome=settings.getValue(Validator.SETTING_APPHOME);
 
+		// save window location and size
+		Dimension dimension = getSize();
+		String windowWidth = Integer.toString((int) dimension.getWidth());
+		String windowHeight = Integer.toString((int) dimension.getHeight());
+		Point origin = getLocation();
+		String windowX = Integer.toString((int) origin.getX());
+		String windowY = Integer.toString((int) origin.getY());
+
 		
 		Settings newSettings=new Settings();
 		
@@ -569,6 +595,10 @@ public class MainFrame extends JFrame {
 		newSettings.setValue(Validator.SETTING_APPHOME, appHome);
 		newSettings.setValue(ch.interlis.ili2c.gui.UserSettings.HTTP_PROXY_HOST,proxyHost);
 		newSettings.setValue(ch.interlis.ili2c.gui.UserSettings.HTTP_PROXY_PORT,proxyPort);
+		newSettings.setValue(WINDOW_WIDTH, windowWidth);
+		newSettings.setValue(WINDOW_HEIGHT, windowHeight);
+		newSettings.setValue(WINDOW_X, windowX);
+		newSettings.setValue(WINDOW_Y, windowY);
 		
 		if (optionsSkipPolygonBuildingItem.isSelected()) {
 		    newSettings.setValue(ch.interlis.iox_j.validator.Validator.CONFIG_DO_ITF_LINETABLES, ch.interlis.iox_j.validator.Validator.CONFIG_DO_ITF_LINETABLES_DO);
@@ -632,7 +662,32 @@ public class MainFrame extends JFrame {
 			String configFile=settings.getValue(Validator.SETTING_CONFIGFILE);
 			frame.setConfigFile(configFile);
 			frame.setObjectsAccessible(Validator.TRUE.equals(settings.getValue(Validator.SETTING_ALL_OBJECTS_ACCESSIBLE)));
+			restoreWindowSizeAndLocation(frame, settings);
 			frame.show();
+	}
+	private static void restoreWindowSizeAndLocation(JFrame frame, Settings settings) {
+		try {
+			int width = Integer.parseInt(settings.getValue(WINDOW_WIDTH));
+			int height = Integer.parseInt(settings.getValue(WINDOW_HEIGHT));
+			int x = Integer.parseInt(settings.getValue(WINDOW_X));
+			int y = Integer.parseInt(settings.getValue(WINDOW_Y));
+
+			frame.setSize(width, height);
+			if (isLocationOnScreen(x, y)) {
+				frame.setLocation(x, y);
+			}
+		} catch (NumberFormatException ex) {
+			// ignore settings, use the default size and location
+		}
+	}
+	private static boolean isLocationOnScreen(int x, int y) {
+		for (GraphicsDevice screen : GraphicsEnvironment.getLocalGraphicsEnvironment().getScreenDevices()) {
+			Rectangle bounds = screen.getDefaultConfiguration().getBounds();
+			if (bounds.contains(x, y)) {
+				return true;
+			}
+		}
+		return false;
 	}
 	private javax.swing.JButton getDoValidateBtn() {
 		if(doValidateBtn == null) {
