@@ -55,10 +55,10 @@ import org.interlis2.validator.Validator;
 /** GUI of ilivalidator.
  */
 public class MainFrame extends JFrame {
-	private static final String WINDOW_HEIGHT = "WINDOW_HEIGHT";
-	private static final String WINDOW_WIDTH = "WINDOW_WIDTH";
-	private static final String WINDOW_X = "WINDOW_X";
-	private static final String WINDOW_Y = "WINDOW_Y";
+	private static final String WINDOW_HEIGHT = "org.interlis2.validator.gui.MainFrame.windowHeight";
+	private static final String WINDOW_WIDTH = "org.interlis2.validator.gui.MainFrame.windowWidth";
+	private static final String WINDOW_X = "org.interlis2.validator.gui.MainFrame.windowX";
+	private static final String WINDOW_Y = "org.interlis2.validator.gui.MainFrame.windowY";
 
 	private java.util.ResourceBundle rsrc=java.util.ResourceBundle.getBundle("org.interlis2.validator.gui.IliValidatorTexts");
 	private Settings settings=null;
