@@ -3,7 +3,10 @@ package org.interlis2.validator.gui;
 import java.awt.Desktop;
 import java.awt.Insets;
 import java.awt.Dimension;
+import java.awt.GraphicsDevice;
+import java.awt.GraphicsEnvironment;
 import java.awt.Point;
+import java.awt.Rectangle;
 import java.awt.Toolkit;
 import java.awt.event.ActionEvent;
 import java.awt.datatransfer.DataFlavor;
@@ -667,10 +670,21 @@ public class MainFrame extends JFrame {
 			int y = Integer.parseInt(settings.getValue(WINDOW_Y));
 
 			frame.setSize(width, height);
-			frame.setLocation(x, y);
+			if (isLocationOnScreen(x, y)) {
+				frame.setLocation(x, y);
+			}
 		} catch (NumberFormatException ex) {
 			// ignore settings, use the default size and location
 		}
+	}
+	private static boolean isLocationOnScreen(int x, int y) {
+		for (GraphicsDevice screen : GraphicsEnvironment.getLocalGraphicsEnvironment().getScreenDevices()) {
+			Rectangle bounds = screen.getDefaultConfiguration().getBounds();
+			if (bounds.contains(x, y)) {
+				return true;
+			}
+		}
+		return false;
 	}
 	private javax.swing.JButton getDoValidateBtn() {
 		if(doValidateBtn == null) {
