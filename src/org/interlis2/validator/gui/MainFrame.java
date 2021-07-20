@@ -103,6 +103,7 @@ public class MainFrame extends JFrame {
 	}
 	private void initialize() {
 		this.setSize(500, 361);
+		this.setLocationByPlatform(true);
 		this.setContentPane(getJContentPane());
 		this.setDefaultCloseOperation(javax.swing.JFrame.EXIT_ON_CLOSE);
 		this.setName(Main.APP_NAME);
@@ -125,6 +126,7 @@ public class MainFrame extends JFrame {
 				dlg.setIlidirs(settings.getValue(Validator.SETTING_ILIDIRS));
 				dlg.setHttpProxyHost(settings.getValue(ch.interlis.ili2c.gui.UserSettings.HTTP_PROXY_HOST));
 				dlg.setHttpProxyPort(settings.getValue(ch.interlis.ili2c.gui.UserSettings.HTTP_PROXY_PORT));
+				dlg.setLocationRelativeTo(getJContentPane());
 				if(dlg.showDialog()==ch.interlis.ili2c.gui.RepositoriesDialog.OK_OPTION){
 					String ilidirs=dlg.getIlidirs();
 					if(ilidirs==null){
@@ -189,6 +191,7 @@ public class MainFrame extends JFrame {
 		helpMenu.add(aboutMenuItem);
 		aboutMenuItem.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent e) {
+				aboutDialog.setLocationRelativeTo(getJContentPane());
 				aboutDialog.setVisible(true);
 			}
 		});
