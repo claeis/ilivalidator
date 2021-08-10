@@ -70,7 +70,7 @@ public class Validator {
 	/** main workhorse function.
 	 * @param dataFilename File to validate.
 	 * @param settings Configuration of program. 
-	 * This is not the TOML file, that controls the model specific validation.
+	 * This is not the INI file, that controls the model specific validation.
 	 * @return true if validation succeeds, false if it fails (or any program error). 
 	 * @see #SETTING_MODELNAMES
 	 * @see #SETTING_ILIDIRS
