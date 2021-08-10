@@ -51,7 +51,7 @@ public class ValidatorTest {
 	public void itfOkWithValidationConfig() {
 		Settings settings=new Settings();
 		settings.setValue(Validator.SETTING_ILIDIRS, Validator.ITF_DIR);
-		settings.setValue(Validator.SETTING_CONFIGFILE, "test/data/Beispiel1e.toml");
+		settings.setValue(Validator.SETTING_CONFIGFILE, "test/data/Beispiel1e.ini");
 		boolean ret=Validator.runValidation("test/data/Beispiel1e.itf", settings);
 		assertTrue(ret);
 	}
@@ -80,7 +80,7 @@ public class ValidatorTest {
     @Test
     public void itfWithValidationConfig_DefaultGeometryTypeValidationOff_Ok() {
         Settings settings=new Settings();
-        settings.setValue(Validator.SETTING_CONFIGFILE, "test/data/defaultGeometryTypeValidationOff.toml");
+        settings.setValue(Validator.SETTING_CONFIGFILE, "test/data/defaultGeometryTypeValidationOff.ini");
         boolean ret=Validator.runValidation("test/data/Beispiel1d.itf", settings);
         assertTrue(ret);
     }
@@ -130,7 +130,7 @@ public class ValidatorTest {
 	public void xtfFailWithAdditionalModel() {
 		Settings settings=new Settings();
 		settings.setValue(Validator.SETTING_ILIDIRS, Validator.ITF_DIR);
-		settings.setValue(Validator.SETTING_CONFIGFILE, "test/data/Beispiel2e.toml");
+		settings.setValue(Validator.SETTING_CONFIGFILE, "test/data/Beispiel2e.ini");
 		boolean ret=Validator.runValidation("test/data/Beispiel2e.xtf", settings);
 		assertFalse(ret);
 	}
@@ -183,14 +183,14 @@ public class ValidatorTest {
 	@Test
 	public void xtfOkWithValidationConfig() {
 		Settings settings=new Settings();
-		settings.setValue(Validator.SETTING_CONFIGFILE, "test/data/Beispiel2b.toml");
+		settings.setValue(Validator.SETTING_CONFIGFILE, "test/data/Beispiel2b.ini");
 		boolean ret=Validator.runValidation("test/data/Beispiel2b.xtf", settings);
 		assertTrue(ret);
 	}
     @Test
     public void xtfOkWithValidationConfigAllowAreaOverlap() {
         Settings settings=new Settings();
-        settings.setValue(Validator.SETTING_CONFIGFILE, "test/data/Beispiel2AreaOverlap.toml");
+        settings.setValue(Validator.SETTING_CONFIGFILE, "test/data/Beispiel2AreaOverlap.ini");
         boolean ret=Validator.runValidation("test/data/Beispiel2AreaOverlap.xtf", settings);
         assertTrue(ret);
     }
@@ -198,7 +198,7 @@ public class ValidatorTest {
 	public void xtfFailForceTypeCheckWithValidationConfig() {
 		Settings settings=new Settings();
 		settings.setValue(Validator.SETTING_FORCE_TYPE_VALIDATION, Validator.TRUE);
-		settings.setValue(Validator.SETTING_CONFIGFILE, "test/data/Beispiel2b.toml");
+		settings.setValue(Validator.SETTING_CONFIGFILE, "test/data/Beispiel2b.ini");
 		boolean ret=Validator.runValidation("test/data/Beispiel2b.xtf", settings);
 		assertFalse(ret);
 	}
