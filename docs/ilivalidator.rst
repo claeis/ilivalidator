@@ -107,9 +107,9 @@ Fall 2
 Es wird eine INTERLIS 2-Datei mit einer spezifischen 
 Konfiguration validiert/geprüft.
 
-``java -jar ilivalidator.jar --config config.toml path/to/data.xtf``
+``java -jar ilivalidator.jar --config config.ini path/to/data.xtf``
 
-In der Datei config.toml wird definiert, welche Prüfungen gar nicht durchzuführen oder 
+In der Datei config.ini wird definiert, welche Prüfungen gar nicht durchzuführen oder
 bei Nichterfüllen nur als Warnung zu melden sind.
 
 Fall 3
@@ -214,10 +214,10 @@ Optionen:
 +---------------------------------------------+----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------+
 | Option                                      | Beschreibung                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                           |
 +=============================================+========================================================================================================================================================================================================================================================================================================================================================================================================================================================================================================================================+
-| ``--config  filename``                      | Konfiguriert die Datenprüfung mit Hilfe einer TOML-Datei.                                                                                                                                                                                                                                                                                                                                                                                                                                                                              |
+| ``--config  filename``                      | Konfiguriert die Datenprüfung mit Hilfe einer INI-Datei.                                                                                                                                                                                                                                                                                                                                                                                                                                                                              |
 |                                             |                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                        |
 +---------------------------------------------+----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------+
-| ``--forceTypeValidation``                   | Ignoriert die Konfiguration der Typprüfung aus der TOML-Datei, d.h. es kann nur die Multiplizität aufgeweicht werden.                                                                                                                                                                                                                                                                                                                                                                                                                  |
+| ``--forceTypeValidation``                   | Ignoriert die Konfiguration der Typprüfung aus der INI-Datei, d.h. es kann nur die Multiplizität aufgeweicht werden.                                                                                                                                                                                                                                                                                                                                                                                                                  |
 |                                             |                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                        |
 +---------------------------------------------+----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------+
 | ``--disableAreaValidation``                 | Schaltet die AREA Topologieprüfung aus (XTF).                                                                                                                                                                                                                                                                                                                                                                                                                                                                                          |
@@ -302,24 +302,24 @@ Um z.B. bei einem Attribut den Mandatory Check ganz auszuschalten, schreibt man 
 |  Art : MANDATORY (...);
 
 Um dieselbe Konfiguration ohne Änderung der ili-Datei vorzunehmen, 
-schreibt man in der TOML-Datei:
+schreibt man in der INI-Datei:
 
 | ["Beispiel1.Bodenbedeckung.Gebaeude.Art"]
 | multiplicity="off"
 
-Zusätzlich erlaubt die TOML Datei pauschale Konfigurationen im Abschnitt "PARAMETER". Um z.B. generell 
-alle Prüfungen auszuschalten schreibt man in die TOML-Datei:
+Zusätzlich erlaubt die INI Datei pauschale Konfigurationen im Abschnitt "PARAMETER". Um z.B. generell
+alle Prüfungen auszuschalten schreibt man in die INI-Datei:
 
 | ["PARAMETER"]
 | validation="off"
 
-TOML-Konfigurationsdatei
+INI-Konfigurationsdatei
 ~~~~~~~~~~~~~~~~~~~~~~~~
-`Beispiel1.toml`_
+`Beispiel1.ini`_
 
-.. _Beispiel1.toml: Beispiel1.toml
+.. _Beispiel1.ini: Beispiel1.ini
 
-TOML-Globale Konfigurationen
+INI-Globale Konfigurationen
 ~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
 +---------------------------------+-------------------------------------------+-----------------------------------------------------------------------------------+
@@ -347,7 +347,7 @@ TOML-Globale Konfigurationen
 |                                 | defaultGeometryTypeValidation="off"       | Mögliche Einstellungen sind: "warning", "off", "on". DEFAULT ist "on".            |
 |                                 |                                           |                                                                                   |
 +---------------------------------+-------------------------------------------+-----------------------------------------------------------------------------------+
-| allowOnlyMultiplicityReduction  | ["PARAMETER"]                             | "true" ignoriert die Konfiguration der Typprüfungen aus der TOML-Datei,           |
+| allowOnlyMultiplicityReduction  | ["PARAMETER"]                             | "true" ignoriert die Konfiguration der Typprüfungen aus der INI-Datei,           |
 |                                 | allowOnlyMultiplicityReduction="true"     | d.h. es kann nur die Prüfung der Multiplizität konfiguriert werden.               |
 |                                 |                                           | Mögliche Einstellungen sind: "true", "false". DEFAULT ist "false".                |
 |                                 |                                           |                                                                                   |
