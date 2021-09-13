@@ -127,7 +127,7 @@ task bindist(type: Zip){
 	destinationDir = file('dist')
 	from jar
 	into('docs'){
-		from files(fileTree("docs").include("LICENSE.*"),"docs/README.txt","docs/CHANGELOG.txt","docs/Beispiel1.ili","docs/Beispiel1.toml","docs/Beispiel1.xtf","docs/IliVErrors.ili","docs/ilivalidator.html")
+		from files(fileTree("docs").include("LICENSE.*"),"docs/README.txt","docs/CHANGELOG.txt","docs/Beispiel1.ili","docs/Beispiel1.ini","docs/Beispiel1.xtf","docs/IliVErrors.ili","docs/ilivalidator.html")
 	}
 	into('libs'){
 		from configurations.runtimeClasspath

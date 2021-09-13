@@ -14,7 +14,7 @@ import ch.interlis.iox_j.logging.LogEventImpl;
 
 public class InconsistentModelVersionTest {
     
-    private static final String CONFIG_FILE = "test/data/inconsistentModelVersion/ConfigFile.toml";
+    private static final String CONFIG_FILE = "test/data/inconsistentModelVersion/ConfigFile.ini";
 
     @Test
     public void consistent_Ok() throws IoxException {

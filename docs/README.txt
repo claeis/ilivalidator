@@ -18,8 +18,8 @@ ilivalidator is in development state.
 
 System Requirements
 ===================
-For the current version of ilivalidator, you will need a JRE (Java Runtime Environment) installed on your system, version 1.6 or later.
-The JRE (Java Runtime Environment) can be downloaded for free from the Website <http://www.java.com/>.
+For the current version of ilivalidator, you will need a JRE (Java Runtime Environment) installed on your system, version 1.6 or later. Any OpenJDK based JRE will do.
+The JRE (Java Runtime Environment) can be downloaded from the Website <http://www.java.com/>.
 
 Installing ilivalidator
 =======================
