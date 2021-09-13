@@ -10,14 +10,14 @@ public class ConstraintsTest {
 	@Test
 	public void allConstraints_DisableConstraintValidation_NotSet_Fail() {
 		Settings settings=new Settings();
-		settings.setValue(Validator.SETTING_CONFIGFILE, TEST_IN+"Configfile.toml");
+		settings.setValue(Validator.SETTING_CONFIGFILE, TEST_IN+"Configfile.ini");
 		boolean ret=Validator.runValidation(TEST_IN+"AllConstraints.xtf", settings);
 		assertFalse(ret);
 	}
 	@Test
 	public void allConstraints_DisableConstraintValidation_FALSE_Fail() {
 		Settings settings=new Settings();
-		settings.setValue(Validator.SETTING_CONFIGFILE, TEST_IN+"Configfile.toml");
+		settings.setValue(Validator.SETTING_CONFIGFILE, TEST_IN+"Configfile.ini");
 		settings.setValue(Validator.SETTING_DISABLE_CONSTRAINT_VALIDATION, Validator.FALSE);
 		boolean ret=Validator.runValidation(TEST_IN+"AllConstraints.xtf", settings);
 		assertFalse(ret);
@@ -25,7 +25,7 @@ public class ConstraintsTest {
 	@Test
 	public void allConstraints_DisableConstraintValidation_TRUE_Ok() {
 		Settings settings=new Settings();
-		settings.setValue(Validator.SETTING_CONFIGFILE, TEST_IN+"Configfile.toml");
+		settings.setValue(Validator.SETTING_CONFIGFILE, TEST_IN+"Configfile.ini");
 		settings.setValue(Validator.SETTING_DISABLE_CONSTRAINT_VALIDATION, Validator.TRUE);
 		boolean ret=Validator.runValidation(TEST_IN+"AllConstraints.xtf", settings);
 		assertTrue(ret);

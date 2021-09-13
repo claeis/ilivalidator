@@ -7,8 +7,10 @@ import java.io.FileOutputStream;
 import java.io.FileReader;
 import java.io.IOException;
 import java.io.OutputStream;
+import java.net.MalformedURLException;
 import java.util.ArrayList;
 import java.util.HashSet;
+import java.util.Iterator;
 import java.util.List;
 import java.util.Set;
 import java.util.regex.Matcher;
@@ -16,9 +18,13 @@ import java.util.regex.Pattern;
 
 import ch.ehi.basics.logging.EhiLogger;
 import ch.ehi.basics.settings.Settings;
+import ch.interlis.ili2c.metamodel.Ili2cMetaAttrs;
 import ch.interlis.ili2c.metamodel.Model;
 import ch.interlis.ili2c.metamodel.Topic;
 import ch.interlis.ili2c.metamodel.TransferDescription;
+import ch.interlis.ili2c.modelscan.IliFile;
+import ch.interlis.ili2c.modelscan.IliModel;
+import ch.interlis.ilirepository.IliFiles;
 import ch.interlis.ilirepository.impl.RepositoryAccess;
 import ch.interlis.iom_j.itf.ItfReader;
 import ch.interlis.iom_j.itf.ItfReader2;
@@ -26,9 +32,11 @@ import ch.interlis.iom_j.xtf.XtfModel;
 import ch.interlis.iom_j.xtf.XtfWriterBase;
 import ch.interlis.iox.IoxEvent;
 import ch.interlis.iox.IoxException;
+import ch.interlis.iox.IoxLogging;
 import ch.interlis.iox.IoxReader;
 import ch.interlis.iox_j.EndBasketEvent;
 import ch.interlis.iox_j.EndTransferEvent;
+import ch.interlis.iox_j.IoxIliReader;
 import ch.interlis.iox_j.utility.IoxUtility;
 import ch.interlis.iox_j.ObjectEvent;
 import ch.interlis.iox_j.StartBasketEvent;
@@ -38,12 +46,18 @@ import ch.interlis.iox_j.utility.ReaderFactory;
 import ch.interlis.models.DatasetIdx16.Code_;
 import ch.interlis.models.DatasetIdx16.DataFile;
 import ch.interlis.models.DatasetIdx16.LocalisedMText;
+import ch.interlis.models.DatasetIdx16.LocalisedText;
 import ch.interlis.models.DatasetIdx16.ModelLink;
 import ch.interlis.models.DatasetIdx16.MultilingualMText;
+import ch.interlis.models.DatasetIdx16.MultilingualText;
 import ch.interlis.models.DatasetIdx16.DataIndex.DatasetMetadata;
 
 public class CreateIliDataTool {
    
+    private static final String CODES_GEOIV = "https://ids.geo.admin.ch/geoiv/";
+    private static final String CODES_MODEL = "http://codes.interlis.ch/model/";
+    private static final String CODES_TYPE_REFERENCE_DATA = "http://codes.interlis.ch/type/referenceData";
+
     public static boolean start(Settings settings) {
         return new CreateIliDataTool().createIliData(settings);
     }
@@ -52,6 +66,7 @@ public class CreateIliDataTool {
         String destinationFile = settings.getValue(Validator.SETTING_ILIDATA_XML);
         String filelistFile = settings.getValue(Validator.SETTING_REMOTEFILE_LIST);
         String baseUrl = settings.getValue(Validator.SETTING_REPOSITORY);
+        ch.interlis.ili2c.Main.setHttpProxySystemProperties(settings);
 
         try {
             Set<File> filelist = new HashSet<File>();
@@ -86,12 +101,18 @@ public class CreateIliDataTool {
             ioxWriter = ioxWriter1;
             StartBasketEvent startBasketEvent = new StartBasketEvent(ch.interlis.models.DATASETIDX16.DataIndex, "b1");
             ioxWriter.write(startBasketEvent);
-            int oid = 1;
+            int oid = getStartTid(settings);
             //IoxReader ioxReader = null;
-            final String version = "1";
+            final String defaultVersion = getDefaultVersion(settings);
+            boolean addReferenceDataTag=true;
             for (File currentFile : allFiles) {
-//                ch.interlis.models.DatasetIdx16.DataIndex.DatasetMetadata datasetMetadata = generateNewDatasetMetaData(currentFile, settings, baseUrl, version, oid++, "C", null, null);
-                ch.interlis.models.DatasetIdx16.DataIndex.DatasetMetadata datasetMetadata = generateNewDatasetMetaData(currentFile, settings, baseUrl, version, oid++);
+                String version=defaultVersion;
+                StringBuffer versionBuf=new StringBuffer();
+                getFileNameWithoutPfadExtensionAndDate(currentFile, versionBuf);
+                if(versionBuf.length()>0) {
+                    version=versionBuf.toString();
+                }
+                ch.interlis.models.DatasetIdx16.DataIndex.DatasetMetadata datasetMetadata = generateNewDatasetMetaData(currentFile, settings, baseUrl, version, oid++,addReferenceDataTag);
                 ioxWriter.write(new ObjectEvent(datasetMetadata));
             }                
         } finally {
@@ -103,7 +124,15 @@ public class CreateIliDataTool {
         }
     }
 
-    protected DatasetMetadata generateNewDatasetMetaData(File currentFile, Settings settings, String baseUrl, String version, int oid) throws Exception {
+    private String getDefaultVersion(Settings settings) {
+        return "1";
+    }
+
+    private int getStartTid(Settings settings) {
+        return 1;
+    }
+
+    protected DatasetMetadata generateNewDatasetMetaData(File currentFile, Settings settings, String baseUrl, String version, int oid,boolean addReferenceDataTag) throws Exception {
         IoxReader ioxReader = null;
         ch.interlis.models.DatasetIdx16.DataIndex.DatasetMetadata datasetMetadata = new ch.interlis.models.DatasetIdx16.DataIndex.DatasetMetadata(Integer.toString(oid));
         ch.interlis.models.DatasetIdx16.File file = new ch.interlis.models.DatasetIdx16.File();
@@ -114,17 +143,17 @@ public class CreateIliDataTool {
         dataFile.addfile(file);
         datasetMetadata.addfiles(dataFile);
         
-        // Convert CurrentFileName to DatasetMetadata.id format
-        String id = getFileNameWithoutPfadExtensionAndDate(currentFile);
-
+        setTitle(datasetMetadata, currentFile);
+        String id = getDatasetId(currentFile, baseUrl,settings);
         datasetMetadata.setid(id);
-        String owner = getOwnerByCurrentUser();
+        String owner = getOwner(settings);
         datasetMetadata.setowner(owner);
         datasetMetadata.setversion(version);
 
+        RepositoryAccess reposAccess = null;
         File localFile=null;
         if (isRemoteRepository(baseUrl)) {
-            RepositoryAccess reposAccess = new RepositoryAccess();
+            reposAccess = new RepositoryAccess();
             localFile = reposAccess.getLocalFileLocation(baseUrl, getURLRelativePath(currentFile), 0, null);
             if (localFile == null) {
                 throw new IllegalStateException (
@@ -133,12 +162,16 @@ public class CreateIliDataTool {
         } else {
             localFile = new File(new File(baseUrl), currentFile.getPath());
         }           
+        IoxLogging errHandler=new ch.interlis.iox_j.logging.Log2EhiLogger();
+        LogEventFactory errFactory=new LogEventFactory();
+        errFactory.setLogger(errHandler);
 
         // Get Model names from local File
         List<String> models = IoxUtility.getModels(localFile);
+        String modelVersion = IoxUtility.getModelVersion(new String[] {localFile.getPath()}, errFactory);
         TransferDescription td = null;
         try {
-            td = compileIli(models, settings.getValue(Validator.SETTING_ILIDIRS));
+            td=Validator.compileIli(modelVersion,models, null,localFile.getAbsoluteFile().getParentFile().getAbsolutePath(),Main.getAppHome(), settings);
         } catch (Exception e) {
             throw new Exception("Failed to read file <" + localFile.getAbsolutePath()+">",e);
         }
@@ -150,10 +183,10 @@ public class CreateIliDataTool {
         file.setmd5(md5);
         
         ioxReader = createReader(localFile);
-        if (ioxReader instanceof ItfReader) {
-            dataFile.setfileFormat("application/interlis+txt;version=1.0");
+        if (ioxReader instanceof IoxIliReader) {
+            dataFile.setfileFormat(((IoxIliReader)ioxReader).getMimeType());
         } else {
-            dataFile.setfileFormat("application/interlis+xml;version=2.3");
+            dataFile.setfileFormat(IoxIliReader.XTF_23);
         }
         try {
             IoxEvent event = null;
@@ -168,23 +201,25 @@ public class CreateIliDataTool {
                     if(model==null) {
                         model=(Model) topic.getContainer();
                         
-                        String idgeoiv=model.getMetaValue("IDGeoIV");
-                        if (idgeoiv != null) {
-                            String ids[]=idgeoiv.split("\\,");
-                            for(String geoid:ids) {
-                                Code_ idgeoivCode=new Code_();
-                                idgeoivCode.setvalue("https://ids.geo.admin.ch/geoiv/"+geoid.trim());
-                                datasetMetadata.addcategories(idgeoivCode);
-                            }
-                        }
-                        if (model.getMetaValue("furtherInformation") != null) {
-                            datasetMetadata.setfurtherInformation(model.getMetaValue("furtherInformation"));
+                        String furtherInformation=model.getMetaValue(Ili2cMetaAttrs.ILIMODELSXML_FURTHER_INFORMATION);
+                        if (furtherInformation != null) {
+                            datasetMetadata.setfurtherInformation(furtherInformation);
                         }        
-                        if (model.getMetaValue("technicalContact") != null) {
-                            datasetMetadata.settechnicalContact(model.getMetaValue("technicalContact"));
+                        String technicalContact=model.getMetaValue(Ili2cMetaAttrs.ILIMODELSXML_TECHNICAL_CONTACT);
+                        if (technicalContact != null) {
+                            datasetMetadata.settechnicalContact(technicalContact);
                         }
                         
-                        setShortDescription(datasetMetadata, model.getDocumentation());
+                        //setShortDescription(datasetMetadata, model.getDocumentation(),model.getScopedName());
+                        
+                        if(addReferenceDataTag) {
+                            Code_ referenceDataCode=new Code_();
+                            referenceDataCode.setvalue(CODES_TYPE_REFERENCE_DATA);
+                            datasetMetadata.addcategories(referenceDataCode);
+                            if(reposAccess!=null) {
+                                addModelCodes(datasetMetadata,model,reposAccess.getIliFiles(baseUrl));
+                            }
+                        }
                     }
                     
                     ModelLink modelLink = new ModelLink();
@@ -213,11 +248,61 @@ public class CreateIliDataTool {
         return datasetMetadata;
     }
 
-    protected static String getOwnerByCurrentUser() {
-        return "mailto:" + System.getProperty("user.name") + "@localhost";
+    private static String getDatasetId(File currentFile, String baseUrl, Settings settings) 
+            throws MalformedURLException 
+    {
+        String id = getFileNameWithoutPfadExtensionAndDate(currentFile,null);
+        if(isRemoteRepository(baseUrl)) {
+            java.net.URL url=new java.net.URL(baseUrl);
+            String domains[]=url.getHost().split("\\.");
+            StringBuffer domainName=new StringBuffer();
+            String sep="";
+            for(int i=domains.length-1;i>=0;i--) {
+                domainName.append(sep);
+                domainName.append(domains[i]);
+                sep=".";
+            }
+            id=domainName+"."+id;
+        }
+        return id;
     }
 
-    private boolean isRemoteRepository(String uri) {
+    private void addModelCodes(DatasetMetadata datasetMetadata, Model modelx, IliFiles ilifiles) {
+        String modelName=modelx.getName();
+        double iliVersion=Double.parseDouble(modelx.getIliVersion());
+        List<String> useModels=new ArrayList<String>();
+        Iterator<IliFile> filei=ilifiles.iteratorFile();
+        while(filei.hasNext()){
+            IliFile ilifile=filei.next();
+            Iterator<IliModel> modeli=ilifile.iteratorModel();
+            while(modeli.hasNext()){
+                IliModel model=modeli.next();
+                if(model.getIliVersion()==iliVersion){             
+                    for(Iterator<String> depIt=model.getDependencies().iterator();depIt.hasNext();) {
+                        String dep=depIt.next();
+                        if(dep.equals(modelName)){
+                            if(!useModels.contains(model.getName())) {
+                                useModels.add(model.getName());
+                            }
+                        }
+                    }
+                }
+            }
+        }
+        for(String model:useModels) {
+            Code_ modelCode=new Code_();
+            modelCode.setvalue(CODES_MODEL+model);
+            datasetMetadata.addcategories(modelCode);
+        }
+        
+    }
+
+    protected static String getOwner(Settings settings) {
+        return "mailto:models@geo.admin.ch";
+        //return "mailto:" + System.getProperty("user.name") + "@localhost";
+    }
+
+    private static boolean isRemoteRepository(String uri) {
         String urilc=uri.toLowerCase();
         if(urilc.startsWith("http:") || urilc.startsWith("https:")){
             return true;
@@ -225,17 +310,34 @@ public class CreateIliDataTool {
         return false;
     }
 
-    protected static void setShortDescription(DatasetMetadata datasetMetadata, String documentation) {
-        if (documentation != null) {
+    protected static void setShortDescription(DatasetMetadata datasetMetadata, String documentation,String name) {
+        if (documentation != null || name!=null) {
             MultilingualMText mText = new MultilingualMText();
             LocalisedMText localisedMText = new LocalisedMText();
-            localisedMText.setText(documentation);
+            if(documentation!=null) {
+                localisedMText.setText(documentation);
+            }else {
+                localisedMText.setText(name);
+            }
             mText.addLocalisedText(localisedMText);
             datasetMetadata.setshortDescription(mText);                                    
         }
     }
+    protected static void setTitle(DatasetMetadata datasetMetadata, File currentFile) {
+        
+        if (currentFile != null) {
+            String amt=currentFile.getParent();;
+            String name=getFileNameWithoutPfadExtensionAndDate(currentFile, null);
+            
+            MultilingualText mText = new MultilingualText();
+            LocalisedText localisedMText = new LocalisedText();
+            localisedMText.setText("Katalog "+amt+" "+name);
+            mText.addLocalisedText(localisedMText);
+            datasetMetadata.settitle(mText);                                    
+        }
+    }
 
-    protected static String getFileNameWithoutPfadExtensionAndDate(File currentFile) throws IllegalArgumentException {
+    protected static String getFileNameWithoutPfadExtensionAndDate(File currentFile,StringBuffer version) throws IllegalArgumentException {
         String filename = currentFile.getName();
         if (filename.endsWith(".xml")) {
             filename = filename.replace(".xml", "");
@@ -247,47 +349,22 @@ public class CreateIliDataTool {
             throw new IllegalArgumentException("Invalid file extension " + filename);
         }
         filename.trim();
-        // Clear, if the filename has a date 
+        // Check, if the filename has a date 
         if (filename.length() > 10) {
             String pattern = "^[_][0-9]{8}$";
             Pattern compiledPattern = Pattern.compile(pattern);
             String filenameTmp = filename.substring(filename.length() - 9, filename.length());
             Matcher matcher = compiledPattern.matcher(filenameTmp);
             if (matcher.matches()) {
+                if(version!=null) {
+                    version.append(filename.substring(filename.length() - 8).trim());
+                }
                 filename = filename.substring(0, filename.length() - 9).trim();
             }            
         }
         return filename;
     }
 
-    protected static TransferDescription compileIli(List<String> models, /*Settings settings,*/ String ilidirs) throws Exception {
-        ArrayList<String> modeldirv = new ArrayList<String>();
-        ArrayList<String> modelv = new ArrayList<String>();
-        if (models != null) {
-            modelv.addAll(models);
-        }
-        //String ilidirs = null;
-        //ilidirs = settings.getValue(Validator.SETTING_ILIDIRS);
-        if (ilidirs == null) {
-            ilidirs = Validator.SETTING_DEFAULT_ILIDIRS;
-        }
-
-        EhiLogger.logState("ilidirs <" + ilidirs + ">");
-        String modeldirs[] = ilidirs.split(";");
-        for (int modeli = 0; modeli < modeldirs.length; modeli++) {
-            String m = modeldirs[modeli];
-            if (m != null && !m.isEmpty()) {
-                modeldirv.add(m);
-            }
-        }
-
-        ch.interlis.ilirepository.IliManager modelManager = new ch.interlis.ilirepository.IliManager();
-        modelManager.setRepositories((String[]) modeldirv.toArray(new String[] {}));
-        ch.interlis.ili2c.config.Configuration ili2cConfig = modelManager.getConfig(modelv, 0.0);
-        ili2cConfig.setGenerateWarnings(false);
-        ch.interlis.ili2c.Ili2c.logIliFiles(ili2cConfig);
-        return ch.interlis.ili2c.Ili2c.runCompiler(ili2cConfig);
-    }
 
     protected static String getURLRelativePath(File currentFile) {
         return currentFile.getPath().replace(File.separatorChar, '/');

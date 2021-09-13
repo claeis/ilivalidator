@@ -3,11 +3,12 @@ allprojects {
 	apply plugin: "java"
 	apply plugin: "maven"
 	
-	sourceCompatibility = "1.6" 
-	targetCompatibility = "1.6"
+	sourceCompatibility = JavaVersion.VERSION_1_6 
+	targetCompatibility = JavaVersion.VERSION_1_6
+	compileJava.options.encoding = 'US-ASCII'
 }
 
-version '1.11.10'+System.getProperty('release','-SNAPSHOT')
+version '1.11.11'+System.getProperty('release','-SNAPSHOT')
 
 configurations {
     deployerJars
@@ -23,9 +24,9 @@ configurations {
 dependencies {
     compile group: 'ch.ehi', name: 'ehibasics', version: '1.4.1'
     compile group: 'ch.interlis', name: 'iox-api', version: '1.0.4'
-    compile group: 'ch.interlis', name: 'iox-ili', version: '1.21.6'
-    compile group: 'ch.interlis', name: 'ili2c-tool', version: "5.2.2"
-    compile group: 'ch.interlis', name: 'ili2c-core', version: "5.2.2"
+    compile group: 'ch.interlis', name: 'iox-ili', version: '1.21.7'
+    compile group: 'ch.interlis', name: 'ili2c-tool', version: "5.2.3"
+    compile group: 'ch.interlis', name: 'ili2c-core', version: "5.2.3"
     testCompile group: 'junit', name: 'junit', version: '4.12'
     deployerJars "org.apache.maven.wagon:wagon-ftp:3.3.3"
     deployerJars "org.apache.maven.wagon:wagon-ssh:3.3.3"
@@ -91,11 +92,16 @@ sourceSets {
 }
 
 task generateMyResources {
+	def versionPropsFile = new File(generatedResources,"org/interlis2/validator/Version.properties")
+	def version="$project.version"
+	def hash=getGitHash()
+	inputs.property("version","$project.version")
+	inputs.property("hash",getGitHash())
+	outputs.file versionPropsFile
 	doLast {
 		def versionProps = new Properties()
-		versionProps.setProperty('version', "$project.version")
-		versionProps.setProperty('versionCommit', getGitHash())
-		def versionPropsFile = new File(generatedResources,"org/interlis2/validator/Version.properties")
+		versionProps.setProperty('version', version)
+		versionProps.setProperty('versionCommit', hash)
 		versionPropsFile.getParentFile().mkdirs();
 		versionProps.store(versionPropsFile.newWriter(), null);
 	}
@@ -121,7 +127,7 @@ task bindist(type: Zip){
 	destinationDir = file('dist')
 	from jar
 	into('docs'){
-		from files(fileTree("docs").include("LICENSE.*"),"docs/README.txt","docs/CHANGELOG.txt","docs/Beispiel1.ili","docs/Beispiel1.toml","docs/Beispiel1.xtf","docs/IliVErrors.ili","docs/ilivalidator.html")
+		from files(fileTree("docs").include("LICENSE.*"),"docs/README.txt","docs/CHANGELOG.txt","docs/Beispiel1.ili","docs/Beispiel1.ini","docs/Beispiel1.xtf","docs/IliVErrors.ili","docs/ilivalidator.html")
 	}
 	into('libs'){
 		from configurations.runtimeClasspath

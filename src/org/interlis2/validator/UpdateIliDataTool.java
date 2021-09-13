@@ -8,6 +8,7 @@ import java.util.List;
 
 import ch.ehi.basics.logging.EhiLogger;
 import ch.ehi.basics.settings.Settings;
+import ch.interlis.ili2c.metamodel.Ili2cMetaAttrs;
 import ch.interlis.ili2c.metamodel.Model;
 import ch.interlis.ili2c.metamodel.Topic;
 import ch.interlis.ili2c.metamodel.TransferDescription;
@@ -20,11 +21,14 @@ import ch.interlis.iom_j.xtf.XtfReader;
 import ch.interlis.iom_j.xtf.XtfWriterBase;
 import ch.interlis.iox.EndTransferEvent;
 import ch.interlis.iox.IoxEvent;
+import ch.interlis.iox.IoxLogging;
 import ch.interlis.iox.IoxReader;
 import ch.interlis.iox_j.EndBasketEvent;
+import ch.interlis.iox_j.IoxIliReader;
 import ch.interlis.iox_j.utility.IoxUtility;
 import ch.interlis.iox_j.ObjectEvent;
 import ch.interlis.iox_j.StartBasketEvent;
+import ch.interlis.iox_j.logging.LogEventFactory;
 import ch.interlis.models.DatasetIdx16.Code_;
 import ch.interlis.models.DatasetIdx16.DataFile;
 import ch.interlis.models.DatasetIdx16.ModelLink;
@@ -58,6 +62,7 @@ public class UpdateIliDataTool {
             if (repository == null || repository.isEmpty()) {
                 throw new Exception("Repository should be given as a parameter!");
             } 
+            ch.interlis.ili2c.Main.setHttpProxySystemProperties(settings);
             
             //nimmt das ilidata.xml von diesem Repository
             RepositoryAccess reposAccess = new RepositoryAccess();                
@@ -243,14 +248,18 @@ public class UpdateIliDataTool {
         dataFile.addfile(file);
         datasetMetadata.addfiles(dataFile);
 
-        String owner = CreateIliDataTool.getOwnerByCurrentUser();
+        String owner = CreateIliDataTool.getOwner(settings);
         datasetMetadata.setowner(owner);
         
         // Get Model names from local File
+        IoxLogging errHandler=new ch.interlis.iox_j.logging.Log2EhiLogger();
+        LogEventFactory errFactory=new LogEventFactory();
+        errFactory.setLogger(errHandler);
         List<String> models = IoxUtility.getModels(newFileVersion);
+        String modelVersion = IoxUtility.getModelVersion(new String[] {newFileVersion.getPath()}, errFactory);
         TransferDescription td = null;
         try {
-            td = CreateIliDataTool.compileIli(models, settings.getValue(Validator.SETTING_ILIDIRS));
+            td=Validator.compileIli(modelVersion,models, null,newFileVersion.getAbsoluteFile().getParentFile().getAbsolutePath(),Main.getAppHome(), settings);
         } catch (Exception e) {
             throw new Exception("Failed to compile models for " + newFileVersion.getAbsolutePath(),e);
         }
@@ -262,10 +271,10 @@ public class UpdateIliDataTool {
         file.setmd5(md5);
         
         ioxReader = CreateIliDataTool.createReader(newFileVersion);
-        if (ioxReader instanceof ItfReader) {
-            dataFile.setfileFormat("application/interlis+txt;version=1.0");
+        if (ioxReader instanceof IoxIliReader) {
+            dataFile.setfileFormat(((IoxIliReader)ioxReader).getMimeType());
         } else {
-            dataFile.setfileFormat("application/interlis+xml;version=2.3");
+            dataFile.setfileFormat(IoxIliReader.XTF_23);
         }
         
         try {
@@ -281,23 +290,16 @@ public class UpdateIliDataTool {
                     if(model == null) {
                         model=(Model) topic.getContainer();
                         
-                        String idgeoiv = model.getMetaValue("IDGeoIV");
-                        if (idgeoiv != null) {
-                            String ids[]=idgeoiv.split("\\,");
-                            for(String geoid:ids) {
-                                Code_ idgeoivCode = new Code_();
-                                idgeoivCode.setvalue("https://ids.geo.admin.ch/geoiv/"+geoid.trim());
-                                datasetMetadata.addcategories(idgeoivCode);
-                            }
-                        }
-                        if (model.getMetaValue("furtherInformation") != null) {
-                            datasetMetadata.setfurtherInformation(model.getMetaValue("furtherInformation"));
+                        String furtherInformation=model.getMetaValue(Ili2cMetaAttrs.ILIMODELSXML_FURTHER_INFORMATION);
+                        if (furtherInformation != null) {
+                            datasetMetadata.setfurtherInformation(furtherInformation);
                         }        
-                        if (model.getMetaValue("technicalContact") != null) {
-                            datasetMetadata.settechnicalContact(model.getMetaValue("technicalContact"));
+                        String technicalContact=model.getMetaValue(Ili2cMetaAttrs.ILIMODELSXML_TECHNICAL_CONTACT);
+                        if (technicalContact != null) {
+                            datasetMetadata.settechnicalContact(technicalContact);
                         }
                         
-                        CreateIliDataTool.setShortDescription(datasetMetadata, model.getDocumentation());
+                        CreateIliDataTool.setShortDescription(datasetMetadata, model.getDocumentation(),model.getName());
                     }
                     
                     ModelLink modelLink = new ModelLink();

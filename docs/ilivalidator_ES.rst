@@ -43,9 +43,9 @@ Caso  2
 
 Se valida un archivo INTERLIS 2 con una configuración específica.
 
-``java -jar ilivalidator.jar --config config.toml path/to/data.xtf``
+``java -jar ilivalidator.jar --config config.ini path/to/data.xtf``
 
-El archivo config.toml se utiliza para definir qué validaciones no se deben realizar o sólo se deben notificar como advertencias cuando no se cumplen.
+El archivo config.ini se utiliza para definir qué validaciones no se deben realizar o sólo se deben notificar como advertencias cuando no se cumplen.
 
 Caso 3
 ~~~~~~
@@ -97,10 +97,10 @@ Opciones:
 +-----------------------------------+----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------+
 | Opción                            | Descripción                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                            |
 +===================================+========================================================================================================================================================================================================================================================================================================================================================================================================================================================================================================================================+
-| ``--config  filename``            | Configura la validación de datos mediante un archivo TOML.                                                                                                                                                                                                                                                                                                                                                                                                                                                                             |
+| ``--config  filename``            | Configura la validación de datos mediante un archivo INI.                                                                                                                                                                                                                                                                                                                                                                                                                                                                             |
 |                                   |                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                        |
 +-----------------------------------+----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------+
-| ``--forceTypeValidation``         | Ignora la configuración de la comprobación de tipo del archivo TOML, es decir sólo se puede “suavizar” la multiplicidad.                                                                                                                                                                                                                                                                                                                                                                                                               |
+| ``--forceTypeValidation``         | Ignora la configuración de la comprobación de tipo del archivo INI, es decir sólo se puede “suavizar” la multiplicidad.                                                                                                                                                                                                                                                                                                                                                                                                               |
 |                                   |                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                        |
 +-----------------------------------+----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------+
 | ``--disableAreaValidation``       | Deshabilita la validación de topología de AREA.                                                                                                                                                                                                                                                                                                                                                                                                                                                                                        |
@@ -158,7 +158,7 @@ Opciones:
 
 Configuración
 -------------
-La configuración de las pruebas individuales se puede definir directamente en el modelo a través de meta-atributos o en un archivo TOML independiente, por lo que no es necesario ningún cambio en el archivo ili.
+La configuración de las pruebas individuales se puede definir directamente en el modelo a través de meta-atributos o en un archivo INI independiente, por lo que no es necesario ningún cambio en el archivo ili.
 
 Por ejemplo, para deshabilitar completamente la validación Mandatory para un atributo, se escribe en el archivo ili:
 
@@ -166,24 +166,24 @@ Por ejemplo, para deshabilitar completamente la validación Mandatory para un at
 |  !!@ ilivalid.multiplicity = off
 |  Art : MANDATORY (...);
 
-Para implementar la misma configuración sin cambio del archivo ili, se escribe en el archivo TOML:
+Para implementar la misma configuración sin cambio del archivo ili, se escribe en el archivo INI:
 
 | ["Beispiel1.Bodenbedeckung.Gebaeude.Art"]
 | multiplicity="off"
 
-Además, el archivo TOML permite configuraciones globales en la sección "PARAMETER". Por ejemplo, para deshabilitar las validaciones en general, se escribe en el archivo TOML:
+Además, el archivo INI permite configuraciones globales en la sección "PARAMETER". Por ejemplo, para deshabilitar las validaciones en general, se escribe en el archivo INI:
 
 | ["PARAMETER"]
 | validation="off"
 
-TOML-Archivo de Configuración
+INI-Archivo de Configuración
 ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-`Beispiel1_ES.toml`_
+`Beispiel1_ES.ini`_
 
-.. _Beispiel1_ES.toml: Beispiel1_ES.toml
+.. _Beispiel1_ES.ini: Beispiel1_ES.ini
 
 
-TO DO (por hacer) Integrar documentación de Beispiel1.toml
+TO DO (por hacer) Integrar documentación de Beispiel1.ini
 
 
 Metaatributos de INTERLIS

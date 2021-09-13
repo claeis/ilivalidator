@@ -8,6 +8,7 @@ import java.util.Map;
 
 import ch.ehi.basics.logging.EhiLogger;
 import ch.ehi.basics.settings.Settings;
+import ch.interlis.ili2c.modelscan.IliFile;
 import ch.interlis.ilirepository.IliManager;
 import ch.interlis.ilirepository.impl.RepositoryAccess;
 import ch.interlis.iom.IomObject;
@@ -24,6 +25,7 @@ public class CheckRepoDataTool {
             if (repository == null || repository.isEmpty()) {
                 throw new Exception("Repository should be given as a parameter!");
             }
+            ch.interlis.ili2c.Main.setHttpProxySystemProperties(settings);
             
             // Get the IliDataXml from the Repository
             RepositoryAccess reposAccess = new RepositoryAccess();                
@@ -37,6 +39,7 @@ public class CheckRepoDataTool {
                 throw new Exception("Contents of the "+IliManager.ILIDATA_XML+" should not be empty!");
             }
             
+            List<String> failedFiles=new ArrayList<String>();
             IomObject[] actualIliDatas = findActualIliDatas(ilidataContents);
             for (IomObject currentObj : actualIliDatas) {
                 IomObject files = currentObj.getattrobj(ch.interlis.models.DatasetIdx16.DataIndex.DatasetMetadata.tag_files, 0);
@@ -47,8 +50,19 @@ public class CheckRepoDataTool {
                 // Validate IliDataXml
                 boolean runValidation = Validator.runValidation(new String[] { localCopyOfRemoteFile.getAbsolutePath() }, null);
                 if (!runValidation) {
-                    return false;
+                    failedFiles.add(filepath);
                 }
+            }
+            if(!failedFiles.isEmpty()) {
+                StringBuilder failed=new StringBuilder();
+                String sep="";
+                for(String f:failedFiles){
+                    failed.append(sep);
+                    failed.append(f);
+                    sep=", ";
+                }
+                EhiLogger.logError("validation failed with files: "+failed);
+                return false;
             }
         } catch (Exception e) {
             EhiLogger.logError(e);
