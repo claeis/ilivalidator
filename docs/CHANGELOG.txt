@@ -1,11 +1,17 @@
 LATEST VERSION
 -----------------------------
+
+ilivalidator 1.11.11 (2020-09-13)
+-----------------------------
 - Remember dialog size and location (#247)
 - --check-repo-data continues validation (#314)
 - drag and drop for data files (#230)
 - new tab "Hilfe" (#279)
+- reference attrs in sub-structures are not validated (#319)
+- XMLDate has to be checked stronger (YYYY-MM-DD) (#197)
 - ilidata repo tools:  use proxy settings
-- ili2c-5.2.3-SNAPSHOT
+- ili2c-5.2.3
+- iox-ili-1.21.7
 
 ilivalidator 1.11.10 (2020-04-30)
 -----------------------------
