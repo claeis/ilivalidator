@@ -1,5 +1,9 @@
 LATEST VERSION
 -----------------------------
+- check uniqueness of TIDs across the whole file (ilivalidator#320)
+- validate that an embedded association is not encoded as a standalone link object
+- support custom IoxReaders
+- iox-ili-1.21.8-SNAPSHOT
 
 ilivalidator 1.11.11 (2020-09-13)
 -----------------------------
