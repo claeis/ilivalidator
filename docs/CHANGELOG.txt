@@ -1,5 +1,6 @@
 LATEST VERSION
 -----------------------------
+- Cannot copy xtf path to log path anymore (#321)
 - check uniqueness of TIDs across the whole file (ilivalidator#320)
 - validate that an embedded association is not encoded as a standalone link object
 - support custom IoxReaders
