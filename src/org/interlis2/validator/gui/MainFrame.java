@@ -8,6 +8,8 @@ import java.awt.GraphicsEnvironment;
 import java.awt.Point;
 import java.awt.Rectangle;
 import java.awt.Toolkit;
+import java.awt.datatransfer.Transferable;
+import java.awt.dnd.*;
 import java.awt.event.ActionEvent;
 import java.awt.datatransfer.DataFlavor;
 import java.awt.datatransfer.UnsupportedFlavorException;
@@ -45,7 +47,6 @@ import javax.swing.JMenuBar;
 import javax.swing.JMenuItem;
 import javax.swing.JOptionPane;
 import javax.swing.JTextField;
-import javax.swing.TransferHandler;
 import javax.swing.border.EtchedBorder;
 import javax.swing.filechooser.FileNameExtensionFilter;
 
@@ -402,7 +403,7 @@ public class MainFrame extends JFrame {
 	private javax.swing.JTextArea getXtfFileUi() {
 		if(xtfFileUi == null) {
 			xtfFileUi = new javax.swing.JTextArea();
-			xtfFileUi.setTransferHandler(getDragAndDropHandler());
+			new DropTarget(xtfFileUi, getDragAndDropHandler());
 		}
 		return xtfFileUi;
 	}
@@ -456,31 +457,31 @@ public class MainFrame extends JFrame {
 		}
 		return allObjectsAccessibleUi;
 	}
-	private TransferHandler getDragAndDropHandler() {
-		return new TransferHandler() {
-			public boolean canImport(TransferHandler.TransferSupport support) {
-				return support.isDataFlavorSupported(DataFlavor.javaFileListFlavor);
-			}
-
-			public boolean importData(TransferHandler.TransferSupport support) {
-				if (!canImport(support)){
-					return false;
-				}
-
+	private DropTargetListener getDragAndDropHandler() {
+		return new DropTargetListener() {
+			public void dragEnter(DropTargetDragEvent evt) {}
+			public void dragOver(DropTargetDragEvent evt) {}
+			public void dropActionChanged(DropTargetDragEvent evt) {}
+			public void dragExit(DropTargetEvent dte) {}
+			public void drop(DropTargetDropEvent evt) {
 				try {
-					List<File> files = (List<File>)support.getTransferable().getTransferData(DataFlavor.javaFileListFlavor);
-					String[] absolutePaths = new String[files.size()];
-					for(int i = 0; i < files.size(); i++){
-						absolutePaths[i] = files.get(i).getAbsolutePath();
+					Transferable tr = evt.getTransferable();
+					for (DataFlavor flavor : tr.getTransferDataFlavors()) {
+						if (flavor.isFlavorJavaFileListType()){
+							evt.acceptDrop(DnDConstants.ACTION_COPY_OR_MOVE);
+							List<File> files = (List<File>)tr.getTransferData(flavor);
+							String[] absolutePaths = new String[files.size()];
+							for(int i = 0; i < files.size(); i++){
+								absolutePaths[i] = files.get(i).getAbsolutePath();
+							}
+							setXtfFile(absolutePaths);
+						}
 					}
-					setXtfFile(absolutePaths);
-				} catch (UnsupportedFlavorException e) {
-					return false;
 				} catch (IOException e) {
-					return false;
+					e.printStackTrace();
+				} catch (UnsupportedFlavorException e) {
+					e.printStackTrace();
 				}
-
-				return true;
 			}
 		};
 	}
