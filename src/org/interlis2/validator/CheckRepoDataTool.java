@@ -42,15 +42,41 @@ public class CheckRepoDataTool {
             List<String> failedFiles=new ArrayList<String>();
             IomObject[] actualIliDatas = findActualIliDatas(ilidataContents);
             for (IomObject currentObj : actualIliDatas) {
+                String tid=currentObj.getobjectoid();
+                EhiLogger.traceState("validate TID <"+tid+">");
                 IomObject files = currentObj.getattrobj(ch.interlis.models.DatasetIdx16.DataIndex.DatasetMetadata.tag_files, 0);
-                IomObject file = files.getattrobj(ch.interlis.models.DatasetIdx16.DataFile.tag_file, 0);
-                String filepath = file.getattrvalue(ch.interlis.models.DatasetIdx16.File.tag_path);
-                File localCopyOfRemoteFile = reposAccess.getLocalFileLocation(repository, filepath, 0, null);
-                
-                // Validate IliDataXml
-                boolean runValidation = Validator.runValidation(new String[] { localCopyOfRemoteFile.getAbsolutePath() }, null);
-                if (!runValidation) {
-                    failedFiles.add(filepath);
+                if(files == null) {
+                    EhiLogger.logError("TID"+tid+": missing "+ch.interlis.models.DatasetIdx16.DataIndex.DatasetMetadata.tag_files);
+                }
+                IomObject file = null;
+                if(files!=null) {
+                    file = files.getattrobj(ch.interlis.models.DatasetIdx16.DataFile.tag_file, 0);
+                    if(file == null) {
+                        EhiLogger.logError("TID"+tid+": missing "+ch.interlis.models.DatasetIdx16.DataFile.tag_file);
+                    }
+                }
+                String filepath=null;
+                if(file!=null) {
+                    filepath = file.getattrvalue(ch.interlis.models.DatasetIdx16.File.tag_path);
+                    if(filepath == null) {
+                        EhiLogger.logError("TID"+tid+": missing "+ch.interlis.models.DatasetIdx16.File.tag_path);
+                    }
+                }
+                File localCopyOfRemoteFile = null;
+                if(filepath!=null) {
+                    localCopyOfRemoteFile = reposAccess.getLocalFileLocation(repository, filepath, 0, null);
+                    if(localCopyOfRemoteFile == null) {
+                        EhiLogger.logError("TID"+tid+": "+filepath+" could not be found in <"+repository+">");
+                        failedFiles.add(filepath);
+                    }
+                }
+                if(localCopyOfRemoteFile!=null) {
+                    // Validate IliDataXml
+                    boolean runValidation = Validator.runValidation(new String[] { localCopyOfRemoteFile.getAbsolutePath() }, null);
+                    if (!runValidation) {
+                        failedFiles.add(filepath);
+                    }
+                    
                 }
             }
             if(!failedFiles.isEmpty()) {
