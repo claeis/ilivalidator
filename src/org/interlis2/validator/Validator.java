@@ -339,7 +339,7 @@ public class Validator {
 	}
 
 
-	private static boolean isWriteable(File f) throws IOException {
+	public static boolean isWriteable(File f) throws IOException {
         f.createNewFile();
         return f.canWrite();
     }

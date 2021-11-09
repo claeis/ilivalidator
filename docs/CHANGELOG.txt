@@ -5,6 +5,7 @@ LATEST VERSION
 - validate that an embedded association is not encoded as a standalone link object
 - support custom IoxReaders
 - check-repo-data: NPE if file doesn't exist in repository
+- check-repo-data: support --log parameter
 - iox-ili-1.21.8-SNAPSHOT
 
 ilivalidator 1.11.11 (2020-09-13)
