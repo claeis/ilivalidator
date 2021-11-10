@@ -1,5 +1,12 @@
 LATEST VERSION
 -----------------------------
+- Cannot copy xtf path to log path anymore (#321)
+- check uniqueness of TIDs across the whole file (ilivalidator#320)
+- validate that an embedded association is not encoded as a standalone link object
+- support custom IoxReaders
+- check-repo-data: NPE if file doesn't exist in repository
+- check-repo-data: support --log parameter
+- iox-ili-1.21.8
 
 ilivalidator 1.11.11 (2020-09-13)
 -----------------------------

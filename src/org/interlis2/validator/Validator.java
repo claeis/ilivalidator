@@ -4,6 +4,7 @@ import java.io.File;
 import java.io.IOException;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
@@ -36,10 +37,12 @@ import ch.interlis.iox_j.logging.FileLogger;
 import ch.interlis.iox_j.logging.LogEventFactory;
 import ch.interlis.iox_j.logging.StdLogger;
 import ch.interlis.iox_j.logging.XtfErrorsLogger;
+import ch.interlis.iox_j.plugins.IoxPlugin;
 import ch.interlis.iox_j.plugins.PluginLoader;
 import ch.interlis.iox_j.statistics.IoxStatistics;
 import ch.interlis.iox_j.utility.IoxUtility;
 import ch.interlis.iox_j.utility.ReaderFactory;
+import ch.interlis.iox_j.validator.InterlisFunction;
 import ch.interlis.iox_j.validator.ValidationConfig;
 
 /** High-level API of the INTERLIS validator.
@@ -204,18 +207,21 @@ public class Validator {
 				}
 			}
 			Map<String,Class> userFunctions=new java.util.HashMap<String,Class>();
+            List<Class> userReaders=new java.util.ArrayList<Class>();
             PluginLoader loader=new PluginLoader();
             loader.loadPlugins();
 			if(pluginFolder!=null){
 				loader.loadPlugins(new File(pluginFolder));
 			}
             userFunctions.putAll(PluginLoader.getInterlisFunctions(loader.getAllPlugins()));
+            userReaders.addAll(getIoxReaders(loader.getAllPlugins()));
+            settings.setTransientObject(ReaderFactory.CONFIG_CUSTOM_READERS, userReaders);
             settings.setTransientObject(ch.interlis.iox_j.validator.Validator.CONFIG_CUSTOM_FUNCTIONS, userFunctions);
             IoxLogging errHandler=new ch.interlis.iox_j.logging.Log2EhiLogger();
             LogEventFactory errFactory=new LogEventFactory();
             errFactory.setLogger(errHandler);
             
-			String modelVersion = IoxUtility.getModelVersion(dataFiles, errFactory);
+			String modelVersion = IoxUtility.getModelVersion(dataFiles, errFactory,settings);
 			
 			// read ili models
 			td=compileIli(modelVersion,modelnames, null,new File(dataFiles[0]).getAbsoluteFile().getParentFile().getAbsolutePath(),appHome, settings);
@@ -333,7 +339,7 @@ public class Validator {
 	}
 
 
-	private static boolean isWriteable(File f) throws IOException {
+	public static boolean isWriteable(File f) throws IOException {
         f.createNewFile();
         return f.canWrite();
     }
@@ -351,7 +357,7 @@ public class Validator {
     /** template method to allow for any other IoxReader
 	 */
 	protected IoxReader createReader(String filename, TransferDescription td,LogEventFactory errFactory,Settings settings,PipelinePool pool) throws IoxException {
-		IoxReader ioxReader=new ReaderFactory().createReader(new java.io.File(filename), errFactory);
+		IoxReader ioxReader=new ReaderFactory().createReader(new java.io.File(filename), errFactory,settings);
 		if(ioxReader instanceof ItfReader2 && skipPolygonBuilding){
 			ioxReader=new ItfReader(new java.io.File(filename));
 		}
@@ -586,4 +592,15 @@ public class Validator {
 	private boolean skipPolygonBuilding;
     private boolean skipGeometryErrors=false;
 	private boolean allowItfAreaHoles;
+    public static List<Class> getIoxReaders(List<IoxPlugin> plugins)
+    {
+        List<Class> funcs=new ArrayList<Class>();
+        for(IoxPlugin plugin:plugins){
+            if(plugin instanceof IoxReader){
+                funcs.add(plugin.getClass());
+            }
+        }
+        return funcs;
+    }
+
 }

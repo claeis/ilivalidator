@@ -1,6 +1,7 @@
 package org.interlis2.validator;
 
 import java.io.File;
+import java.io.IOException;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
@@ -12,6 +13,7 @@ import ch.interlis.ili2c.modelscan.IliFile;
 import ch.interlis.ilirepository.IliManager;
 import ch.interlis.ilirepository.impl.RepositoryAccess;
 import ch.interlis.iom.IomObject;
+import ch.interlis.iox_j.logging.FileLogger;
 
 public class CheckRepoDataTool {
     
@@ -20,7 +22,23 @@ public class CheckRepoDataTool {
     }
     
     private boolean checkRepoData(Settings settings) {
+        FileLogger logfile=null;
         try {
+            String logFilename=settings.getValue(Validator.SETTING_LOGFILE);
+            // setup logging of validation results
+            if(logFilename!=null){
+                File f=new java.io.File(logFilename);
+                try {
+                    if(Validator.isWriteable(f)) {
+                        logfile=new FileLogger(f);
+                        EhiLogger.getInstance().addListener(logfile);
+                    }else {
+                        throw new Exception("failed to write to logfile <"+f.getPath()+">");
+                    }
+                } catch (IOException e) {
+                    throw new Exception("failed to write to logfile <"+f.getPath()+">",e);
+                }
+            }
             String repository = settings.getValue(Validator.SETTING_REPOSITORY);
             if (repository == null || repository.isEmpty()) {
                 throw new Exception("Repository should be given as a parameter!");
@@ -42,15 +60,40 @@ public class CheckRepoDataTool {
             List<String> failedFiles=new ArrayList<String>();
             IomObject[] actualIliDatas = findActualIliDatas(ilidataContents);
             for (IomObject currentObj : actualIliDatas) {
+                String tid=currentObj.getobjectoid();
+                EhiLogger.traceState("validate TID <"+tid+">");
                 IomObject files = currentObj.getattrobj(ch.interlis.models.DatasetIdx16.DataIndex.DatasetMetadata.tag_files, 0);
-                IomObject file = files.getattrobj(ch.interlis.models.DatasetIdx16.DataFile.tag_file, 0);
-                String filepath = file.getattrvalue(ch.interlis.models.DatasetIdx16.File.tag_path);
-                File localCopyOfRemoteFile = reposAccess.getLocalFileLocation(repository, filepath, 0, null);
-                
-                // Validate IliDataXml
-                boolean runValidation = Validator.runValidation(new String[] { localCopyOfRemoteFile.getAbsolutePath() }, null);
-                if (!runValidation) {
-                    failedFiles.add(filepath);
+                if(files == null) {
+                    EhiLogger.logError("TID "+tid+": missing "+ch.interlis.models.DatasetIdx16.DataIndex.DatasetMetadata.tag_files);
+                }
+                IomObject file = null;
+                if(files!=null) {
+                    file = files.getattrobj(ch.interlis.models.DatasetIdx16.DataFile.tag_file, 0);
+                    if(file == null) {
+                        EhiLogger.logError("TID "+tid+": missing "+ch.interlis.models.DatasetIdx16.DataFile.tag_file);
+                    }
+                }
+                String filepath=null;
+                if(file!=null) {
+                    filepath = file.getattrvalue(ch.interlis.models.DatasetIdx16.File.tag_path);
+                    if(filepath == null) {
+                        EhiLogger.logError("TID "+tid+": missing "+ch.interlis.models.DatasetIdx16.File.tag_path);
+                    }
+                }
+                File localCopyOfRemoteFile = null;
+                if(filepath!=null) {
+                    localCopyOfRemoteFile = reposAccess.getLocalFileLocation(repository, filepath, 0, null);
+                    if(localCopyOfRemoteFile == null) {
+                        EhiLogger.logError("TID "+tid+": "+filepath+" could not be found in <"+repository+">");
+                        failedFiles.add(filepath);
+                    }
+                }
+                if(localCopyOfRemoteFile!=null) {
+                    // Validate IliDataXml
+                    boolean runValidation = Validator.runValidation(new String[] { localCopyOfRemoteFile.getAbsolutePath() }, null);
+                    if (!runValidation) {
+                        failedFiles.add(filepath);
+                    }
                 }
             }
             if(!failedFiles.isEmpty()) {
@@ -67,6 +110,12 @@ public class CheckRepoDataTool {
         } catch (Exception e) {
             EhiLogger.logError(e);
             return false;
+        }finally {
+            if(logfile!=null){
+                logfile.close();
+                EhiLogger.getInstance().removeListener(logfile);
+                logfile=null;
+            }
         }
         return true;
     }
