@@ -6,7 +6,7 @@ LATEST VERSION
 - support custom IoxReaders
 - check-repo-data: NPE if file doesn't exist in repository
 - check-repo-data: support --log parameter
-- iox-ili-1.21.8-SNAPSHOT
+- iox-ili-1.21.8
 
 ilivalidator 1.11.11 (2020-09-13)
 -----------------------------
