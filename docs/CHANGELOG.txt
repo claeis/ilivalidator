@@ -1,5 +1,8 @@
 LATEST VERSION
 -----------------------------
+
+ilivalidator 1.11.12 (2020-11-10)
+-----------------------------
 - Cannot copy xtf path to log path anymore (#321)
 - check uniqueness of TIDs across the whole file (ilivalidator#320)
 - validate that an embedded association is not encoded as a standalone link object
