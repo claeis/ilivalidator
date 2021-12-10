@@ -166,7 +166,7 @@ public class Validator {
 				EhiLogger.logState("pluginFolder <"+pluginFolder+">");
 			}
 		
-			TransferDescription td=null;
+			td=null;
 			
 			skipPolygonBuilding = ch.interlis.iox_j.validator.Validator.CONFIG_DO_ITF_LINETABLES_DO.equals(settings.getValue(ch.interlis.iox_j.validator.Validator.CONFIG_DO_ITF_LINETABLES));
 			
@@ -337,7 +337,12 @@ public class Validator {
 		}
 		return ret;
 	}
-
+    private TransferDescription td=null;
+	public TransferDescription getModel()
+	{
+	    return td;
+	}
+	
 
 	public static boolean isWriteable(File f) throws IOException {
         f.createNewFile();

@@ -1,5 +1,6 @@
 LATEST VERSION
 -----------------------------
+- API: Validator.getModel() added
 
 ilivalidator 1.11.12 (2021-11-10)
 -----------------------------
