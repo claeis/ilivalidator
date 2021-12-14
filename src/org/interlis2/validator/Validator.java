@@ -233,7 +233,7 @@ public class Validator {
 			try {
 	            modelVersion = IoxUtility.getModelVersion(dataFiles, errFactory,settings);
 			}catch(IoxException ex) {
-			    EhiLogger.logAdaption("failed to get version from data file "+dataFiles+"; "+ex.toString()+"; ignored");
+			    EhiLogger.logAdaption("failed to get version from data file; "+ex.toString()+"; ignored");
 			}
 			
 			// read ili models
