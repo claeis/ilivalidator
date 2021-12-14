@@ -1,6 +1,8 @@
 LATEST VERSION
 -----------------------------
 - API: Validator.getModel() added
+- fix: ignore exception, if model can not be read from data file
+- fix: keep explicitly defined user functions/readers
 
 ilivalidator 1.11.12 (2021-11-10)
 -----------------------------
