@@ -3,6 +3,8 @@ LATEST VERSION
 - API: Validator.getModel() added
 - fix: ignore exception, if model can not be read from data file
 - fix: keep explicitly defined user functions/readers
+- fix: Use of foreign structure in a catalog is not reported (#328)
+- iox-ili-1.21.9-SNAPSHOT
 
 ilivalidator 1.11.12 (2021-11-10)
 -----------------------------
