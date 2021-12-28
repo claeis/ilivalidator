@@ -1,7 +1,16 @@
 LATEST VERSION
 -----------------------------
 
-ilivalidator 1.11.12 (2020-11-10)
+ilivalidator 1.11.13 (2021-12-28)
+-----------------------------
+- API: Validator.getModel() added
+- fix: ignore exception, if model can not be read from data file
+- fix: keep explicitly defined user functions/readers
+- fix: Use of foreign structure in a catalog is not reported (#328)
+- ili2c-5.2.5
+- iox-ili-1.21.9
+
+ilivalidator 1.11.12 (2021-11-10)
 -----------------------------
 - Cannot copy xtf path to log path anymore (#321)
 - check uniqueness of TIDs across the whole file (ilivalidator#320)
@@ -11,7 +20,7 @@ ilivalidator 1.11.12 (2020-11-10)
 - check-repo-data: support --log parameter
 - iox-ili-1.21.8
 
-ilivalidator 1.11.11 (2020-09-13)
+ilivalidator 1.11.11 (2021-09-13)
 -----------------------------
 - Remember dialog size and location (#247)
 - --check-repo-data continues validation (#314)
@@ -23,7 +32,7 @@ ilivalidator 1.11.11 (2020-09-13)
 - ili2c-5.2.3
 - iox-ili-1.21.7
 
-ilivalidator 1.11.10 (2020-04-30)
+ilivalidator 1.11.10 (2021-04-30)
 -----------------------------
 - implement INTERLIS RunTimeParameterDef (#221) 
 - remove static reference to GUI (Swing) classes from Main class (#265)

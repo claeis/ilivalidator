@@ -166,7 +166,7 @@ public class Validator {
 				EhiLogger.logState("pluginFolder <"+pluginFolder+">");
 			}
 		
-			TransferDescription td=null;
+			td=null;
 			
 			skipPolygonBuilding = ch.interlis.iox_j.validator.Validator.CONFIG_DO_ITF_LINETABLES_DO.equals(settings.getValue(ch.interlis.iox_j.validator.Validator.CONFIG_DO_ITF_LINETABLES));
 			
@@ -206,22 +206,35 @@ public class Validator {
 					return false;
 				}
 			}
-			Map<String,Class> userFunctions=new java.util.HashMap<String,Class>();
-            List<Class> userReaders=new java.util.ArrayList<Class>();
             PluginLoader loader=new PluginLoader();
             loader.loadPlugins();
 			if(pluginFolder!=null){
 				loader.loadPlugins(new File(pluginFolder));
 			}
+            Map<String,Class> userFunctions=new java.util.HashMap<String,Class>();
             userFunctions.putAll(PluginLoader.getInterlisFunctions(loader.getAllPlugins()));
-            userReaders.addAll(getIoxReaders(loader.getAllPlugins()));
-            settings.setTransientObject(ReaderFactory.CONFIG_CUSTOM_READERS, userReaders);
+            Map<String,Class> definedFunctions=(Map<String,Class>)settings.getTransientObject(ch.interlis.iox_j.validator.Validator.CONFIG_CUSTOM_FUNCTIONS);
+            if(definedFunctions!=null) {
+                userFunctions.putAll(definedFunctions);
+            }
             settings.setTransientObject(ch.interlis.iox_j.validator.Validator.CONFIG_CUSTOM_FUNCTIONS, userFunctions);
+            List<Class> userReaders=new java.util.ArrayList<Class>();
+            userReaders.addAll(getIoxReaders(loader.getAllPlugins()));
+            List<Class> definedReaders=(List<Class>)settings.getTransientObject(ReaderFactory.CONFIG_CUSTOM_READERS);
+            if(definedReaders!=null) {
+                userReaders.addAll(definedReaders);
+            }
+            settings.setTransientObject(ReaderFactory.CONFIG_CUSTOM_READERS, userReaders);
             IoxLogging errHandler=new ch.interlis.iox_j.logging.Log2EhiLogger();
             LogEventFactory errFactory=new LogEventFactory();
             errFactory.setLogger(errHandler);
             
-			String modelVersion = IoxUtility.getModelVersion(dataFiles, errFactory,settings);
+			String modelVersion=null;
+			try {
+	            modelVersion = IoxUtility.getModelVersion(dataFiles, errFactory,settings);
+			}catch(IoxException ex) {
+			    EhiLogger.logAdaption("failed to get version from data file; "+ex.toString()+"; ignored");
+			}
 			
 			// read ili models
 			td=compileIli(modelVersion,modelnames, null,new File(dataFiles[0]).getAbsoluteFile().getParentFile().getAbsolutePath(),appHome, settings);
@@ -273,6 +286,9 @@ public class Validator {
 					// setup data reader (ITF or XTF)
 					IoxReader ioxReader=null;
 					ioxReader = createReader(filename, td,errFactory,settings,pool);
+			        if(ioxReader instanceof IoxIliReader){
+			            ((IoxIliReader) ioxReader).setModel(td);    
+			        }
 					statistics.setFilename(filename);
 					errFactory.setDataSource(filename);
 		            td.setActualRuntimeParameter(ch.interlis.ili2c.metamodel.RuntimeParameters.MINIMAL_RUNTIME_SYSTEM01_CURRENT_TRANSFERFILE, filename);
@@ -337,7 +353,12 @@ public class Validator {
 		}
 		return ret;
 	}
-
+    private TransferDescription td=null;
+	public TransferDescription getModel()
+	{
+	    return td;
+	}
+	
 
 	public static boolean isWriteable(File f) throws IOException {
         f.createNewFile();
@@ -367,9 +388,6 @@ public class Validator {
 		    }
             ((ItfReader2) ioxReader).setAllowItfAreaHoles(allowItfAreaHoles);
 		    ((ItfReader2) ioxReader).setIoxDataPool(pool);
-		}
-		if(ioxReader instanceof IoxIliReader){
-			((IoxIliReader) ioxReader).setModel(td);	
 		}
 		return ioxReader;
 	}
