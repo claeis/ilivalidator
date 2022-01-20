@@ -6,6 +6,7 @@ import java.util.ArrayList;
 import java.util.HashMap;
 
 import org.junit.Assert;
+import org.junit.Ignore;
 import org.junit.Test;
 import ch.ehi.basics.logging.EhiLogger;
 import ch.ehi.basics.settings.Settings;
@@ -134,6 +135,14 @@ public class ValidatorTest {
 		boolean ret=Validator.runValidation("test/data/Beispiel2e.xtf", settings);
 		assertFalse(ret);
 	}
+    @Test
+    @Ignore("Issue #324")
+    public void xtfFailWithView() {
+        Settings settings=new Settings();
+        settings.setValue(Validator.SETTING_ILIDIRS, Validator.ITF_DIR);
+        boolean ret=Validator.runValidation("test/data/Beispiel5a.xtf", settings);
+        assertFalse(ret);
+    }
 	@Test
 	public void xtfFail() {
 		boolean ret=Validator.runValidation("test/data/Beispiel2b.xtf", null);
