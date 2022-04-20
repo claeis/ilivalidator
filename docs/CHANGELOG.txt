@@ -1,5 +1,9 @@
 LATEST VERSION
 -----------------------------
+- fix: objectCount() throws NPE (#337)
+- fix: Constraintauswertung bei Aufzaehltypen 'ALL OF' nicht moeglich (#300) 
+- fix: Speed of AREA-Constraint vs areAreas() (#308)
+- iox-ili-1.21.10+
 
 ilivalidator 1.11.13 (2021-12-28)
 -----------------------------
