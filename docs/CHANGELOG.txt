@@ -1,9 +1,13 @@
 LATEST VERSION
 -----------------------------
+
+ilivalidator 1.11.14 (2022-04-29)
+-----------------------------
 - fix: objectCount() throws NPE (#337)
 - fix: Constraintauswertung bei Aufzaehltypen 'ALL OF' nicht moeglich (#300) 
 - fix: INTERLIS.areAreas() does not find overlap (#284) 
-- iox-ili-1.21.10+
+- iox-ili-1.21.10
+- ili2c-5.2.6
 
 ilivalidator 1.11.13 (2021-12-28)
 -----------------------------
