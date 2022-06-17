@@ -9,6 +9,7 @@ import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
 
+import ch.interlis.iox_j.statistics.Stopwatch;
 import org.interlis2.validator.impl.ErrorTracker;
 
 import ch.ehi.basics.logging.AbstractStdListener;
@@ -154,6 +155,8 @@ public class Validator {
             SimpleDateFormat dateFormat = new java.text.SimpleDateFormat(DATE_FORMAT);
             EhiLogger.logState("Start date "+dateFormat.format(new java.util.Date()));
 			EhiLogger.logState("maxMemory "+java.lang.Runtime.getRuntime().maxMemory()/1024L+" KB");
+			Stopwatch stopwatch = new Stopwatch();
+			stopwatch.Start();
 			for(String dataFile:dataFiles){
 				EhiLogger.logState("dataFile <"+dataFile+">");
 			}
@@ -320,9 +323,11 @@ public class Validator {
 						}
 					}
 				}
+
 				validator.doSecondPass();
                 EhiLogger.logState("object count "+validator.getObjectCount()+" (structured elements "+validator.getStructCount()+")");
 				statistics.write2logger();
+				stopwatch.Stop();
 				// check for errors
 				if(logStderr.hasSeenErrors()){
 					EhiLogger.logState(MSG_VALIDATION_FAILED);
@@ -341,6 +346,7 @@ public class Validator {
 					validator.close();
 					validator=null;
 				}
+				EhiLogger.logState("End date " + dateFormat.format(new java.util.Date()) + " validation took " + stopwatch);
 			}
 		} catch (IoxException e) {
 			EhiLogger.logError(e);
