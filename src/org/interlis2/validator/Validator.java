@@ -326,8 +326,8 @@ public class Validator {
 
 				validator.doSecondPass();
                 EhiLogger.logState("object count "+validator.getObjectCount()+" (structured elements "+validator.getStructCount()+")");
-				statistics.write2logger();
 				stopwatch.Stop();
+				statistics.write2logger();
 				// check for errors
 				if(logStderr.hasSeenErrors()){
 					EhiLogger.logState(MSG_VALIDATION_FAILED);
