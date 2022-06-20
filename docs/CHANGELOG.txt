@@ -1,5 +1,7 @@
 LATEST VERSION
 -----------------------------
+- new option --logtime to include timestamps in log file
+- iox-ili-1.21.11+
 
 ilivalidator 1.11.14 (2022-04-29)
 -----------------------------

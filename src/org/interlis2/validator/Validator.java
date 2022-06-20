@@ -95,6 +95,7 @@ public class Validator {
 		}
 	    String logFilename=settings.getValue(Validator.SETTING_LOGFILE);
 	    String xtflogFilename=settings.getValue(Validator.SETTING_XTFLOG);
+	    boolean doTimestamp=TRUE.equals(settings.getValue(Validator.SETTING_LOGFILE_TIMESTAMP));
 		FileLogger logfile=null;
 		XtfErrorsLogger xtflog=null;
 		AbstractStdListener logStderr=null;
@@ -105,7 +106,7 @@ public class Validator {
 			    File f=new java.io.File(logFilename);
 			    try {
                     if(isWriteable(f)) {
-                        logfile=new FileLogger(f);
+                        logfile=new FileLogger(f,doTimestamp);
                         EhiLogger.getInstance().addListener(logfile);
                     }else {
                         EhiLogger.logError("failed to write to logfile <"+f.getPath()+">");
@@ -585,6 +586,9 @@ public class Validator {
 	/** Name of the log file that receives the validation results.
 	 */
 	public static final String SETTING_LOGFILE = "org.interlis2.validator.log";
+    /** include timestamps in log file.
+     */
+    public static final String SETTING_LOGFILE_TIMESTAMP = "org.interlis2.validator.log.timestamp";
 	/** Assume that all objects are known to the validator. "true", "false". Default "false".
 	 */
 	public static final String SETTING_ALL_OBJECTS_ACCESSIBLE = "org.interlis2.validator.allobjectsaccessible";

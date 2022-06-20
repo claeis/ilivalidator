@@ -120,6 +120,8 @@ public class Main {
 			}else if(arg.equals("--log")) {
 			    argi++;
 			    settings.setValue(Validator.SETTING_LOGFILE, args[argi]);
+            }else if(arg.equals("--logtime")){
+                settings.setValue(Validator.SETTING_LOGFILE_TIMESTAMP,Validator.TRUE);
 			}else if(arg.equals("--xtflog")) {
 			    argi++;
 			    settings.setValue(Validator.SETTING_XTFLOG, args[argi]);
@@ -158,6 +160,7 @@ public class Main {
 					System.err.println("--skipPolygonBuilding skip polygon building (only ITF).");
 					System.err.println("--allowItfAreaHoles   allow empty holes (unassigned inner boundaries) in ITF AREA attributes.");
 				    System.err.println("--log file            text file, that receives validation results.");
+                    System.err.println("--logtime             include timestamps in logfile.");
 				    System.err.println("--xtflog file         INTERLIS transfer file, that receives validation results.");
 				    System.err.println("--models model		  user sets certain models, separated by a semicolon.");
 					System.err.println("--modeldir "+Validator.SETTING_DEFAULT_ILIDIRS+" list of directories/repositories with ili-files.");
