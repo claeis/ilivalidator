@@ -249,6 +249,8 @@ public class Validator {
 			EhiLogger.logState("validate data...");
 			ch.interlis.iox_j.validator.Validator validator=null;
 			IoxStatistics statistics=null;
+			long startTime=System.currentTimeMillis();
+			long currentSlice=0l;
 			try{
 				// setup log output
 				ValidationConfig modelConfig=new ValidationConfig();
@@ -296,6 +298,12 @@ public class Validator {
 					try{
 						IoxEvent event=null;
 						do{
+				            long currentTime=System.currentTimeMillis();
+				            long slice=(currentTime-startTime)/1000l/60l/10l;
+						    if(slice>currentSlice) {
+						        currentSlice=slice;
+	                            EhiLogger.logState("...object count "+validator.getObjectCount()+" (structured elements "+validator.getStructCount()+")...");
+						    }
 							event=ioxReader.read();
 							// feed object by object to validator
 							validator.validate(event);
@@ -313,6 +321,7 @@ public class Validator {
 					}
 				}
 				validator.doSecondPass();
+                EhiLogger.logState("object count "+validator.getObjectCount()+" (structured elements "+validator.getStructCount()+")");
 				statistics.write2logger();
 				// check for errors
 				if(logStderr.hasSeenErrors()){

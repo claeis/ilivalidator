@@ -97,6 +97,8 @@ public class Main {
 				settings.setValue(Validator.SETTING_ALLOW_ITF_AREA_HOLES,Validator.TRUE);
 			}else if(arg.equals("--skipPolygonBuilding")){
 				settings.setValue(ch.interlis.iox_j.validator.Validator.CONFIG_DO_ITF_LINETABLES, ch.interlis.iox_j.validator.Validator.CONFIG_DO_ITF_LINETABLES_DO);
+            }else if(arg.equals("--singlePass")){
+                settings.setValue(ch.interlis.iox_j.validator.Validator.CONFIG_DO_SINGLE_PASS, ch.interlis.iox_j.validator.Validator.CONFIG_DO_SINGLE_PASS_DO);
 			}else if (arg.equals("--createIliData")){
 			    function=FC_CREATE_ILIDATA_XML;
             }else if (arg.equals("--updateIliData")) {
@@ -159,6 +161,7 @@ public class Main {
 					System.err.println("--dataset             The requested Dataset ID to be updated");
 					System.err.println("--skipPolygonBuilding skip polygon building (only ITF).");
 					System.err.println("--allowItfAreaHoles   allow empty holes (unassigned inner boundaries) in ITF AREA attributes.");
+                    System.err.println("--singlePass          skip any validations that require a second pass.");
 				    System.err.println("--log file            text file, that receives validation results.");
                     System.err.println("--logtime             include timestamps in logfile.");
 				    System.err.println("--xtflog file         INTERLIS transfer file, that receives validation results.");
