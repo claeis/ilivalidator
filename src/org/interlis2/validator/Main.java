@@ -6,6 +6,7 @@ import java.lang.reflect.Method;
 
 import ch.ehi.basics.logging.EhiLogger;
 import ch.ehi.basics.settings.Settings;
+import ch.interlis.iox_j.validator.ValidationConfig;
 
 /** Main program and commandline interface of ilivalidator.
  */
@@ -132,6 +133,9 @@ public class Main {
 			}else if(arg.equals("--proxyPort")) {
 				    argi++;
 				    settings.setValue(ch.interlis.ili2c.gui.UserSettings.HTTP_PROXY_PORT, args[argi]);
+			} else if (arg.equals("--verbose")) {
+				argi++;
+				settings.setValue(ch.interlis.iox_j.validator.Validator.CONFIG_VERBOSE, ValidationConfig.TRUE);
 			}else if(arg.equals("--version")){
 				printVersion();
 				return;
@@ -164,6 +168,7 @@ public class Main {
 				    System.err.println("--plugins folder      directory with jar files that contain user defined functions.");
 				    System.err.println("--proxy host          proxy server to access model repositories.");
 				    System.err.println("--proxyPort port      proxy port to access model repositories.");
+					System.err.println("--verbose             print additional information in validation results.");
 					System.err.println("--trace               enable trace messages.");
 					System.err.println("--help                Display this help text.");
 					System.err.println("--version             Display the version of "+APP_NAME+".");
