@@ -135,7 +135,7 @@ public class Main {
 				    settings.setValue(ch.interlis.ili2c.gui.UserSettings.HTTP_PROXY_PORT, args[argi]);
 			} else if (arg.equals("--verbose")) {
 				argi++;
-				settings.setValue(ch.interlis.iox_j.validator.Validator.CONFIG_VERBOSE, ValidationConfig.TRUE);
+				settings.setTransientValue(ch.interlis.iox_j.validator.Validator.CONFIG_VERBOSE, ValidationConfig.TRUE);
 			}else if(arg.equals("--version")){
 				printVersion();
 				return;
