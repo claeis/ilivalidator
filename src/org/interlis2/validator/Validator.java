@@ -258,21 +258,27 @@ public class Validator {
 				if(configFilename!=null){
 					modelConfig.mergeConfigFile(new File(configFilename));
 				}
-				modelConfig.setConfigValue(ValidationConfig.PARAMETER, ValidationConfig.ALLOW_ONLY_MULTIPLICITY_REDUCTION, TRUE.equals(settings.getValue(SETTING_FORCE_TYPE_VALIDATION))?ValidationConfig.ON:null);
-				String disableAreaValidation = settings.getValue(SETTING_DISABLE_AREA_VALIDATION);
-				if(disableAreaValidation!=null) {
-	                modelConfig.setConfigValue(ValidationConfig.PARAMETER, ValidationConfig.AREA_OVERLAP_VALIDATION, TRUE.equals(disableAreaValidation)?ValidationConfig.OFF:null);
+				final String settingsForceTypeValidation = settings.getValue(SETTING_FORCE_TYPE_VALIDATION);
+				if(settingsForceTypeValidation!=null) {
+	                modelConfig.setConfigValue(ValidationConfig.PARAMETER, ValidationConfig.ALLOW_ONLY_MULTIPLICITY_REDUCTION, TRUE.equals(settingsForceTypeValidation)?ValidationConfig.ON:null);
 				}
-				String disableConstraintValidation = settings.getValue(SETTING_DISABLE_CONSTRAINT_VALIDATION);
+				String settingsDisableAreaValidation = settings.getValue(SETTING_DISABLE_AREA_VALIDATION);
+				if(settingsDisableAreaValidation!=null) {
+	                modelConfig.setConfigValue(ValidationConfig.PARAMETER, ValidationConfig.AREA_OVERLAP_VALIDATION, TRUE.equals(settingsDisableAreaValidation)?ValidationConfig.OFF:null);
+				}
+				final String disableConstraintValidation = settings.getValue(SETTING_DISABLE_CONSTRAINT_VALIDATION);
 				if(disableConstraintValidation!=null) {
 	                modelConfig.setConfigValue(ValidationConfig.PARAMETER, ValidationConfig.CONSTRAINT_VALIDATION, TRUE.equals(disableConstraintValidation)?ValidationConfig.OFF:null);
 				}
-				modelConfig.setConfigValue(ValidationConfig.PARAMETER, ValidationConfig.ALL_OBJECTS_ACCESSIBLE, settings.getValue(SETTING_ALL_OBJECTS_ACCESSIBLE));
+				final String settingsAllObjectsAccessible = settings.getValue(SETTING_ALL_OBJECTS_ACCESSIBLE);
+				if(settingsAllObjectsAccessible!=null) {
+	                modelConfig.setConfigValue(ValidationConfig.PARAMETER, ValidationConfig.ALL_OBJECTS_ACCESSIBLE, settingsAllObjectsAccessible);
+				}
 				allowItfAreaHoles = TRUE.equals(settings.getValue(SETTING_ALLOW_ITF_AREA_HOLES));
 				skipGeometryErrors=ValidationConfig.OFF.equals(modelConfig.getConfigValue(ValidationConfig.PARAMETER, ValidationConfig.DEFAULT_GEOMETRY_TYPE_VALIDATION));
-				String globalMultiplicity=settings.getValue(SETTING_MULTIPLICITY_VALIDATION);
-				if(globalMultiplicity!=null){
-					modelConfig.setConfigValue(ValidationConfig.PARAMETER, ValidationConfig.MULTIPLICITY, globalMultiplicity);
+				String settingsMultiplicityValidation=settings.getValue(SETTING_MULTIPLICITY_VALIDATION);
+				if(settingsMultiplicityValidation!=null){
+					modelConfig.setConfigValue(ValidationConfig.PARAMETER, ValidationConfig.MULTIPLICITY, settingsMultiplicityValidation);
 				}
 				if (modelNamesFromConfig == null || modelNamesFromConfig.size() == 0) {
 				    if (specifiedModelNames != null) {
