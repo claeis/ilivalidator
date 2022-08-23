@@ -89,6 +89,15 @@
 				<browseOnly>false</browseOnly>
 				<md5>e295eb73bccd20293e9567c8714be796</md5>
 			</IliRepository20.RepositoryIndex.ModelMetadata>
+			<IliRepository20.RepositoryIndex.ModelMetadata TID="7">
+				<Name>ExtRef23</Name>
+				<SchemaLanguage>ili2_3</SchemaLanguage>
+				<File>ExtRef23.ili</File>
+				<Version>2020-03-23</Version>
+				<publishingDate>2020-03-23</publishingDate>
+				<Issuer>mailto:ce@eisenhutinformatik.ch</Issuer>
+				<browseOnly>false</browseOnly>
+			</IliRepository20.RepositoryIndex.ModelMetadata>
 		</IliRepository20.RepositoryIndex>
 	</DATASECTION>
 </TRANSFER>

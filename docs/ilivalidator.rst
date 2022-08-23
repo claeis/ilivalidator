@@ -104,6 +104,13 @@ Es wird eine INTERLIS 1-Datei validiert/geprüft.
 Fall 2
 ~~~~~~
 
+Es wird eine INTERLIS 2-Datei inkl. den Referenzen auf den Katalog validiert/geprüft.
+
+``java -jar ilivalidator.jar --allObjectsAccessible ilidata:catalogDatasetId path/to/data.itf``
+
+Fall 3
+~~~~~~
+
 Es wird eine INTERLIS 2-Datei mit einer spezifischen 
 Konfiguration validiert/geprüft.
 
@@ -112,7 +119,7 @@ Konfiguration validiert/geprüft.
 In der Datei config.ini wird definiert, welche Prüfungen gar nicht durchzuführen oder
 bei Nichterfüllen nur als Warnung zu melden sind.
 
-Fall 3
+Fall 4
 ~~~~~~
 
 Es wird eine INTERLIS 2-Datei validiert/geprüft, wobei die Fehlermeldungen 
@@ -122,7 +129,7 @@ in eine Text-Datei geschrieben werden.
 
 Die Fehlermeldungen inkl. Warnungen werden in die Datei result.log geschrieben.
 
-Fall 4
+Fall 5
 ~~~~~~
 
 Es wird eine INTERLIS 2-Datei validiert/geprüft, wobei die Fehlermeldungen 
@@ -135,7 +142,7 @@ Die Datei result.xtf entspricht dem Modell IliVErrors und kann als normale
 INTERLIS 2-Transferdatei importiert werden. Dadurch können die 
 Fehler visualisiert werden.
 
-Fall 5
+Fall 6
 ~~~~~~
 
 Es erscheint eine Bildschirmmaske, mit deren Hilfe die zu validierende Datei 
@@ -143,7 +150,7 @@ ausgewählt und die Validierung gestartet werden kann.
 
 ``java -jar ilivalidator.jar``
 
-Fall 6
+Fall 7
 ~~~~~~
 
 Es wird eine INTERLIS 2-Datei validiert/geprüft. Wobei spezifische Modelle gesetzt werden.
@@ -151,14 +158,14 @@ Dazu wird der Pfad zu den spezifischen Modellen gesetzt.
 
 ``java -jar ilivalidator.jar --models modelname1;modelname2 --modeldir path/to/data path/to/data.xtf``
 
-Fall 7
+Fall 8
 ~~~~~~
 
 Es werden alle Dateien (ITF und XTF) im gegebenen Repository geprüft/validiert.
 
 ``java -jar ilivalidator.jar --check-repo-data http://models.geo.admin.ch``
 
-Fall 8
+Fall 9
 ~~~~~~
 
 Es werden alle Dateien (ITF und XTF) im gegebenen Verzeichnis ``folder`` analysiert
@@ -166,7 +173,7 @@ und dann ein neues ``newIlidata.xml`` mit den entsprechenden Metadaten erstellt.
 
 ``java -jar ilivalidator.jar --createIliData --ilidata newIlidata.xml --repos folder``
 
-Fall 9
+Fall 10
 ~~~~~~
 
 Es werden alle Dateien (ITF und XTF) gemäss Dateiliste ``files.txt`` 
@@ -175,7 +182,7 @@ und dann ein neues ``newIlidata.xml`` mit den entsprechenden Metadaten erstellt.
 
 ``java -jar ilivalidator.jar --createIliData --ilidata newIlidata.xml --repos http://models.geo.admin.ch --srcfiles files.txt``
 
-Fall 10
+Fall 11
 ~~~~~~~
 
 Es wird die gegebene Datei ``newVersionOfData.xml`` (ITF oder XTF)
@@ -200,6 +207,9 @@ Aufruf-Syntax
 -------------
 
 ``java -jar ilivalidator.jar [Options] [file]``
+
+``file`` kann auch die Form ``ilidata:DatesetId`` oder ``ilidata:BasketId`` haben, 
+dann wird die entsprechende Datei aus den Repositories benutzt.
 
 Ohne Kommandozeilenargumente erscheint die Bildschirmmaske, mit deren Hilfe die zu validierende Datei 
 ausgewählt und die Validierung gestartet werden kann.

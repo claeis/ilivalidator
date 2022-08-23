@@ -21,6 +21,9 @@ import ch.interlis.ili2c.Ili2cFailure;
 import ch.interlis.ili2c.gui.UserSettings;
 import ch.interlis.ili2c.metamodel.Model;
 import ch.interlis.ili2c.metamodel.TransferDescription;
+import ch.interlis.ilirepository.Dataset;
+import ch.interlis.ilirepository.IliManager;
+import ch.interlis.ilirepository.impl.RepositoryAccessException;
 import ch.interlis.iom_j.itf.ItfReader;
 import ch.interlis.iom_j.itf.ItfReader2;
 import ch.interlis.iom_j.xtf.Xtf23Reader;
@@ -45,6 +48,7 @@ import ch.interlis.iox_j.utility.IoxUtility;
 import ch.interlis.iox_j.utility.ReaderFactory;
 import ch.interlis.iox_j.validator.InterlisFunction;
 import ch.interlis.iox_j.validator.ValidationConfig;
+import ch.interlis.models.DatasetIdx16.DataFile;
 
 /** High-level API of the INTERLIS validator.
  * For a usage example of this class, see the implementation of class {@link Main}.
@@ -52,7 +56,7 @@ import ch.interlis.iox_j.validator.ValidationConfig;
  */
 public class Validator {
 	
-	public static final String MSG_VALIDATION_DONE = "...validation done";
+    public static final String MSG_VALIDATION_DONE = "...validation done";
     public static final String MSG_VALIDATION_FAILED = "...validation failed";
     public static boolean runValidation(
 			String dataFilename,
@@ -174,6 +178,33 @@ public class Validator {
 			
 			skipPolygonBuilding = ch.interlis.iox_j.validator.Validator.CONFIG_DO_ITF_LINETABLES_DO.equals(settings.getValue(ch.interlis.iox_j.validator.Validator.CONFIG_DO_ITF_LINETABLES));
 			
+			// get local copies of remote files
+            ch.interlis.ilirepository.IliManager repoManager=createRepositoryManager(new File(dataFiles[0]).getAbsoluteFile().getParentFile().getAbsolutePath(),appHome,settings);
+            for(int idx=0;idx<dataFiles.length;idx++){
+                String dataFile=dataFiles[idx];
+                if(dataFile.startsWith(IliManager.ILIDATA_URI_PREFIX)) {
+                    try {
+                        String bid=dataFile.substring(IliManager.ILIDATA_URI_PREFIX.length());
+                        List<Dataset> datasets = repoManager.getDatasetIndex(bid, null);
+                        if(datasets.size()==0) {
+                            EhiLogger.logError("file "+dataFile+" not found");
+                            return false;
+                        }else if(datasets.size()>1) {
+                            EhiLogger.logError("file "+dataFile+" ambiguous");
+                            return false;
+                        }
+                        java.io.File localFiles[]=repoManager.getLocalFileOfRemoteDataset(datasets.get(0), getFormat(datasets.get(0)));
+                        dataFiles[idx]=localFiles[0].getPath();
+                    } catch (Ili2cException e) {
+                        EhiLogger.logError("failed to get file "+dataFile,e);
+                        return false;
+                    } catch (RepositoryAccessException e) {
+                        EhiLogger.logError("failed to get file "+dataFile,e);
+                        return false;
+                    }
+                }
+            }
+			
 			// specified model names
 			List<String> modelnames=new ArrayList<String>();
 			String specifiedModelNames=null;
@@ -241,7 +272,7 @@ public class Validator {
 			}
 			
 			// read ili models
-			td=compileIli(modelVersion,modelnames, null,new File(dataFiles[0]).getAbsoluteFile().getParentFile().getAbsolutePath(),appHome, settings);
+			td=compileIli(repoManager,modelVersion,modelnames, null, settings);
 			if(td==null){
 				return false;
 			}
@@ -375,6 +406,12 @@ public class Validator {
 		}
 		return ret;
 	}
+    private String getFormat(Dataset dataset) {
+        for(DataFile file:dataset.getMetadata().getfiles()){
+            return file.getfileFormat();
+        }
+        return null;
+    }
     private TransferDescription td=null;
 	public TransferDescription getModel()
 	{
@@ -451,58 +488,20 @@ public class Validator {
 	 * @return root object of java representation of Interlis model.
 	 * @see #SETTING_ILIDIRS
 	 */
-	public static TransferDescription compileIli(String iliVersion,List<String> modelNames,File ilifile,String itfDir,String appHome,Settings settings) {
-		ArrayList modeldirv=new ArrayList();
-		String ilidirs=settings.getValue(Validator.SETTING_ILIDIRS);
-		if(ilidirs==null){
-			ilidirs=Validator.SETTING_DEFAULT_ILIDIRS;
-		}
-	
-		EhiLogger.logState("modeldir <"+ilidirs+">");
-		String modeldirs[]=ilidirs.split(";");
-		HashSet ilifiledirs=new HashSet();
-		for(int modeli=0;modeli<modeldirs.length;modeli++){
-			String m=modeldirs[modeli];
-			if(m.contains(Validator.ITF_DIR)){
-				m=m.replace(ITF_DIR, itfDir);
-				if(m!=null && m.length()>0){
-					if(!modeldirv.contains(m)){
-						modeldirv.add(m);				
-					}
-				}
-			}else if(m.contains(Validator.JAR_DIR)){
-				if(appHome!=null){
-					m=m.replace(JAR_DIR,appHome);
-					modeldirv.add(m);				
-				}else {
-					// ignore it
-				}
-			}else{
-				if(m!=null && m.length()>0){
-					modeldirv.add(m);				
-				}
-			}
-		}		
+    public static TransferDescription compileIli(String iliVersion,List<String> modelNames,File ilifile,String itfDir,String appHome,Settings settings) {
+        ch.interlis.ilirepository.IliManager modelManager=createRepositoryManager(itfDir,appHome,settings);
+        return compileIli(modelManager,iliVersion, modelNames, ilifile, settings);
+    }
+	public static TransferDescription compileIli(ch.interlis.ilirepository.IliManager modelManager,String iliVersion,List<String> modelNames,File ilifile,Settings settings) {
 		
-		ch.interlis.ili2c.Main.setHttpProxySystemProperties(settings);
 		TransferDescription td=null;
 		ch.interlis.ili2c.config.Configuration ili2cConfig=null;
 		if(ilifile!=null){
-			//ili2cConfig=new ch.interlis.ili2c.config.Configuration();
-			//ili2cConfig.addFileEntry(new ch.interlis.ili2c.config.FileEntry(ilifile.getPath(),ch.interlis.ili2c.config.FileEntryKind.ILIMODELFILE));				
-	        // get/create repository manager
-	        ch.interlis.ilirepository.IliManager repositoryManager = (ch.interlis.ilirepository.IliManager) settings
-	                .getTransientObject(UserSettings.CUSTOM_ILI_MANAGER);
-	        if(repositoryManager==null) {
-	            repositoryManager=new ch.interlis.ilirepository.IliManager();
-	            settings.setTransientObject(UserSettings.CUSTOM_ILI_MANAGER,repositoryManager);
-	        }
 			try {
 				//ili2cConfig=ch.interlis.ili2c.ModelScan.getConfig(modeldirv, modelv);
-				repositoryManager.setRepositories((String[])modeldirv.toArray(new String[]{}));
 				ArrayList<String> ilifiles=new ArrayList<String>();
 				ilifiles.add(ilifile.getPath());
-				ili2cConfig=repositoryManager.getConfigWithFiles(ilifiles);
+				ili2cConfig=modelManager.getConfigWithFiles(ilifiles);
 				ili2cConfig.setGenerateWarnings(false);
 			} catch (Ili2cException ex) {
 				EhiLogger.logError(ex);
@@ -518,9 +517,6 @@ public class Validator {
 			    if(iliVersion!=null) {
 			        version=Double.parseDouble(iliVersion);
 			    }
-				//ili2cConfig=ch.interlis.ili2c.ModelScan.getConfig(modeldirv, modelv);
-				ch.interlis.ilirepository.IliManager modelManager=new ch.interlis.ilirepository.IliManager();
-				modelManager.setRepositories((String[])modeldirv.toArray(new String[]{}));
 				ili2cConfig=modelManager.getConfig(modelv, version);
 				ili2cConfig.setGenerateWarnings(false);
 			} catch (Ili2cException ex) {
@@ -540,7 +536,49 @@ public class Validator {
 		}
 		return td;
 	}
-
+    public static ch.interlis.ilirepository.IliManager createRepositoryManager(String itfDir,String appHome,Settings settings) {
+        ArrayList modeldirv=new ArrayList();
+        String ilidirs=settings.getValue(Validator.SETTING_ILIDIRS);
+        if(ilidirs==null){
+            ilidirs=Validator.SETTING_DEFAULT_ILIDIRS;
+        }
+    
+        EhiLogger.logState("modeldir <"+ilidirs+">");
+        String modeldirs[]=ilidirs.split(";");
+        HashSet ilifiledirs=new HashSet();
+        for(int modeli=0;modeli<modeldirs.length;modeli++){
+            String m=modeldirs[modeli];
+            if(m.contains(Validator.ITF_DIR)){
+                m=m.replace(ITF_DIR, itfDir);
+                if(m!=null && m.length()>0){
+                    if(!modeldirv.contains(m)){
+                        modeldirv.add(m);               
+                    }
+                }
+            }else if(m.contains(Validator.JAR_DIR)){
+                if(appHome!=null){
+                    m=m.replace(JAR_DIR,appHome);
+                    modeldirv.add(m);               
+                }else {
+                    // ignore it
+                }
+            }else{
+                if(m!=null && m.length()>0){
+                    modeldirv.add(m);               
+                }
+            }
+        }       
+        
+        ch.interlis.ili2c.Main.setHttpProxySystemProperties(settings);
+        ch.interlis.ilirepository.IliManager repositoryManager = (ch.interlis.ilirepository.IliManager) settings
+                .getTransientObject(UserSettings.CUSTOM_ILI_MANAGER);
+        if(repositoryManager==null) {
+            repositoryManager=new ch.interlis.ilirepository.IliManager();
+            settings.setTransientObject(UserSettings.CUSTOM_ILI_MANAGER,repositoryManager);
+        }
+        repositoryManager.setRepositories((String[])modeldirv.toArray(new String[]{}));
+        return repositoryManager;
+    }
 
 	/** Checks, if a given filename is an Interlis 1 transferfilename.
 	 * @param filename Name to check.
