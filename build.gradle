@@ -8,7 +8,7 @@ allprojects {
 	compileJava.options.encoding = 'US-ASCII'
 }
 
-version '1.12.0'+System.getProperty('release','-SNAPSHOT')
+version '1.12.1'+System.getProperty('release','-SNAPSHOT')
 
 configurations {
     deployerJars
