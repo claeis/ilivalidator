@@ -6,6 +6,7 @@ import java.lang.reflect.Method;
 
 import ch.ehi.basics.logging.EhiLogger;
 import ch.ehi.basics.settings.Settings;
+import ch.interlis.iox_j.validator.ValidationConfig;
 
 /** Main program and commandline interface of ilivalidator.
  */
@@ -97,6 +98,8 @@ public class Main {
 				settings.setValue(Validator.SETTING_ALLOW_ITF_AREA_HOLES,Validator.TRUE);
 			}else if(arg.equals("--skipPolygonBuilding")){
 				settings.setValue(ch.interlis.iox_j.validator.Validator.CONFIG_DO_ITF_LINETABLES, ch.interlis.iox_j.validator.Validator.CONFIG_DO_ITF_LINETABLES_DO);
+            }else if(arg.equals("--singlePass")){
+                settings.setValue(ch.interlis.iox_j.validator.Validator.CONFIG_DO_SINGLE_PASS, ch.interlis.iox_j.validator.Validator.CONFIG_DO_SINGLE_PASS_DO);
 			}else if (arg.equals("--createIliData")){
 			    function=FC_CREATE_ILIDATA_XML;
             }else if (arg.equals("--updateIliData")) {
@@ -120,6 +123,8 @@ public class Main {
 			}else if(arg.equals("--log")) {
 			    argi++;
 			    settings.setValue(Validator.SETTING_LOGFILE, args[argi]);
+            }else if(arg.equals("--logtime")){
+                settings.setValue(Validator.SETTING_LOGFILE_TIMESTAMP,Validator.TRUE);
 			}else if(arg.equals("--xtflog")) {
 			    argi++;
 			    settings.setValue(Validator.SETTING_XTFLOG, args[argi]);
@@ -132,6 +137,9 @@ public class Main {
 			}else if(arg.equals("--proxyPort")) {
 				    argi++;
 				    settings.setValue(ch.interlis.ili2c.gui.UserSettings.HTTP_PROXY_PORT, args[argi]);
+			} else if (arg.equals("--verbose")) {
+				argi++;
+				settings.setTransientValue(ch.interlis.iox_j.validator.Validator.CONFIG_VERBOSE, ValidationConfig.TRUE);
 			}else if(arg.equals("--version")){
 				printVersion();
 				return;
@@ -157,13 +165,16 @@ public class Main {
 					System.err.println("--dataset             The requested Dataset ID to be updated");
 					System.err.println("--skipPolygonBuilding skip polygon building (only ITF).");
 					System.err.println("--allowItfAreaHoles   allow empty holes (unassigned inner boundaries) in ITF AREA attributes.");
+                    System.err.println("--singlePass          skip any validations that require a second pass.");
 				    System.err.println("--log file            text file, that receives validation results.");
+                    System.err.println("--logtime             include timestamps in logfile.");
 				    System.err.println("--xtflog file         INTERLIS transfer file, that receives validation results.");
 				    System.err.println("--models model		  user sets certain models, separated by a semicolon.");
 					System.err.println("--modeldir "+Validator.SETTING_DEFAULT_ILIDIRS+" list of directories/repositories with ili-files.");
 				    System.err.println("--plugins folder      directory with jar files that contain user defined functions.");
 				    System.err.println("--proxy host          proxy server to access model repositories.");
 				    System.err.println("--proxyPort port      proxy port to access model repositories.");
+					System.err.println("--verbose             print additional information in validation results.");
 					System.err.println("--trace               enable trace messages.");
 					System.err.println("--help                Display this help text.");
 					System.err.println("--version             Display the version of "+APP_NAME+".");

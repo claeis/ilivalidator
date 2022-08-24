@@ -1,0 +1,48 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<TRANSFER
+	xmlns="http://www.interlis.ch/INTERLIS2.3">
+	<HEADERSECTION
+		SENDER="ilivalidator-1.0.6-SNAPSHOT-dummy"
+		VERSION="2.3">
+		<MODELS>
+			<MODEL
+				NAME="DatasetIdx16"
+				VERSION="2018-11-21"
+				URI="mailto:ce@eisenhutinformatik.ch"></MODEL>
+		</MODELS>
+	</HEADERSECTION>
+	<DATASECTION>
+		<DatasetIdx16.DataIndex
+			BID="b1">
+			<DatasetIdx16.DataIndex.DatasetMetadata
+				TID="2a">
+				<id>63553eb4-a0dc-48eb-8596-ca1aa9bdbc0f</id>
+				<version>1</version>
+				<owner>mailto:ceis@localhost</owner>
+				<files>
+					<DatasetIdx16.DataFile>
+						<fileFormat>application/interlis+xml;version=2.3</fileFormat>
+						<file>
+							<DatasetIdx16.File>
+								<path>ExtRef23base.xtf</path>
+								<!-- md5>c55e611e5896f50cace4d2a5db1c4d34</md5 -->
+							</DatasetIdx16.File>
+						</file>
+					</DatasetIdx16.DataFile>
+				</files>
+				<baskets>
+					<DatasetIdx16.DataIndex.BasketMetadata>
+						<id>c1105d5c-9ec3-49ed-9e4b-a7de0124138c</id>
+						<version>1</version>
+						<model>
+							<DatasetIdx16.ModelLink>
+								<name>ExtRef23.TestA</name>
+							</DatasetIdx16.ModelLink>
+						</model>
+						<owner>mailto:ceis@localhost</owner>
+					</DatasetIdx16.DataIndex.BasketMetadata>
+				</baskets>
+			</DatasetIdx16.DataIndex.DatasetMetadata>
+		</DatasetIdx16.DataIndex>
+	</DATASECTION>
+</TRANSFER>

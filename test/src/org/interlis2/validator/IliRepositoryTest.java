@@ -43,6 +43,39 @@ public class IliRepositoryTest {
         assertTrue(ret);
     }
     @Test
+    public void xtf23_extRefFail() {
+        Settings settings=new Settings();
+        settings.setValue(Validator.SETTING_ALL_OBJECTS_ACCESSIBLE, Validator.TRUE);
+        settings.setValue(Validator.SETTING_ILIDIRS, "test/data/ilirepository/repos");
+        String[] listOfFiles = new String[2];
+        listOfFiles[0]="ilidata:ExtRef23base";
+        listOfFiles[1]="test/data/ilirepository/ExtRef23a.xtf";
+        boolean ret=Validator.runValidation(listOfFiles, settings);
+        assertFalse(ret);
+    }
+    @Test
+    public void xtf23_extRef_BasketIdOk() {
+        Settings settings=new Settings();
+        settings.setValue(Validator.SETTING_ALL_OBJECTS_ACCESSIBLE, Validator.TRUE);
+        settings.setValue(Validator.SETTING_ILIDIRS, "test/data/ilirepository/repos");
+        String[] listOfFiles = new String[2];
+        listOfFiles[0]="ilidata:c1105d5c-9ec3-49ed-9e4b-a7de0124138c";
+        listOfFiles[1]="test/data/ilirepository/ExtRef23a.xtf";
+        boolean ret=Validator.runValidation(listOfFiles, settings);
+        assertTrue(ret);
+    }
+    @Test
+    public void xtf23_extRef_DatasetIdOk() {
+        Settings settings=new Settings();
+        settings.setValue(Validator.SETTING_ALL_OBJECTS_ACCESSIBLE, Validator.TRUE);
+        settings.setValue(Validator.SETTING_ILIDIRS, "test/data/ilirepository/repos");
+        String[] listOfFiles = new String[2];
+        listOfFiles[0]="ilidata:63553eb4-a0dc-48eb-8596-ca1aa9bdbc0f";
+        listOfFiles[1]="test/data/ilirepository/ExtRef23a.xtf";
+        boolean ret=Validator.runValidation(listOfFiles, settings);
+        assertTrue(ret);
+    }
+    @Test
     public void xtf24Ok() {
         Settings settings=new Settings();
         settings.setValue(Validator.SETTING_ILIDIRS, "test/data/ilirepository/repos");

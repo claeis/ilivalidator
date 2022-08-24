@@ -9,6 +9,7 @@ import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
 
+import ch.interlis.iox_j.statistics.Stopwatch;
 import org.interlis2.validator.impl.ErrorTracker;
 
 import ch.ehi.basics.logging.AbstractStdListener;
@@ -20,6 +21,9 @@ import ch.interlis.ili2c.Ili2cFailure;
 import ch.interlis.ili2c.gui.UserSettings;
 import ch.interlis.ili2c.metamodel.Model;
 import ch.interlis.ili2c.metamodel.TransferDescription;
+import ch.interlis.ilirepository.Dataset;
+import ch.interlis.ilirepository.IliManager;
+import ch.interlis.ilirepository.impl.RepositoryAccessException;
 import ch.interlis.iom_j.itf.ItfReader;
 import ch.interlis.iom_j.itf.ItfReader2;
 import ch.interlis.iom_j.xtf.Xtf23Reader;
@@ -44,6 +48,7 @@ import ch.interlis.iox_j.utility.IoxUtility;
 import ch.interlis.iox_j.utility.ReaderFactory;
 import ch.interlis.iox_j.validator.InterlisFunction;
 import ch.interlis.iox_j.validator.ValidationConfig;
+import ch.interlis.models.DatasetIdx16.DataFile;
 
 /** High-level API of the INTERLIS validator.
  * For a usage example of this class, see the implementation of class {@link Main}.
@@ -51,7 +56,7 @@ import ch.interlis.iox_j.validator.ValidationConfig;
  */
 public class Validator {
 	
-	public static final String MSG_VALIDATION_DONE = "...validation done";
+    public static final String MSG_VALIDATION_DONE = "...validation done";
     public static final String MSG_VALIDATION_FAILED = "...validation failed";
     public static boolean runValidation(
 			String dataFilename,
@@ -95,6 +100,7 @@ public class Validator {
 		}
 	    String logFilename=settings.getValue(Validator.SETTING_LOGFILE);
 	    String xtflogFilename=settings.getValue(Validator.SETTING_XTFLOG);
+	    boolean doTimestamp=TRUE.equals(settings.getValue(Validator.SETTING_LOGFILE_TIMESTAMP));
 		FileLogger logfile=null;
 		XtfErrorsLogger xtflog=null;
 		AbstractStdListener logStderr=null;
@@ -105,7 +111,7 @@ public class Validator {
 			    File f=new java.io.File(logFilename);
 			    try {
                     if(isWriteable(f)) {
-                        logfile=new FileLogger(f);
+                        logfile=new FileLogger(f,doTimestamp);
                         EhiLogger.getInstance().addListener(logfile);
                     }else {
                         EhiLogger.logError("failed to write to logfile <"+f.getPath()+">");
@@ -153,6 +159,8 @@ public class Validator {
             SimpleDateFormat dateFormat = new java.text.SimpleDateFormat(DATE_FORMAT);
             EhiLogger.logState("Start date "+dateFormat.format(new java.util.Date()));
 			EhiLogger.logState("maxMemory "+java.lang.Runtime.getRuntime().maxMemory()/1024L+" KB");
+			Stopwatch stopwatch = new Stopwatch();
+			stopwatch.Start();
 			for(String dataFile:dataFiles){
 				EhiLogger.logState("dataFile <"+dataFile+">");
 			}
@@ -169,6 +177,33 @@ public class Validator {
 			td=null;
 			
 			skipPolygonBuilding = ch.interlis.iox_j.validator.Validator.CONFIG_DO_ITF_LINETABLES_DO.equals(settings.getValue(ch.interlis.iox_j.validator.Validator.CONFIG_DO_ITF_LINETABLES));
+			
+			// get local copies of remote files
+            ch.interlis.ilirepository.IliManager repoManager=createRepositoryManager(new File(dataFiles[0]).getAbsoluteFile().getParentFile().getAbsolutePath(),appHome,settings);
+            for(int idx=0;idx<dataFiles.length;idx++){
+                String dataFile=dataFiles[idx];
+                if(dataFile.startsWith(IliManager.ILIDATA_URI_PREFIX)) {
+                    try {
+                        String bid=dataFile.substring(IliManager.ILIDATA_URI_PREFIX.length());
+                        List<Dataset> datasets = repoManager.getDatasetIndex(bid, null);
+                        if(datasets.size()==0) {
+                            EhiLogger.logError("file "+dataFile+" not found");
+                            return false;
+                        }else if(datasets.size()>1) {
+                            EhiLogger.logError("file "+dataFile+" ambiguous");
+                            return false;
+                        }
+                        java.io.File localFiles[]=repoManager.getLocalFileOfRemoteDataset(datasets.get(0), getFormat(datasets.get(0)));
+                        dataFiles[idx]=localFiles[0].getPath();
+                    } catch (Ili2cException e) {
+                        EhiLogger.logError("failed to get file "+dataFile,e);
+                        return false;
+                    } catch (RepositoryAccessException e) {
+                        EhiLogger.logError("failed to get file "+dataFile,e);
+                        return false;
+                    }
+                }
+            }
 			
 			// specified model names
 			List<String> modelnames=new ArrayList<String>();
@@ -237,7 +272,7 @@ public class Validator {
 			}
 			
 			// read ili models
-			td=compileIli(modelVersion,modelnames, null,new File(dataFiles[0]).getAbsoluteFile().getParentFile().getAbsolutePath(),appHome, settings);
+			td=compileIli(repoManager,modelVersion,modelnames, null, settings);
 			if(td==null){
 				return false;
 			}
@@ -248,6 +283,8 @@ public class Validator {
 			EhiLogger.logState("validate data...");
 			ch.interlis.iox_j.validator.Validator validator=null;
 			IoxStatistics statistics=null;
+			long startTime=System.currentTimeMillis();
+			long currentSlice=0l;
 			try{
 				// setup log output
 				ValidationConfig modelConfig=new ValidationConfig();
@@ -255,21 +292,27 @@ public class Validator {
 				if(configFilename!=null){
 					modelConfig.mergeConfigFile(new File(configFilename));
 				}
-				modelConfig.setConfigValue(ValidationConfig.PARAMETER, ValidationConfig.ALLOW_ONLY_MULTIPLICITY_REDUCTION, TRUE.equals(settings.getValue(SETTING_FORCE_TYPE_VALIDATION))?ValidationConfig.ON:null);
-				String disableAreaValidation = settings.getValue(SETTING_DISABLE_AREA_VALIDATION);
-				if(disableAreaValidation!=null) {
-	                modelConfig.setConfigValue(ValidationConfig.PARAMETER, ValidationConfig.AREA_OVERLAP_VALIDATION, TRUE.equals(disableAreaValidation)?ValidationConfig.OFF:null);
+				final String settingsForceTypeValidation = settings.getValue(SETTING_FORCE_TYPE_VALIDATION);
+				if(settingsForceTypeValidation!=null) {
+	                modelConfig.setConfigValue(ValidationConfig.PARAMETER, ValidationConfig.ALLOW_ONLY_MULTIPLICITY_REDUCTION, TRUE.equals(settingsForceTypeValidation)?ValidationConfig.ON:null);
 				}
-				String disableConstraintValidation = settings.getValue(SETTING_DISABLE_CONSTRAINT_VALIDATION);
+				String settingsDisableAreaValidation = settings.getValue(SETTING_DISABLE_AREA_VALIDATION);
+				if(settingsDisableAreaValidation!=null) {
+	                modelConfig.setConfigValue(ValidationConfig.PARAMETER, ValidationConfig.AREA_OVERLAP_VALIDATION, TRUE.equals(settingsDisableAreaValidation)?ValidationConfig.OFF:null);
+				}
+				final String disableConstraintValidation = settings.getValue(SETTING_DISABLE_CONSTRAINT_VALIDATION);
 				if(disableConstraintValidation!=null) {
 	                modelConfig.setConfigValue(ValidationConfig.PARAMETER, ValidationConfig.CONSTRAINT_VALIDATION, TRUE.equals(disableConstraintValidation)?ValidationConfig.OFF:null);
 				}
-				modelConfig.setConfigValue(ValidationConfig.PARAMETER, ValidationConfig.ALL_OBJECTS_ACCESSIBLE, settings.getValue(SETTING_ALL_OBJECTS_ACCESSIBLE));
+				final String settingsAllObjectsAccessible = settings.getValue(SETTING_ALL_OBJECTS_ACCESSIBLE);
+				if(settingsAllObjectsAccessible!=null) {
+	                modelConfig.setConfigValue(ValidationConfig.PARAMETER, ValidationConfig.ALL_OBJECTS_ACCESSIBLE, settingsAllObjectsAccessible);
+				}
 				allowItfAreaHoles = TRUE.equals(settings.getValue(SETTING_ALLOW_ITF_AREA_HOLES));
 				skipGeometryErrors=ValidationConfig.OFF.equals(modelConfig.getConfigValue(ValidationConfig.PARAMETER, ValidationConfig.DEFAULT_GEOMETRY_TYPE_VALIDATION));
-				String globalMultiplicity=settings.getValue(SETTING_MULTIPLICITY_VALIDATION);
-				if(globalMultiplicity!=null){
-					modelConfig.setConfigValue(ValidationConfig.PARAMETER, ValidationConfig.MULTIPLICITY, globalMultiplicity);
+				String settingsMultiplicityValidation=settings.getValue(SETTING_MULTIPLICITY_VALIDATION);
+				if(settingsMultiplicityValidation!=null){
+					modelConfig.setConfigValue(ValidationConfig.PARAMETER, ValidationConfig.MULTIPLICITY, settingsMultiplicityValidation);
 				}
 				if (modelNamesFromConfig == null || modelNamesFromConfig.size() == 0) {
 				    if (specifiedModelNames != null) {
@@ -295,6 +338,12 @@ public class Validator {
 					try{
 						IoxEvent event=null;
 						do{
+				            long currentTime=System.currentTimeMillis();
+				            long slice=(currentTime-startTime)/1000l/60l/10l;
+						    if(slice>currentSlice) {
+						        currentSlice=slice;
+	                            EhiLogger.logState("...object count "+validator.getObjectCount()+" (structured elements "+validator.getStructCount()+")...");
+						    }
 							event=ioxReader.read();
 							// feed object by object to validator
 							validator.validate(event);
@@ -311,7 +360,10 @@ public class Validator {
 						}
 					}
 				}
+
 				validator.doSecondPass();
+                EhiLogger.logState("object count "+validator.getObjectCount()+" (structured elements "+validator.getStructCount()+")");
+				stopwatch.Stop();
 				statistics.write2logger();
 				// check for errors
 				if(logStderr.hasSeenErrors()){
@@ -331,6 +383,7 @@ public class Validator {
 					validator.close();
 					validator=null;
 				}
+				EhiLogger.logState("End date " + dateFormat.format(new java.util.Date()) + " validation took " + stopwatch);
 			}
 		} catch (IoxException e) {
 			EhiLogger.logError(e);
@@ -353,6 +406,12 @@ public class Validator {
 		}
 		return ret;
 	}
+    private String getFormat(Dataset dataset) {
+        for(DataFile file:dataset.getMetadata().getfiles()){
+            return file.getfileFormat();
+        }
+        return null;
+    }
     private TransferDescription td=null;
 	public TransferDescription getModel()
 	{
@@ -429,58 +488,20 @@ public class Validator {
 	 * @return root object of java representation of Interlis model.
 	 * @see #SETTING_ILIDIRS
 	 */
-	public static TransferDescription compileIli(String iliVersion,List<String> modelNames,File ilifile,String itfDir,String appHome,Settings settings) {
-		ArrayList modeldirv=new ArrayList();
-		String ilidirs=settings.getValue(Validator.SETTING_ILIDIRS);
-		if(ilidirs==null){
-			ilidirs=Validator.SETTING_DEFAULT_ILIDIRS;
-		}
-	
-		EhiLogger.logState("modeldir <"+ilidirs+">");
-		String modeldirs[]=ilidirs.split(";");
-		HashSet ilifiledirs=new HashSet();
-		for(int modeli=0;modeli<modeldirs.length;modeli++){
-			String m=modeldirs[modeli];
-			if(m.contains(Validator.ITF_DIR)){
-				m=m.replace(ITF_DIR, itfDir);
-				if(m!=null && m.length()>0){
-					if(!modeldirv.contains(m)){
-						modeldirv.add(m);				
-					}
-				}
-			}else if(m.contains(Validator.JAR_DIR)){
-				if(appHome!=null){
-					m=m.replace(JAR_DIR,appHome);
-					modeldirv.add(m);				
-				}else {
-					// ignore it
-				}
-			}else{
-				if(m!=null && m.length()>0){
-					modeldirv.add(m);				
-				}
-			}
-		}		
+    public static TransferDescription compileIli(String iliVersion,List<String> modelNames,File ilifile,String itfDir,String appHome,Settings settings) {
+        ch.interlis.ilirepository.IliManager modelManager=createRepositoryManager(itfDir,appHome,settings);
+        return compileIli(modelManager,iliVersion, modelNames, ilifile, settings);
+    }
+	public static TransferDescription compileIli(ch.interlis.ilirepository.IliManager modelManager,String iliVersion,List<String> modelNames,File ilifile,Settings settings) {
 		
-		ch.interlis.ili2c.Main.setHttpProxySystemProperties(settings);
 		TransferDescription td=null;
 		ch.interlis.ili2c.config.Configuration ili2cConfig=null;
 		if(ilifile!=null){
-			//ili2cConfig=new ch.interlis.ili2c.config.Configuration();
-			//ili2cConfig.addFileEntry(new ch.interlis.ili2c.config.FileEntry(ilifile.getPath(),ch.interlis.ili2c.config.FileEntryKind.ILIMODELFILE));				
-	        // get/create repository manager
-	        ch.interlis.ilirepository.IliManager repositoryManager = (ch.interlis.ilirepository.IliManager) settings
-	                .getTransientObject(UserSettings.CUSTOM_ILI_MANAGER);
-	        if(repositoryManager==null) {
-	            repositoryManager=new ch.interlis.ilirepository.IliManager();
-	            settings.setTransientObject(UserSettings.CUSTOM_ILI_MANAGER,repositoryManager);
-	        }
 			try {
 				//ili2cConfig=ch.interlis.ili2c.ModelScan.getConfig(modeldirv, modelv);
-				repositoryManager.setRepositories((String[])modeldirv.toArray(new String[]{}));
 				ArrayList<String> ilifiles=new ArrayList<String>();
 				ilifiles.add(ilifile.getPath());
-				ili2cConfig=repositoryManager.getConfigWithFiles(ilifiles);
+				ili2cConfig=modelManager.getConfigWithFiles(ilifiles);
 				ili2cConfig.setGenerateWarnings(false);
 			} catch (Ili2cException ex) {
 				EhiLogger.logError(ex);
@@ -496,9 +517,6 @@ public class Validator {
 			    if(iliVersion!=null) {
 			        version=Double.parseDouble(iliVersion);
 			    }
-				//ili2cConfig=ch.interlis.ili2c.ModelScan.getConfig(modeldirv, modelv);
-				ch.interlis.ilirepository.IliManager modelManager=new ch.interlis.ilirepository.IliManager();
-				modelManager.setRepositories((String[])modeldirv.toArray(new String[]{}));
 				ili2cConfig=modelManager.getConfig(modelv, version);
 				ili2cConfig.setGenerateWarnings(false);
 			} catch (Ili2cException ex) {
@@ -518,7 +536,49 @@ public class Validator {
 		}
 		return td;
 	}
-
+    public static ch.interlis.ilirepository.IliManager createRepositoryManager(String itfDir,String appHome,Settings settings) {
+        ArrayList modeldirv=new ArrayList();
+        String ilidirs=settings.getValue(Validator.SETTING_ILIDIRS);
+        if(ilidirs==null){
+            ilidirs=Validator.SETTING_DEFAULT_ILIDIRS;
+        }
+    
+        EhiLogger.logState("modeldir <"+ilidirs+">");
+        String modeldirs[]=ilidirs.split(";");
+        HashSet ilifiledirs=new HashSet();
+        for(int modeli=0;modeli<modeldirs.length;modeli++){
+            String m=modeldirs[modeli];
+            if(m.contains(Validator.ITF_DIR)){
+                m=m.replace(ITF_DIR, itfDir);
+                if(m!=null && m.length()>0){
+                    if(!modeldirv.contains(m)){
+                        modeldirv.add(m);               
+                    }
+                }
+            }else if(m.contains(Validator.JAR_DIR)){
+                if(appHome!=null){
+                    m=m.replace(JAR_DIR,appHome);
+                    modeldirv.add(m);               
+                }else {
+                    // ignore it
+                }
+            }else{
+                if(m!=null && m.length()>0){
+                    modeldirv.add(m);               
+                }
+            }
+        }       
+        
+        ch.interlis.ili2c.Main.setHttpProxySystemProperties(settings);
+        ch.interlis.ilirepository.IliManager repositoryManager = (ch.interlis.ilirepository.IliManager) settings
+                .getTransientObject(UserSettings.CUSTOM_ILI_MANAGER);
+        if(repositoryManager==null) {
+            repositoryManager=new ch.interlis.ilirepository.IliManager();
+            settings.setTransientObject(UserSettings.CUSTOM_ILI_MANAGER,repositoryManager);
+        }
+        repositoryManager.setRepositories((String[])modeldirv.toArray(new String[]{}));
+        return repositoryManager;
+    }
 
 	/** Checks, if a given filename is an Interlis 1 transferfilename.
 	 * @param filename Name to check.
@@ -585,6 +645,9 @@ public class Validator {
 	/** Name of the log file that receives the validation results.
 	 */
 	public static final String SETTING_LOGFILE = "org.interlis2.validator.log";
+    /** include timestamps in log file.
+     */
+    public static final String SETTING_LOGFILE_TIMESTAMP = "org.interlis2.validator.log.timestamp";
 	/** Assume that all objects are known to the validator. "true", "false". Default "false".
 	 */
 	public static final String SETTING_ALL_OBJECTS_ACCESSIBLE = "org.interlis2.validator.allobjectsaccessible";

@@ -93,6 +93,7 @@ public class MainFrame extends JFrame {
 	private JCheckBoxMenuItem optionsSkipPolygonBuildingItem = null;
 	private JCheckBoxMenuItem optionsMultiplicityOffItem = null;
 	private JCheckBoxMenuItem optionsAllowItfAreaHolesItem = null;
+    private JCheckBoxMenuItem optionsLogTimeItem = null;
 	private JCheckBoxMenuItem optionsTraceItem = null;
 	private JCheckBoxMenuItem optionsDisableConstraintValidationItem = null;
 	private JCheckBoxMenuItem optionsDisableAreaValidationItem = null;
@@ -157,12 +158,15 @@ public class MainFrame extends JFrame {
         
         optionsAllowItfAreaHolesItem = new JCheckBoxMenuItem(rsrc.getString("MainFrame.OptionsAllowItfAreaHolesItem"));
         optionsMenu.add(optionsAllowItfAreaHolesItem);
-        
+
         optionsDisableConstraintValidationItem = new JCheckBoxMenuItem(rsrc.getString("MainFrame.OptionsDisableConstraintValidationItem"));
         optionsMenu.add(optionsDisableConstraintValidationItem);
         
         optionsDisableAreaValidationItem = new JCheckBoxMenuItem(rsrc.getString("MainFrame.OptionsDisableAreaValidationItem"));
         optionsMenu.add(optionsDisableAreaValidationItem);
+        
+        optionsLogTimeItem = new JCheckBoxMenuItem(rsrc.getString("MainFrame.OptionsLogTimeItem"));
+        optionsMenu.add(optionsLogTimeItem);
         
         optionsTraceItem = new JCheckBoxMenuItem(rsrc.getString("MainFrame.OptionsTraceItem"));
         optionsMenu.add(optionsTraceItem);
@@ -212,6 +216,7 @@ public class MainFrame extends JFrame {
 		toSave.setValue(Validator.SETTING_ILIDIRS,settings.getValue(Validator.SETTING_ILIDIRS));
 		toSave.setValue(Validator.SETTING_MODELNAMES,settings.getValue(Validator.SETTING_MODELNAMES));
 		toSave.setValue(Validator.SETTING_ALL_OBJECTS_ACCESSIBLE,settings.getValue(Validator.SETTING_ALL_OBJECTS_ACCESSIBLE));
+        toSave.setValue(Validator.SETTING_LOGFILE_TIMESTAMP,settings.getValue(Validator.SETTING_LOGFILE_TIMESTAMP));
 		toSave.setValue(ch.interlis.ili2c.gui.UserSettings.HTTP_PROXY_HOST,settings.getValue(ch.interlis.ili2c.gui.UserSettings.HTTP_PROXY_HOST));
 		toSave.setValue(ch.interlis.ili2c.gui.UserSettings.HTTP_PROXY_PORT,settings.getValue(ch.interlis.ili2c.gui.UserSettings.HTTP_PROXY_PORT));
 		toSave.setValue(WINDOW_WIDTH, settings.getValue(WINDOW_WIDTH));
@@ -610,6 +615,9 @@ public class MainFrame extends JFrame {
 		if (optionsAllowItfAreaHolesItem.isSelected()) {
 		    newSettings.setValue(Validator.SETTING_ALLOW_ITF_AREA_HOLES,Validator.TRUE);
 		}
+        if (optionsLogTimeItem.isSelected()) {
+            newSettings.setValue(Validator.SETTING_LOGFILE_TIMESTAMP,Validator.TRUE);
+        }
 		if (optionsTraceItem.isSelected()) {
 		    EhiLogger.getInstance().setTraceFilter(false);
 		} else {
