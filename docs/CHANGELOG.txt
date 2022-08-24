@@ -1,11 +1,14 @@
 LATEST VERSION
 -----------------------------
+
+ilivalidator 1.12.0 (2022-08-24)
+-----------------------------
 - new option --logtime to include timestamps in log file
 - new option --singlePass to skip any validations that require a second pass
 - allObjectsAccessible in config file not working (#350)
 - support ilidata:basketId as file argument (#199)
-- iox-ili-1.21.11+
-- ili2c-5.2.8+
+- iox-ili-1.21.12
+- ili2c-5.2.8
 
 ilivalidator 1.11.14 (2022-04-29)
 -----------------------------
