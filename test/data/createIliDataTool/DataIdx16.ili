@@ -233,7 +233,7 @@ VERSION "2018-11-21" =
       MANDATORY CONSTRAINT DEFINED(version);
       MANDATORY CONSTRAINT DEFINED(owner);
       UNIQUE id, version;
-      UNIQUE baskets->id, baskets->version;
+      UNIQUE (LOCAL) baskets: id, version;
       UNIQUE (LOCAL) baskets: localId;
     END DatasetMetadata;
     
