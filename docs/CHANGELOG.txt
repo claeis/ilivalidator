@@ -1,5 +1,6 @@
 LATEST VERSION
 -----------------------------
+- API: Validator.getStatistics() added
 - iox-ili-1.21.13-SNAPSHOT
 - ili2c-5.3.0-SNAPSHOT
 
