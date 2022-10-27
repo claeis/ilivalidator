@@ -380,6 +380,14 @@ INI-Globale Konfigurationen
 |                                 | multiplicity="off"                        | Mögliche Einstellungen sind: "on", "warning", "off". DEFAULT ist "on".            |
 |                                 |                                           |                                                                                   |
 +---------------------------------+-------------------------------------------+-----------------------------------------------------------------------------------+
+| type                            | ["PARAMETER"]                             | "off" schaltet die Datentyppruefung für alle Attribute aus.                       |
+|                                 | type="off"                                | Mögliche Einstellungen sind: "on", "warning", "off". DEFAULT ist "on".            |
+|                                 |                                           |                                                                                   |
++---------------------------------+-------------------------------------------+-----------------------------------------------------------------------------------+
+| target                          | ["PARAMETER"]                             | "off" schaltet die Zielobjekt-Prüfung für alle Rollen aus.                        |
+|                                 | target="off"                              | Mögliche Einstellungen sind: "on", "warning", "off". DEFAULT ist "on".            |
+|                                 |                                           |                                                                                   |
++---------------------------------+-------------------------------------------+-----------------------------------------------------------------------------------+
 | disableRounding                 | ["PARAMETER"]                             | "true" schaltet das Runden vor der Validierung von                                |
 |                                 | disableRounding="true"                    | numerischen Werten aus (inkl. Koordinaten).                                       |
 |                                 |                                           | Mögliche Einstellungen sind: "true", "false". DEFAULT ist "false".                |
