@@ -380,10 +380,6 @@ INI-Globale Konfigurationen
 |                                 | multiplicity="off"                        | Mögliche Einstellungen sind: "on", "warning", "off". DEFAULT ist "on".            |
 |                                 |                                           |                                                                                   |
 +---------------------------------+-------------------------------------------+-----------------------------------------------------------------------------------+
-| type                            | ["PARAMETER"]                             | "off" schaltet die Datentyppruefung für alle Attribute aus.                       |
-|                                 | type="off"                                | Mögliche Einstellungen sind: "on", "warning", "off". DEFAULT ist "on".            |
-|                                 |                                           |                                                                                   |
-+---------------------------------+-------------------------------------------+-----------------------------------------------------------------------------------+
 | target                          | ["PARAMETER"]                             | "off" schaltet die Zielobjekt-Prüfung für alle Rollen aus.                        |
 |                                 | target="off"                              | Mögliche Einstellungen sind: "on", "warning", "off". DEFAULT ist "on".            |
 |                                 |                                           |                                                                                   |
