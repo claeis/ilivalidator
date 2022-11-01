@@ -1,8 +1,12 @@
 LATEST VERSION
 -----------------------------
+
+ilivalidator 1.12.1 (2022-11-01)
+-----------------------------
+- Skip attribute AREA validation if surface invalid (#296)
 - API: Validator.getStatistics() added
-- iox-ili-1.21.13-SNAPSHOT
-- ili2c-5.3.0-SNAPSHOT
+- iox-ili-1.21.13
+- ili2c-5.3.0
 
 ilivalidator 1.12.0 (2022-08-24)
 -----------------------------
