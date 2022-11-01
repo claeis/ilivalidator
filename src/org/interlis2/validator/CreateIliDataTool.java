@@ -290,9 +290,13 @@ public class CreateIliDataTool {
             }
         }
         for(String model:useModels) {
-            Code_ modelCode=new Code_();
-            modelCode.setvalue(CODES_MODEL+model);
-            datasetMetadata.addcategories(modelCode);
+            if("INTERLIS".equals(model)) {
+                // ignore model INTERLIS
+            }else {
+                Code_ modelCode=new Code_();
+                modelCode.setvalue(CODES_MODEL+model);
+                datasetMetadata.addcategories(modelCode);
+            }
         }
         
     }

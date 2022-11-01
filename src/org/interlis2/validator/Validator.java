@@ -282,7 +282,6 @@ public class Validator {
 			// process data files
 			EhiLogger.logState("validate data...");
 			ch.interlis.iox_j.validator.Validator validator=null;
-			IoxStatistics statistics=null;
 			long startTime=System.currentTimeMillis();
 			long currentSlice=0l;
 			try{
@@ -417,6 +416,11 @@ public class Validator {
 	{
 	    return td;
 	}
+    private IoxStatistics statistics=null;
+    public IoxStatistics getStatistics()
+    {
+        return statistics;
+    }
 	
 
 	public static boolean isWriteable(File f) throws IOException {
