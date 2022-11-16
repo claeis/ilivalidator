@@ -1,5 +1,6 @@
 LATEST VERSION
 -----------------------------
+- fix unknown --verbose/wrong number of arguments (#365) 
 
 ilivalidator 1.12.1 (2022-11-01)
 -----------------------------
