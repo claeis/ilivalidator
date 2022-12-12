@@ -84,6 +84,9 @@ public class Main {
 			}else if(arg.equals("--config")) {
 			    argi++;
 			    settings.setValue(Validator.SETTING_CONFIGFILE, args[argi]);
+            }else if(arg.equals("--metaConfig")) {
+                argi++;
+                settings.setValue(Validator.SETTING_META_CONFIGFILE, args[argi]);
 			}else if(arg.equals("--forceTypeValidation")){
 				settings.setValue(Validator.SETTING_FORCE_TYPE_VALIDATION,Validator.TRUE);
 			}else if(arg.equals("--disableAreaValidation")){

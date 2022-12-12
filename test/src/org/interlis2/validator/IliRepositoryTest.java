@@ -81,6 +81,17 @@ public class IliRepositoryTest {
         assertTrue(ret);
     }
     @Test
+    public void xtf23_extRef_MetaConfigOk() {
+        Settings settings=new Settings();
+        settings.setValue(Validator.SETTING_ALL_OBJECTS_ACCESSIBLE, Validator.TRUE);
+        settings.setValue(Validator.SETTING_ILIDIRS, "test/data/ilirepository/repos");
+        settings.setValue(Validator.SETTING_META_CONFIGFILE,"ilidata:163d16de-83df-4d84-8039-256f2261e226");
+        String[] listOfFiles = new String[1];
+        listOfFiles[0]="test/data/ilirepository/ExtRef23a.xtf";
+        boolean ret=Validator.runValidation(listOfFiles, settings);
+        assertTrue(ret);
+    }
+    @Test
     public void xtf23_extRef_DatasetIdOk() {
         Settings settings=new Settings();
         settings.setValue(Validator.SETTING_ALL_OBJECTS_ACCESSIBLE, Validator.TRUE);
