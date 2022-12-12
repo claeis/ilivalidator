@@ -35,9 +35,12 @@ import ch.interlis.models.DatasetIdx16.ModelLink;
 import ch.interlis.models.DatasetIdx16.DataIndex.BasketMetadata;
 import ch.interlis.models.DatasetIdx16.DataIndex.DatasetMetadata;
 
+//moved to ilimanager
+@Deprecated
 public class UpdateIliDataTool {
 
     public static boolean update(File newVersionOfData,Settings settings) {
+        EhiLogger.logAdaption("please use the new ilimanager tool");
         return new UpdateIliDataTool().updateIliData(newVersionOfData,settings);
     }
     

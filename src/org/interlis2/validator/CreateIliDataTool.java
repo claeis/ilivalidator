@@ -52,6 +52,8 @@ import ch.interlis.models.DatasetIdx16.MultilingualMText;
 import ch.interlis.models.DatasetIdx16.MultilingualText;
 import ch.interlis.models.DatasetIdx16.DataIndex.DatasetMetadata;
 
+// moved to ilimanager
+@Deprecated
 public class CreateIliDataTool {
    
     private static final String CODES_GEOIV = "https://ids.geo.admin.ch/geoiv/";
@@ -59,6 +61,7 @@ public class CreateIliDataTool {
     private static final String CODES_TYPE_REFERENCE_DATA = "http://codes.interlis.ch/type/referenceData";
 
     public static boolean start(Settings settings) {
+        EhiLogger.logAdaption("please use the new ilimanager tool");
         return new CreateIliDataTool().createIliData(settings);
     }
 
