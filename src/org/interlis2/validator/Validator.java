@@ -182,29 +182,21 @@ public class Validator {
             ch.interlis.ilirepository.IliManager repoManager=createRepositoryManager(new File(dataFiles[0]).getAbsoluteFile().getParentFile().getAbsolutePath(),appHome,settings);
             for(int idx=0;idx<dataFiles.length;idx++){
                 String dataFile=dataFiles[idx];
-                if(dataFile.startsWith(IliManager.ILIDATA_URI_PREFIX)) {
-                    try {
-                        String bid=dataFile.substring(IliManager.ILIDATA_URI_PREFIX.length());
-                        List<Dataset> datasets = repoManager.getDatasetIndex(bid, null);
-                        if(datasets.size()==0) {
-                            EhiLogger.logError("file "+dataFile+" not found");
-                            return false;
-                        }else if(datasets.size()>1) {
-                            EhiLogger.logError("file "+dataFile+" ambiguous");
-                            return false;
-                        }
-                        java.io.File localFiles[]=repoManager.getLocalFileOfRemoteDataset(datasets.get(0), getFormat(datasets.get(0)));
-                        dataFiles[idx]=localFiles[0].getPath();
-                    } catch (Ili2cException e) {
-                        EhiLogger.logError("failed to get file "+dataFile,e);
-                        return false;
-                    } catch (RepositoryAccessException e) {
-                        EhiLogger.logError("failed to get file "+dataFile,e);
-                        return false;
-                    }
+                java.io.File localFile=getLocalCopyOfReposFile(repoManager, dataFile);
+                if(localFile==null) {
+                    return false;
+                }
+                dataFiles[idx]=localFile.getPath();
+            }
+            // get local copy of configFile
+            java.io.File configFile=null;
+            if(configFilename!=null) {
+                configFile=getLocalCopyOfReposFile(repoManager,configFilename);
+                if(configFile==null) {
+                    return false;
                 }
             }
-			
+            
 			// specified model names
 			List<String> modelnames=new ArrayList<String>();
 			String specifiedModelNames=null;
@@ -228,16 +220,16 @@ public class Validator {
 				}
 			}
 			List<String> modelNamesFromConfig = null;
-			if(configFilename!=null){
+			if(configFile!=null){
 				try {
-					modelNamesFromConfig=getModelsFromConfigFile(configFilename);
-					boolean versionControl = getVersionControlFormConfigFile(configFilename);
+					modelNamesFromConfig=getModelsFromConfigFile(configFile);
+					boolean versionControl = getVersionControlFormConfigFile(configFile);
 					if (versionControl) {
 					    settings.setValue(ch.interlis.iox_j.validator.Validator.CONFIG_DO_XTF_VERIFYMODEL, ch.interlis.iox_j.validator.Validator.CONFIG_DO_XTF_VERIFYMODEL_DO);
 					}
 					modelnames.addAll(modelNamesFromConfig);
 				} catch (IOException e) {
-					EhiLogger.logError("failed to read config file <"+configFilename+">", e);
+					EhiLogger.logError("failed to read config file <"+configFile.getPath()+">", e);
 					return false;
 				}
 			}
@@ -288,8 +280,8 @@ public class Validator {
 				// setup log output
 				ValidationConfig modelConfig=new ValidationConfig();
 				modelConfig.mergeIliMetaAttrs(td);
-				if(configFilename!=null){
-					modelConfig.mergeConfigFile(new File(configFilename));
+				if(configFile!=null){
+					modelConfig.mergeConfigFile(configFile);
 				}
 				final String settingsForceTypeValidation = settings.getValue(SETTING_FORCE_TYPE_VALIDATION);
 				if(settingsForceTypeValidation!=null) {
@@ -405,6 +397,31 @@ public class Validator {
 		}
 		return ret;
 	}
+    private File getLocalCopyOfReposFile(IliManager repoManager, String dataFile) {
+        if(dataFile.startsWith(IliManager.ILIDATA_URI_PREFIX)) {
+            try {
+                String bid=dataFile.substring(IliManager.ILIDATA_URI_PREFIX.length());
+                List<Dataset> datasets = repoManager.getDatasetIndex(bid, null);
+                if(datasets.size()==0) {
+                    EhiLogger.logError("file "+dataFile+" not found");
+                    return null;
+                }else if(datasets.size()>1) {
+                    EhiLogger.logError("file "+dataFile+" ambiguous");
+                    return null;
+                }
+                java.io.File localFiles[]=repoManager.getLocalFileOfRemoteDataset(datasets.get(0), getFormat(datasets.get(0)));
+                return localFiles[0];
+            } catch (Ili2cException e) {
+                EhiLogger.logError("failed to get file "+dataFile,e);
+                return null;
+            } catch (RepositoryAccessException e) {
+                EhiLogger.logError("failed to get file "+dataFile,e);
+                return null;
+            }
+        }
+        return new java.io.File(dataFile);
+    }
+
     private String getFormat(Dataset dataset) {
         for(DataFile file:dataset.getMetadata().getfiles()){
             return file.getfileFormat();
@@ -428,10 +445,10 @@ public class Validator {
         return f.canWrite();
     }
 
-    private boolean getVersionControlFormConfigFile(String configFilename) throws IOException {
-        if (configFilename != null) {
+    private boolean getVersionControlFormConfigFile(File configFile) throws IOException {
+        if (configFile != null) {
             ValidationConfig modelConfig=new ValidationConfig();
-            modelConfig.mergeConfigFile(new File(configFilename));
+            modelConfig.mergeConfigFile(configFile);
             String versionControl = modelConfig.getConfigValue(ValidationConfig.PARAMETER, ValidationConfig.VERIFY_MODEL_VERSION);
             return versionControl != null ? versionControl.equals(TRUE) ? true : false : false;
         }
@@ -455,11 +472,11 @@ public class Validator {
 		return ioxReader;
 	}
 	
-	private static List<String> getModelsFromConfigFile(String configFilename) throws IOException {
+	private static List<String> getModelsFromConfigFile(File configFile) throws IOException {
 		List<String> ret=new ArrayList<String>();
-		if(configFilename!=null){
+		if(configFile!=null){
 			ValidationConfig modelConfig=new ValidationConfig();
-			modelConfig.mergeConfigFile(new File(configFilename));
+			modelConfig.mergeConfigFile(configFile);
 			String additionalModels=modelConfig.getConfigValue(ValidationConfig.PARAMETER, ValidationConfig.ADDITIONAL_MODELS);
 			if(additionalModels!=null){
 				String[] additionalModelv = additionalModels.split(";");
