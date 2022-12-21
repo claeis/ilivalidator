@@ -189,8 +189,11 @@ public class Validator {
                     if(!visitedFiles.contains(metaConfigFilename)) {
                         visitedFiles.add(metaConfigFilename);
                         EhiLogger.traceState("metaConfigFile <"+metaConfigFilename+">");
-                        File metaConfigFile=getLocalCopyOfReposFile(repoManager,metaConfigFilename);
-                        if(metaConfigFile==null) {
+                        File metaConfigFile;
+                        try {
+                            metaConfigFile = IliManager.getLocalCopyOfReposFile(repoManager,metaConfigFilename);
+                        } catch (Ili2cException e1) {
+                            EhiLogger.logError("failed to get local copy of meta-config file <"+metaConfigFilename+">", e1);
                             return false;
                         }
                         OutParam<String> baseConfigs=new OutParam<String>();
@@ -207,11 +210,12 @@ public class Validator {
                             EhiLogger.logError("failed to read meta config file <"+metaConfigFile.getPath()+">", e);
                             return false;
                         }
-                        mergeSettings(newSettings,metaSettings);
+                        MetaConfig.mergeSettings(newSettings,metaSettings);
                     }
                 }
-                mergeSettings(metaSettings,settings);
+                MetaConfig.mergeSettings(metaSettings,settings);
             }
+            MetaConfig.removeNullFromSettings(settings);
             
             String configFilename=settings.getValue(Validator.SETTING_CONFIGFILE);
             String modelNames=settings.getValue(Validator.SETTING_MODELNAMES);
@@ -239,8 +243,11 @@ public class Validator {
 			// get local copies of remote files
             for(int idx=0;idx<dataFiles.length;idx++){
                 String dataFile=dataFiles[idx];
-                java.io.File localFile=getLocalCopyOfReposFile(repoManager, dataFile);
-                if(localFile==null) {
+                java.io.File localFile;
+                try {
+                    localFile = IliManager.getLocalCopyOfReposFile(repoManager, dataFile);
+                } catch (Ili2cException e) {
+                    EhiLogger.logError("failed to get local copy of data file <"+dataFile+">", e);
                     return false;
                 }
                 dataFiles[idx]=localFile.getPath();
@@ -248,8 +255,10 @@ public class Validator {
             // get local copy of configFile
             java.io.File configFile=null;
             if(configFilename!=null) {
-                configFile=getLocalCopyOfReposFile(repoManager,configFilename);
-                if(configFile==null) {
+                try {
+                    configFile=IliManager.getLocalCopyOfReposFile(repoManager,configFilename);
+                } catch (Ili2cException e) {
+                    EhiLogger.logError("failed to get local copy of config file <"+configFilename+">", e);
                     return false;
                 }
             }
@@ -491,47 +500,6 @@ public class Validator {
         return settings;
     }
 
-    private void mergeSettings(Settings metaSettings, Settings settings) {
-        for(String key:metaSettings.getValues()) {
-            String value=metaSettings.getValue(key);
-            String preferedValue=settings.getValue(key);
-            if(preferedValue==null) {
-                settings.setValue(key, value);
-            }
-        }
-    }
-
-    private File getLocalCopyOfReposFile(IliManager repoManager, String dataFile) {
-        if(dataFile.startsWith(IliManager.ILIDATA_URI_PREFIX)) {
-            try {
-                String bid=dataFile.substring(IliManager.ILIDATA_URI_PREFIX.length());
-                List<Dataset> datasets = repoManager.getDatasetIndex(bid, null);
-                if(datasets.size()==0) {
-                    EhiLogger.logError("file "+dataFile+" not found");
-                    return null;
-                }else if(datasets.size()>1) {
-                    EhiLogger.logError("file "+dataFile+" ambiguous");
-                    return null;
-                }
-                java.io.File localFiles[]=repoManager.getLocalFileOfRemoteDataset(datasets.get(0), getFormat(datasets.get(0)));
-                return localFiles[0];
-            } catch (Ili2cException e) {
-                EhiLogger.logError("failed to get file "+dataFile,e);
-                return null;
-            } catch (RepositoryAccessException e) {
-                EhiLogger.logError("failed to get file "+dataFile,e);
-                return null;
-            }
-        }
-        return new java.io.File(dataFile);
-    }
-
-    private String getFormat(Dataset dataset) {
-        for(DataFile file:dataset.getMetadata().getfiles()){
-            return file.getfileFormat();
-        }
-        return null;
-    }
     private TransferDescription td=null;
 	public TransferDescription getModel()
 	{

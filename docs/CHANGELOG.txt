@@ -4,6 +4,7 @@ LATEST VERSION
 - support ilidata:datasetId as --config file argument (#290)
 - implement --metaConfig (#290)
 - iox-ili-1.21.15-SNAPSHOT
+- ili2c-5.3.2-SNAPSHOT
 
 ilivalidator 1.12.1 (2022-11-01)
 -----------------------------
