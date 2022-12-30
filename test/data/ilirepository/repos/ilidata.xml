@@ -43,6 +43,56 @@
 					</DatasetIdx16.DataIndex.BasketMetadata>
 				</baskets>
 			</DatasetIdx16.DataIndex.DatasetMetadata>
+			<DatasetIdx16.DataIndex.DatasetMetadata
+				TID="3a">
+				<id>70340b5a-248c-4216-86e4-32e6a540d629</id>
+				<version>1</version>
+				<owner>mailto:ceis@localhost</owner>
+				<categories>
+					<DatasetIdx16.Code_>
+					  <value>http://codes.interlis.ch/type/ilivalidatorconfig</value>
+					</DatasetIdx16.Code_>
+					<DatasetIdx16.Code_>
+					  <value>http://codes.interlis.ch/model/Simple23</value>
+					</DatasetIdx16.Code_>
+				</categories>
+				<files>
+					<DatasetIdx16.DataFile>
+						<fileFormat>text/plain</fileFormat>
+						<file>
+							<DatasetIdx16.File>
+								<path>Simple23.ini</path>
+								<!-- md5>c55e611e5896f50cace4d2a5db1c4d34</md5 -->
+							</DatasetIdx16.File>
+						</file>
+					</DatasetIdx16.DataFile>
+				</files>
+			</DatasetIdx16.DataIndex.DatasetMetadata>
+			<DatasetIdx16.DataIndex.DatasetMetadata
+				TID="4a">
+				<id>163d16de-83df-4d84-8039-256f2261e226</id>
+				<version>1</version>
+				<owner>mailto:ceis@localhost</owner>
+				<categories>
+					<DatasetIdx16.Code_>
+					  <value>http://codes.interlis.ch/type/metaconfig</value>
+					</DatasetIdx16.Code_>
+					<DatasetIdx16.Code_>
+					  <value>http://codes.interlis.ch/model/ExtRef23</value>
+					</DatasetIdx16.Code_>
+				</categories>
+				<files>
+					<DatasetIdx16.DataFile>
+						<fileFormat>text/plain</fileFormat>
+						<file>
+							<DatasetIdx16.File>
+								<path>ExtRef23-meta.ini</path>
+								<!-- md5>c55e611e5896f50cace4d2a5db1c4d34</md5 -->
+							</DatasetIdx16.File>
+						</file>
+					</DatasetIdx16.DataFile>
+				</files>
+			</DatasetIdx16.DataIndex.DatasetMetadata>
 		</DatasetIdx16.DataIndex>
 	</DATASECTION>
 </TRANSFER>

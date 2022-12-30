@@ -78,6 +78,10 @@ public class MainFrame extends JFrame {
 	private javax.swing.JTextField configFileUi = null;
 	private javax.swing.JButton doConfigFileSelBtn = null;
 	
+    private javax.swing.JLabel metaConfigFileLabel = null;
+    private javax.swing.JTextField metaConfigFileUi = null;
+    private javax.swing.JButton doMetaConfigFileSelBtn = null;
+    
 	private javax.swing.JLabel logFileLabel = null;
 	private javax.swing.JTextField logFileUi = null;
 	private javax.swing.JButton doLogFileSelBtn = null;
@@ -249,6 +253,10 @@ public class MainFrame extends JFrame {
 			java.awt.GridBagConstraints configFileUiConstraints = new java.awt.GridBagConstraints();
 			java.awt.GridBagConstraints doConfigFileSelBtnConstraints = new java.awt.GridBagConstraints();
 			java.awt.GridBagConstraints doNewConfigFileBtnConstraints = new java.awt.GridBagConstraints();
+
+            java.awt.GridBagConstraints metaConfigFileLabelConstraints = new java.awt.GridBagConstraints();
+            java.awt.GridBagConstraints metaConfigFileUiConstraints = new java.awt.GridBagConstraints();
+            java.awt.GridBagConstraints doMetaConfigFileSelBtnConstraints = new java.awt.GridBagConstraints();
 			
 			java.awt.GridBagConstraints clearlogBtnConstraints = new java.awt.GridBagConstraints();
 			java.awt.GridBagConstraints logPaneConstraints = new java.awt.GridBagConstraints();
@@ -322,23 +330,36 @@ public class MainFrame extends JFrame {
 			doConfigFileSelBtnConstraints.anchor = java.awt.GridBagConstraints.WEST;
             doNewConfigFileBtnConstraints.gridx = 3;
             doNewConfigFileBtnConstraints.gridy = 5;
-			
-			// row 6
+
+            // row 6
+            metaConfigFileLabelConstraints.gridx = 0;
+            metaConfigFileLabelConstraints.gridy = 6;
+            metaConfigFileLabelConstraints.anchor = java.awt.GridBagConstraints.NORTHWEST;
+            metaConfigFileUiConstraints.fill = java.awt.GridBagConstraints.HORIZONTAL;
+            metaConfigFileUiConstraints.weightx = 1.0;
+            metaConfigFileUiConstraints.gridx = 1;
+            metaConfigFileUiConstraints.gridy = 6;
+            metaConfigFileUiConstraints.anchor = java.awt.GridBagConstraints.NORTHWEST;
+            doMetaConfigFileSelBtnConstraints.gridx = 2;
+            doMetaConfigFileSelBtnConstraints.gridy = 6;
+            doMetaConfigFileSelBtnConstraints.anchor = java.awt.GridBagConstraints.WEST;
+            
+			// row 7
 			logPaneConstraints.fill = java.awt.GridBagConstraints.BOTH;
 			logPaneConstraints.weightx = 1.0;
 			logPaneConstraints.weighty = 1.0;
 			logPaneConstraints.gridx = 0;
-			logPaneConstraints.gridy = 6;
+			logPaneConstraints.gridy = 7;
 			logPaneConstraints.gridheight = 2;
 			logPaneConstraints.gridwidth = 2;
-			doValidateConstraints.gridy = 6;
+			doValidateConstraints.gridy = 7;
 			doValidateConstraints.gridx = 2;
 			doValidateConstraints.gridwidth = 2;
 			doValidateConstraints.anchor = java.awt.GridBagConstraints.WEST;
 			
-			// row 7
+			// row 8
 			clearlogBtnConstraints.gridx = 2;//2
-			clearlogBtnConstraints.gridy = 7;
+			clearlogBtnConstraints.gridy = 8;
 			clearlogBtnConstraints.gridwidth = 2;
 			clearlogBtnConstraints.anchor = java.awt.GridBagConstraints.NORTHWEST;
 			
@@ -362,6 +383,10 @@ public class MainFrame extends JFrame {
 			jContentPane.add(getConfigFileUi(), configFileUiConstraints);
 			jContentPane.add(getDoConfigFileSelBtn(), doConfigFileSelBtnConstraints);
 			jContentPane.add(getNewConfigFileBtn(), doNewConfigFileBtnConstraints);
+
+            jContentPane.add(getMetaConfigFileLabel(), metaConfigFileLabelConstraints);
+            jContentPane.add(getMetaConfigFileUi(), metaConfigFileUiConstraints);
+            jContentPane.add(getDoMetaConfigFileSelBtn(), doMetaConfigFileSelBtnConstraints);
 			
 			jContentPane.add(getJScrollPane(), logPaneConstraints);
 			jContentPane.add(getClearlogBtn(), clearlogBtnConstraints);
@@ -391,6 +416,13 @@ public class MainFrame extends JFrame {
 		}
 		return configFileLabel;
 	}
+    private javax.swing.JLabel getMetaConfigFileLabel() {
+        if(metaConfigFileLabel == null) {
+            metaConfigFileLabel = new javax.swing.JLabel();
+            metaConfigFileLabel.setText(rsrc.getString("MainFrame.metaConfigFileLabel"));
+        }
+        return metaConfigFileLabel;
+    }
 	private javax.swing.JLabel getLogFileLabel() {
 		if(logFileLabel == null) {
 			logFileLabel = new javax.swing.JLabel();
@@ -424,6 +456,12 @@ public class MainFrame extends JFrame {
 		}
 		return configFileUi;
 	}
+    private javax.swing.JTextField getMetaConfigFileUi() {
+        if(metaConfigFileUi == null) {
+            metaConfigFileUi = new javax.swing.JTextField();
+        }
+        return metaConfigFileUi;
+    }
 	private javax.swing.JTextField getLogFileUi() {
 		if(logFileUi == null) {
 			logFileUi = new javax.swing.JTextField();
@@ -542,6 +580,9 @@ public class MainFrame extends JFrame {
 	public String getConfigFile(){
 		return StringUtility.purge(getConfigFileUi().getText());
 	}
+    public String getMetaConfigFile(){
+        return StringUtility.purge(getMetaConfigFileUi().getText());
+    }
 	public boolean getObjectsAccessible(){
 		boolean allObjectsAccessible=getAllObjectsAccessibleUi().isSelected();
 		return allObjectsAccessible;
@@ -552,6 +593,9 @@ public class MainFrame extends JFrame {
 	public void setConfigFile(String dbhost){
 		getConfigFileUi().setText(dbhost);
 	}
+    public void setMetaConfigFile(String dbhost){
+        getMetaConfigFileUi().setText(dbhost);
+    }
 	public String getLogFile(){
 		return StringUtility.purge(getLogFileUi().getText());
 	}
@@ -570,6 +614,7 @@ public class MainFrame extends JFrame {
 		String logFile=getLogFile();
 		String xtflogFile=getXtfLogFile();
 		String configFile=getConfigFile();
+        String metaConfigFile=getMetaConfigFile();
 		String modelNames=getModelNames();
 		String objectsAccess=getObjectsAccessible()?Validator.TRUE:Validator.FALSE;
 		
@@ -596,6 +641,7 @@ public class MainFrame extends JFrame {
 		newSettings.setValue(Validator.SETTING_XTFLOG,xtflogFile);
 		newSettings.setValue(Validator.SETTING_MODELNAMES,modelNames);
 		newSettings.setValue(Validator.SETTING_CONFIGFILE,configFile);
+        newSettings.setValue(Validator.SETTING_META_CONFIGFILE,metaConfigFile);
 		newSettings.setValue(Validator.SETTING_ALL_OBJECTS_ACCESSIBLE,objectsAccess);
 		newSettings.setValue(Validator.SETTING_ILIDIRS,ilidirs);
 		newSettings.setValue(Validator.SETTING_APPHOME, appHome);
@@ -670,6 +716,8 @@ public class MainFrame extends JFrame {
 			frame.setXtfLogFile(xtflogFile);
 			String configFile=settings.getValue(Validator.SETTING_CONFIGFILE);
 			frame.setConfigFile(configFile);
+            String metaConfigFile=settings.getValue(Validator.SETTING_META_CONFIGFILE);
+            frame.setMetaConfigFile(metaConfigFile);
 			frame.setObjectsAccessible(Validator.TRUE.equals(settings.getValue(Validator.SETTING_ALL_OBJECTS_ACCESSIBLE)));
 			restoreWindowSizeAndLocation(frame, settings);
 			frame.show();
@@ -900,7 +948,7 @@ public class MainFrame extends JFrame {
 			doConfigFileSelBtn.setText("...");
 			doConfigFileSelBtn.addActionListener(new java.awt.event.ActionListener() { 
 				public void actionPerformed(java.awt.event.ActionEvent e) {    
-					String file=getLogFile();
+					String file=getConfigFile();
 					FileChooser fileDialog =  new FileChooser(file);
 					fileDialog.setCurrentDirectory(new File(getWorkingDirectory()));
 					fileDialog.setDialogTitle(rsrc.getString("MainFrame.configFileChooserTitle"));
@@ -917,8 +965,34 @@ public class MainFrame extends JFrame {
 		}
 		return doConfigFileSelBtn;
 	}
+    private javax.swing.JButton getDoMetaConfigFileSelBtn() {
+        if(doMetaConfigFileSelBtn == null) {
+            doMetaConfigFileSelBtn = new javax.swing.JButton();
+            doMetaConfigFileSelBtn.setText("...");
+            doMetaConfigFileSelBtn.addActionListener(new java.awt.event.ActionListener() { 
+                public void actionPerformed(java.awt.event.ActionEvent e) {    
+                    String file=getMetaConfigFile();
+                    FileChooser fileDialog =  new FileChooser(file);
+                    fileDialog.setCurrentDirectory(new File(getWorkingDirectory()));
+                    fileDialog.setDialogTitle(rsrc.getString("MainFrame.metaConfigFileChooserTitle"));
+                    fileDialog.setFileFilter(createMetaConfigFileFilter());
+
+                    if (fileDialog.showOpenDialog(MainFrame.this) == FileChooser.APPROVE_OPTION) {
+                        setWorkingDirectory(fileDialog.getCurrentDirectory().getAbsolutePath());
+                        file=fileDialog.getSelectedFile().getAbsolutePath();
+                        setMetaConfigFile(file);
+                    }                   
+                }
+
+            });
+        }
+        return doMetaConfigFileSelBtn;
+    }
     private GenericFileFilter createConfigFileFilter() {
         return new GenericFileFilter(rsrc.getString("MainFrame.configFileFilter"),"ini");
+    }
+    private GenericFileFilter createMetaConfigFileFilter() {
+        return new GenericFileFilter(rsrc.getString("MainFrame.metaConfigFileFilter"),"ini");
     }
 	private java.lang.String getWorkingDirectory() {
 		String wd=settings.getValue(ch.interlis.ili2c.gui.UserSettings.WORKING_DIRECTORY);

@@ -43,6 +43,22 @@ public class IliRepositoryTest {
         assertTrue(ret);
     }
     @Test
+    public void xtf23_ConfigFail() {
+        Settings settings=new Settings();
+        settings.setValue(Validator.SETTING_ILIDIRS, "test/data/ilirepository/repos");
+        settings.setValue(Validator.SETTING_CONFIGFILE, "ilidata:config");
+        boolean ret=Validator.runValidation("test/data/ilirepository/Simple23fail.xtf", settings);
+        assertFalse(ret);
+    }
+    @Test
+    public void xtf23_ConfigOk() {
+        Settings settings=new Settings();
+        settings.setValue(Validator.SETTING_ILIDIRS, "test/data/ilirepository/repos");
+        settings.setValue(Validator.SETTING_CONFIGFILE, "ilidata:70340b5a-248c-4216-86e4-32e6a540d629");
+        boolean ret=Validator.runValidation("test/data/ilirepository/Simple23fail.xtf", settings);
+        assertTrue(ret);
+    }
+    @Test
     public void xtf23_extRefFail() {
         Settings settings=new Settings();
         settings.setValue(Validator.SETTING_ALL_OBJECTS_ACCESSIBLE, Validator.TRUE);
@@ -61,6 +77,17 @@ public class IliRepositoryTest {
         String[] listOfFiles = new String[2];
         listOfFiles[0]="ilidata:c1105d5c-9ec3-49ed-9e4b-a7de0124138c";
         listOfFiles[1]="test/data/ilirepository/ExtRef23a.xtf";
+        boolean ret=Validator.runValidation(listOfFiles, settings);
+        assertTrue(ret);
+    }
+    @Test
+    public void xtf23_extRef_MetaConfigOk() {
+        Settings settings=new Settings();
+        settings.setValue(Validator.SETTING_ALL_OBJECTS_ACCESSIBLE, Validator.TRUE);
+        settings.setValue(Validator.SETTING_ILIDIRS, "test/data/ilirepository/repos");
+        settings.setValue(Validator.SETTING_META_CONFIGFILE,"ilidata:163d16de-83df-4d84-8039-256f2261e226");
+        String[] listOfFiles = new String[1];
+        listOfFiles[0]="test/data/ilirepository/ExtRef23a.xtf";
         boolean ret=Validator.runValidation(listOfFiles, settings);
         assertTrue(ret);
     }

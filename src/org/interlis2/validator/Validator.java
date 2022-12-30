@@ -16,6 +16,7 @@ import ch.ehi.basics.logging.AbstractStdListener;
 import ch.ehi.basics.logging.EhiLogger;
 import ch.ehi.basics.logging.StdListener;
 import ch.ehi.basics.settings.Settings;
+import ch.ehi.basics.types.OutParam;
 import ch.interlis.ili2c.Ili2cException;
 import ch.interlis.ili2c.Ili2cFailure;
 import ch.interlis.ili2c.gui.UserSettings;
@@ -37,6 +38,8 @@ import ch.interlis.iox.IoxReader;
 import ch.interlis.iox_j.IoxIliReader;
 import ch.interlis.iox_j.PipelinePool;
 import ch.interlis.iox_j.StartTransferEvent;
+import ch.interlis.iox_j.inifile.IniFileReader;
+import ch.interlis.iox_j.inifile.MetaConfig;
 import ch.interlis.iox_j.logging.FileLogger;
 import ch.interlis.iox_j.logging.LogEventFactory;
 import ch.interlis.iox_j.logging.StdLogger;
@@ -83,6 +86,7 @@ public class Validator {
 	 * @see #SETTING_MODELNAMES
 	 * @see #SETTING_ILIDIRS
 	 * @see #SETTING_CONFIGFILE
+     * @see #SETTING_META_CONFIGFILE
 	 * @see #SETTING_LOGFILE
 	 * @see #SETTING_XTFLOG
 	 * @see #SETTING_PLUGINDIR
@@ -145,8 +149,7 @@ public class Validator {
 				logStderr=new ErrorTracker();
 				EhiLogger.getInstance().addListener(logStderr);
 			}
-		    String configFilename=settings.getValue(Validator.SETTING_CONFIGFILE);
-		    String modelNames=settings.getValue(Validator.SETTING_MODELNAMES);
+            String metaConfigFilename=settings.getValue(Validator.SETTING_META_CONFIGFILE);
 		    String pluginFolder=settings.getValue(Validator.SETTING_PLUGINFOLDER);
 		    String appHome=settings.getValue(Validator.SETTING_APPHOME);
 		    		    
@@ -164,47 +167,102 @@ public class Validator {
 			for(String dataFile:dataFiles){
 				EhiLogger.logState("dataFile <"+dataFile+">");
 			}
-			if(configFilename!=null){
-				EhiLogger.logState("configFile <"+configFilename+">");
-			}
-			if(modelNames!=null){
-				EhiLogger.logState("modelNames <"+modelNames+">");
-			}
+            if(metaConfigFilename!=null){
+                EhiLogger.logState("metaConfigFile <"+metaConfigFilename+">");
+            }
 			if(pluginFolder!=null){
 				EhiLogger.logState("pluginFolder <"+pluginFolder+">");
 			}
 		
 			td=null;
 			
-			skipPolygonBuilding = ch.interlis.iox_j.validator.Validator.CONFIG_DO_ITF_LINETABLES_DO.equals(settings.getValue(ch.interlis.iox_j.validator.Validator.CONFIG_DO_ITF_LINETABLES));
-			
-			// get local copies of remote files
             ch.interlis.ilirepository.IliManager repoManager=createRepositoryManager(new File(dataFiles[0]).getAbsoluteFile().getParentFile().getAbsolutePath(),appHome,settings);
-            for(int idx=0;idx<dataFiles.length;idx++){
-                String dataFile=dataFiles[idx];
-                if(dataFile.startsWith(IliManager.ILIDATA_URI_PREFIX)) {
-                    try {
-                        String bid=dataFile.substring(IliManager.ILIDATA_URI_PREFIX.length());
-                        List<Dataset> datasets = repoManager.getDatasetIndex(bid, null);
-                        if(datasets.size()==0) {
-                            EhiLogger.logError("file "+dataFile+" not found");
-                            return false;
-                        }else if(datasets.size()>1) {
-                            EhiLogger.logError("file "+dataFile+" ambiguous");
+			
+			// get local copy of metaConfigFile
+            if(metaConfigFilename!=null) {
+                List<String> metaConfigFiles=new ArrayList<String>();
+                java.util.Set<String> visitedFiles=new HashSet<String>();
+                metaConfigFiles.add(metaConfigFilename);
+                Settings metaSettings=new Settings();
+                while(!metaConfigFiles.isEmpty()) {
+                    metaConfigFilename=metaConfigFiles.remove(0);
+                    if(!visitedFiles.contains(metaConfigFilename)) {
+                        visitedFiles.add(metaConfigFilename);
+                        EhiLogger.traceState("metaConfigFile <"+metaConfigFilename+">");
+                        File metaConfigFile;
+                        try {
+                            metaConfigFile = IliManager.getLocalCopyOfReposFile(repoManager,metaConfigFilename);
+                        } catch (Ili2cException e1) {
+                            EhiLogger.logError("failed to get local copy of meta-config file <"+metaConfigFilename+">", e1);
                             return false;
                         }
-                        java.io.File localFiles[]=repoManager.getLocalFileOfRemoteDataset(datasets.get(0), getFormat(datasets.get(0)));
-                        dataFiles[idx]=localFiles[0].getPath();
-                    } catch (Ili2cException e) {
-                        EhiLogger.logError("failed to get file "+dataFile,e);
-                        return false;
-                    } catch (RepositoryAccessException e) {
-                        EhiLogger.logError("failed to get file "+dataFile,e);
-                        return false;
+                        OutParam<String> baseConfigs=new OutParam<String>();
+                        Settings newSettings=null;
+                        try {
+                            newSettings = readMetaConfig(metaConfigFile,baseConfigs);
+                            if(baseConfigs.value!=null) {
+                                String[] baseConfigv = baseConfigs.value.split(";");
+                                for(String baseConfig:baseConfigv){
+                                    metaConfigFiles.add(baseConfig);
+                                }
+                            }
+                        } catch (IOException e) {
+                            EhiLogger.logError("failed to read meta config file <"+metaConfigFile.getPath()+">", e);
+                            return false;
+                        }
+                        MetaConfig.mergeSettings(newSettings,metaSettings);
                     }
                 }
+                MetaConfig.mergeSettings(metaSettings,settings);
             }
-			
+            MetaConfig.removeNullFromSettings(settings);
+            
+            String configFilename=settings.getValue(Validator.SETTING_CONFIGFILE);
+            String modelNames=settings.getValue(Validator.SETTING_MODELNAMES);
+            if(configFilename!=null){
+                EhiLogger.logState("configFile <"+configFilename+">");
+            }
+            if(modelNames!=null){
+                EhiLogger.logState("modelNames <"+modelNames+">");
+            }
+            skipPolygonBuilding = ch.interlis.iox_j.validator.Validator.CONFIG_DO_ITF_LINETABLES_DO.equals(settings.getValue(ch.interlis.iox_j.validator.Validator.CONFIG_DO_ITF_LINETABLES));
+
+            String dataFromSettings=settings.getValue(Validator.SETTING_DATA);
+            if(dataFromSettings!=null) {
+                String[] datav = dataFromSettings.split(";");
+                String newdata[]=new String[datav.length+dataFiles.length];
+                int idx=0;
+                for(idx=0;idx<datav.length;idx++){
+                    newdata[idx]=datav[idx];
+                }
+                for(idx=0;idx<dataFiles.length;idx++){
+                    newdata[datav.length+idx]=dataFiles[idx];
+                }
+                dataFiles=newdata;
+            }
+			// get local copies of remote files
+            for(int idx=0;idx<dataFiles.length;idx++){
+                String dataFile=dataFiles[idx];
+                java.io.File localFile;
+                try {
+                    localFile = IliManager.getLocalCopyOfReposFile(repoManager, dataFile);
+                } catch (Ili2cException e) {
+                    EhiLogger.logError("failed to get local copy of data file <"+dataFile+">", e);
+                    return false;
+                }
+                dataFiles[idx]=localFile.getPath();
+            }
+            // get local copy of configFile
+            java.io.File configFile=null;
+            if(configFilename!=null) {
+                try {
+                    configFile=IliManager.getLocalCopyOfReposFile(repoManager,configFilename);
+                } catch (Ili2cException e) {
+                    EhiLogger.logError("failed to get local copy of config file <"+configFilename+">", e);
+                    return false;
+                }
+            }
+            
 			// specified model names
 			List<String> modelnames=new ArrayList<String>();
 			String specifiedModelNames=null;
@@ -228,16 +286,16 @@ public class Validator {
 				}
 			}
 			List<String> modelNamesFromConfig = null;
-			if(configFilename!=null){
+			if(configFile!=null){
 				try {
-					modelNamesFromConfig=getModelsFromConfigFile(configFilename);
-					boolean versionControl = getVersionControlFormConfigFile(configFilename);
+					modelNamesFromConfig=getModelsFromConfigFile(configFile);
+					boolean versionControl = getVersionControlFormConfigFile(configFile);
 					if (versionControl) {
 					    settings.setValue(ch.interlis.iox_j.validator.Validator.CONFIG_DO_XTF_VERIFYMODEL, ch.interlis.iox_j.validator.Validator.CONFIG_DO_XTF_VERIFYMODEL_DO);
 					}
 					modelnames.addAll(modelNamesFromConfig);
 				} catch (IOException e) {
-					EhiLogger.logError("failed to read config file <"+configFilename+">", e);
+					EhiLogger.logError("failed to read config file <"+configFile.getPath()+">", e);
 					return false;
 				}
 			}
@@ -288,8 +346,8 @@ public class Validator {
 				// setup log output
 				ValidationConfig modelConfig=new ValidationConfig();
 				modelConfig.mergeIliMetaAttrs(td);
-				if(configFilename!=null){
-					modelConfig.mergeConfigFile(new File(configFilename));
+				if(configFile!=null){
+					modelConfig.mergeConfigFile(configFile);
 				}
 				final String settingsForceTypeValidation = settings.getValue(SETTING_FORCE_TYPE_VALIDATION);
 				if(settingsForceTypeValidation!=null) {
@@ -405,12 +463,43 @@ public class Validator {
 		}
 		return ret;
 	}
-    private String getFormat(Dataset dataset) {
-        for(DataFile file:dataset.getMetadata().getfiles()){
-            return file.getfileFormat();
+    private Settings readMetaConfig(File metaConfigFile,OutParam<String> baseConfig) throws IOException {
+        Settings settings=new Settings();
+        ValidationConfig config = IniFileReader.readFile(metaConfigFile);
+        baseConfig.value=config.getConfigValue(MetaConfig.CONFIGURATION, MetaConfig.CONFIG_BASE_CONFIG);
+        String referenceData=config.getConfigValue(MetaConfig.CONFIGURATION, MetaConfig.CONFIG_REFERENCE_DATA);
+        settings.setValue(Validator.SETTING_DATA, referenceData);
+        String validConfig=config.getConfigValue(MetaConfig.CONFIGURATION, MetaConfig.CONFIG_VALIDATOR_CONFIG);
+        settings.setValue(Validator.SETTING_CONFIGFILE, validConfig);
+        java.util.Set<String> params=config.getConfigParams(Validator.METACONFIG_ILIVALIDATOR);
+        if(params!=null) {
+            for(String arg:params) {
+                if(arg.equals("models")){
+                    settings.setValue(Validator.SETTING_MODELNAMES, config.getConfigValue(Validator.METACONFIG_ILIVALIDATOR, arg));
+                }else if(arg.equals("config")) {
+                    settings.setValue(Validator.SETTING_CONFIGFILE, config.getConfigValue(Validator.METACONFIG_ILIVALIDATOR, arg));
+                }else if(arg.equals("forceTypeValidation")){
+                    settings.setValue(Validator.SETTING_FORCE_TYPE_VALIDATION,config.getConfigValue(Validator.METACONFIG_ILIVALIDATOR, arg));
+                }else if(arg.equals("disableAreaValidation")){
+                    settings.setValue(Validator.SETTING_DISABLE_AREA_VALIDATION,config.getConfigValue(Validator.METACONFIG_ILIVALIDATOR, arg));
+                }else if(arg.equals("disableConstraintValidation")){
+                    settings.setValue(Validator.SETTING_DISABLE_CONSTRAINT_VALIDATION,config.getConfigValue(Validator.METACONFIG_ILIVALIDATOR, arg));
+                }else if(arg.equals("multiplicityOff")){
+                    settings.setValue(Validator.SETTING_MULTIPLICITY_VALIDATION,config.getConfigValue(Validator.METACONFIG_ILIVALIDATOR, arg));
+                }else if(arg.equals("allObjectsAccessible")){
+                    settings.setValue(Validator.SETTING_ALL_OBJECTS_ACCESSIBLE,config.getConfigValue(Validator.METACONFIG_ILIVALIDATOR, arg));
+                }else if(arg.equals("allowItfAreaHoles")){
+                    settings.setValue(Validator.SETTING_ALLOW_ITF_AREA_HOLES,config.getConfigValue(Validator.METACONFIG_ILIVALIDATOR, arg));
+                }else if(arg.equals("skipPolygonBuilding")){
+                    settings.setValue(ch.interlis.iox_j.validator.Validator.CONFIG_DO_ITF_LINETABLES, config.getConfigValue(Validator.METACONFIG_ILIVALIDATOR, arg));
+                }else {
+                    EhiLogger.logAdaption("unknown parameter in metaconfig <"+arg+">");
+                }
+            }
         }
-        return null;
+        return settings;
     }
+
     private TransferDescription td=null;
 	public TransferDescription getModel()
 	{
@@ -428,10 +517,10 @@ public class Validator {
         return f.canWrite();
     }
 
-    private boolean getVersionControlFormConfigFile(String configFilename) throws IOException {
-        if (configFilename != null) {
+    private boolean getVersionControlFormConfigFile(File configFile) throws IOException {
+        if (configFile != null) {
             ValidationConfig modelConfig=new ValidationConfig();
-            modelConfig.mergeConfigFile(new File(configFilename));
+            modelConfig.mergeConfigFile(configFile);
             String versionControl = modelConfig.getConfigValue(ValidationConfig.PARAMETER, ValidationConfig.VERIFY_MODEL_VERSION);
             return versionControl != null ? versionControl.equals(TRUE) ? true : false : false;
         }
@@ -455,11 +544,11 @@ public class Validator {
 		return ioxReader;
 	}
 	
-	private static List<String> getModelsFromConfigFile(String configFilename) throws IOException {
+	private static List<String> getModelsFromConfigFile(File configFile) throws IOException {
 		List<String> ret=new ArrayList<String>();
-		if(configFilename!=null){
+		if(configFile!=null){
 			ValidationConfig modelConfig=new ValidationConfig();
-			modelConfig.mergeConfigFile(new File(configFilename));
+			modelConfig.mergeConfigFile(configFile);
 			String additionalModels=modelConfig.getConfigValue(ValidationConfig.PARAMETER, ValidationConfig.ADDITIONAL_MODELS);
 			if(additionalModels!=null){
 				String[] additionalModelv = additionalModels.split(";");
@@ -596,6 +685,9 @@ public class Validator {
 		}
 		return false;
 	}
+	/** Name of ilivalidator section in metaconfig file.
+	 */
+    public static final String METACONFIG_ILIVALIDATOR="ch.ehi.ilivalidator";
 	/** Default path with folders of Interlis model files.
 	 * @see #SETTING_ILIDIRS
 	 */
@@ -610,6 +702,9 @@ public class Validator {
 	/** model names. Multiple model names are separated by semicolon (';'). 
 	 */
 	public static final String SETTING_MODELNAMES="org.interlis2.validator.modelNames";
+    /** data files to include in validation. Multiple files are separated by semicolon (';'). 
+     */
+    public static final String SETTING_DATA="org.interlis2.validator.data";
 	/** the main folder of program.
 	 */
 	public static final String SETTING_APPHOME="org.interlis2.validator.appHome";
@@ -631,6 +726,9 @@ public class Validator {
 	/** Name of the config file, that controls the model specific validation.
 	 */
 	public static final String SETTING_CONFIGFILE = "org.interlis2.validator.configfile";
+    /** Name of the meta-config file, that controls the model specific setup.
+     */
+    public static final String SETTING_META_CONFIGFILE = "org.interlis2.validator.metaconfigfile";
 	/** Restrict customization of validation related to \"multiplicity\". Possible values "true", "false".
 	 */
 	public static final String SETTING_FORCE_TYPE_VALIDATION = "org.interlis2.validator.forcetypevalidation";

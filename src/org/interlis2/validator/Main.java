@@ -84,6 +84,9 @@ public class Main {
 			}else if(arg.equals("--config")) {
 			    argi++;
 			    settings.setValue(Validator.SETTING_CONFIGFILE, args[argi]);
+            }else if(arg.equals("--metaConfig")) {
+                argi++;
+                settings.setValue(Validator.SETTING_META_CONFIGFILE, args[argi]);
 			}else if(arg.equals("--forceTypeValidation")){
 				settings.setValue(Validator.SETTING_FORCE_TYPE_VALIDATION,Validator.TRUE);
 			}else if(arg.equals("--disableAreaValidation")){
@@ -138,7 +141,6 @@ public class Main {
 				    argi++;
 				    settings.setValue(ch.interlis.ili2c.gui.UserSettings.HTTP_PROXY_PORT, args[argi]);
 			} else if (arg.equals("--verbose")) {
-				argi++;
 				settings.setTransientValue(ch.interlis.iox_j.validator.Validator.CONFIG_VERBOSE, ValidationConfig.TRUE);
 			}else if(arg.equals("--version")){
 				printVersion();

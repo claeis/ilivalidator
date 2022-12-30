@@ -1,6 +1,14 @@
 LATEST VERSION
 -----------------------------
 
+ilivalidator 1.13.0 (2022-12-30)
+-----------------------------
+- fix unknown --verbose/wrong number of arguments (#365) 
+- support ilidata:datasetId as --config file argument (#290)
+- implement --metaConfig (#290)
+- iox-ili-1.21.15
+- ili2c-5.3.2
+
 ilivalidator 1.12.1 (2022-11-01)
 -----------------------------
 - Skip attribute AREA validation if surface invalid (#296)

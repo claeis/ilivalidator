@@ -10,6 +10,10 @@ MODEL Simple
     	attr23 : Basis.Domain23;
     END ClassA1;
     
+    CLASS ClassB1 =
+    	attr23 : MANDATORY Basis.Domain23;
+    END ClassB1;
+    
   END TestA;
   
   
