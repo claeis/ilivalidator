@@ -1,5 +1,11 @@
 LATEST VERSION
 -----------------------------
+- Validator: ILI2.4 support LIST OF / BAG OF primitive type (#348)
+- Validator: ILI2.4 Vereinfachung des Umgangs mit Zeit (#349)
+- Validator: ILI2.4 MULTI-Geometrien (#347)
+- Validator: ILI2.4 validate MultiArea/MultiSurface topology (#347)
+- Validator: skip polygon topology validation if basic checks fail 
+- iox-ili-1.21.16-SNAPSHOT
 
 ilivalidator 1.13.0 (2022-12-30)
 -----------------------------
