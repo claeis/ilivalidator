@@ -1,10 +1,11 @@
 LATEST VERSION
 -----------------------------
-- Validator: ILI2.4 support LIST OF / BAG OF primitive type (#348)
-- Validator: ILI2.4 Vereinfachung des Umgangs mit Zeit (#349)
-- Validator: ILI2.4 MULTI-Geometrien (#347)
-- Validator: ILI2.4 validate MultiArea/MultiSurface topology (#347)
-- Validator: skip polygon topology validation if basic checks fail 
+- ILI2.4 support LIST OF / BAG OF primitive type (#348)
+- ILI2.4 Vereinfachung des Umgangs mit Zeit (#349)
+- ILI2.4 MULTI-Geometrien (#347)
+- ILI2.4 validate MultiArea/MultiSurface topology (#347)
+- A TRANSLATION OF model must not define new types, but only an alternative transfer format (#361)
+- skip polygon topology validation if basic checks fail 
 - iox-ili-1.21.16-SNAPSHOT
 
 ilivalidator 1.13.0 (2022-12-30)
