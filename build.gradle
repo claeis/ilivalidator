@@ -8,7 +8,7 @@ allprojects {
 	compileJava.options.encoding = 'US-ASCII'
 }
 
-version '1.13.0'+System.getProperty('release','-SNAPSHOT')
+version '1.13.1'+System.getProperty('release','-SNAPSHOT')
 
 configurations {
     deployerJars
@@ -24,7 +24,7 @@ configurations {
 dependencies {
     compile group: 'ch.ehi', name: 'ehibasics', version: '1.4.1'
     compile group: 'ch.interlis', name: 'iox-api', version: '1.0.4'
-    compile group: 'ch.interlis', name: 'iox-ili', version: '1.21.15'
+    compile group: 'ch.interlis', name: 'iox-ili', version: '1.21.16'
     compile group: 'ch.interlis', name: 'ili2c-tool', version: "5.3.2"
     compile group: 'ch.interlis', name: 'ili2c-core', version: "5.3.2"
     testCompile group: 'junit', name: 'junit', version: '4.12'
@@ -56,6 +56,7 @@ def downloads_pwd = System.getProperty('downloads_pwd',properties.get('downloads
 def downloads_usr = System.getProperty('downloads_usr',properties.get('downloads_usr','downloads_usr'))
 def python= System.getProperty('python',properties.get('python','python'))
 def rst2html= System.getProperty('rst2html',properties.get('rst2html','rst2html'))
+def github_token= System.getProperty('github_token',properties.get('github_token','github_token'))
 
 def generatedResources = "$buildDir/generated-resources/main"
 
@@ -105,6 +106,58 @@ task generateMyResources {
 		versionPropsFile.getParentFile().mkdirs();
 		versionProps.store(versionPropsFile.newWriter(), null);
 	}
+}
+
+def readChangeLog = { ->
+    	def resp=""
+    	def skip=false
+    	def sec=0
+        	new File("docs/CHANGELOG.txt").eachLine { line ->
+        		if(line.startsWith("-------")){
+        			sec++
+        		}else{
+        			if(sec==1){
+						if(skip){
+						}else{
+							if(line.trim()==""){
+								skip=true
+							}else{
+								resp+=line+"\n"
+							}
+						}
+        			}
+        		}
+        	}
+        return resp
+}
+task readChanges {
+    doLast {
+        logger.quiet "----"
+        logger.quiet readChangeLog()
+        logger.quiet "----"
+    }
+}
+def createGithubReleaseFunc = { ->
+        def body = [tag_name:"$project.name-$project.version",name:"$project.name-$project.version",body:readChangeLog(),draft:false,prerelease:false,generate_release_notes:false]
+        def req = new URL("https://api.github.com/repos/claeis/$project.name/releases").openConnection()
+        req.setRequestMethod("POST")
+        req.setRequestProperty("Content-Type", "application/json; charset=UTF-8")
+        req.setRequestProperty("Accept", "application/vnd.github+json")
+        req.setRequestProperty("Authorization", "Bearer $github_token")
+        req.setRequestProperty("X-GitHub-Api-Version", "2022-11-28")
+        req.setDoOutput(true)
+        req.getOutputStream().write(groovy.json.JsonOutput.toJson(body).getBytes("UTF-8"))
+        if(req.getResponseCode()!=201){
+            logger.quiet "Status code: ${req.getResponseCode()}" // HTTP request done on first read
+            def resp = new groovy.json.JsonSlurper().parseText(req.getInputStream().getText())
+            logger.quiet "Response: ${resp}"
+        }
+        return
+}
+task createGithubRelease {
+    doLast {
+    	createGithubReleaseFunc()
+    }
 }
 
 task usrdoc(type:Exec) {
@@ -193,5 +246,6 @@ task uploadBin(dependsOn: bindist) {
 					include(name: releaseFile.name)
 				}
 		}
+		createGithubReleaseFunc()
 	}
 }
