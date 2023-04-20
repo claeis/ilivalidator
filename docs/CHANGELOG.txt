@@ -2,6 +2,7 @@ ilivalidator 1.13.3 (SNAPSHOT)
 --------------------------------
 - fix UNIQUE mixed case INTERLIS.UUIDOID (ilivalidator#371)
 - fix references with mixed case INTERLIS.UUIDOID (ilivalidator#370)
+- log/report JRE Version (ilivalidator#369)
 - iox-ili-1.21.18+
 
 ilivalidator 1.13.2 (2023-02-22)

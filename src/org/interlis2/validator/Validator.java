@@ -157,6 +157,7 @@ public class Validator {
 			EhiLogger.logState(Main.APP_NAME+"-"+Main.getVersion());
 			EhiLogger.logState("ili2c-"+ch.interlis.ili2c.Ili2c.getVersion());
 			EhiLogger.logState("iox-ili-"+ch.interlis.iox_j.utility.IoxUtility.getVersion());
+			EhiLogger.logState("java.version "+System.getProperty("java.version"));
             EhiLogger.logState("User <"+java.lang.System.getProperty("user.name")+">");
             String DATE_FORMAT = "yyyy-MM-dd HH:mm";
             SimpleDateFormat dateFormat = new java.text.SimpleDateFormat(DATE_FORMAT);
