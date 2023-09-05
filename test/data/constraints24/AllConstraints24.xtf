@@ -1,0 +1,82 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<ili:transfer xmlns:ili="http://www.interlis.ch/xtf/2.4/INTERLIS" xmlns:geom="http://www.interlis.ch/geometry/1.0"
+              xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+              xmlns:Constraints="http://www.interlis.ch/xtf/2.4/Constraints">
+    <ili:headersection>
+        <ili:models>
+            <ili:model>Constraints</ili:model>
+        </ili:models>
+        <ili:sender>ili2gpkg-4.5.1-SNAPSHOT-34a149ef943889acc815bc9c3ffdb39f6e4918d3</ili:sender>
+    </ili:headersection>
+    <ili:datasection>
+        <Constraints:TopicA ili:bid="b1">
+            <Constraints:AdditionalConstraint ili:tid="o1">
+                <Constraints:attr1>5</Constraints:attr1>
+                <Constraints:attr2>6</Constraints:attr2>
+            </Constraints:AdditionalConstraint>
+            <Constraints:ConditionClass ili:tid="o4">
+                <Constraints:attr1>text1</Constraints:attr1>
+            </Constraints:ConditionClass>
+            <Constraints:ExistenceConstraint ili:tid="o5">
+                <Constraints:attr1>text2</Constraints:attr1>
+            </Constraints:ExistenceConstraint>
+            <Constraints:MandatoryConstraint ili:tid="o6">
+                <Constraints:attr1>text1</Constraints:attr1>
+                <Constraints:attr2>text2</Constraints:attr2>
+            </Constraints:MandatoryConstraint>
+            <Constraints:PlausibilityConstraint ili:tid="o7">
+                <Constraints:attr1>6</Constraints:attr1>
+                <Constraints:attr2>5</Constraints:attr2>
+            </Constraints:PlausibilityConstraint>
+            <Constraints:PlausibilityConstraint ili:tid="o8">
+                <Constraints:attr1>6</Constraints:attr1>
+                <Constraints:attr2>5</Constraints:attr2>
+            </Constraints:PlausibilityConstraint>
+            <Constraints:Class1 ili:tid="o9">
+                <Constraints:attr1>a</Constraints:attr1>
+            </Constraints:Class1>
+            <Constraints:Class1 ili:tid="o10">
+                <Constraints:attr1>b</Constraints:attr1>
+            </Constraints:Class1>
+            <Constraints:UniqueConstraint ili:tid="o12">
+                <Constraints:attr1>text1</Constraints:attr1>
+            </Constraints:UniqueConstraint>
+            <Constraints:UniqueConstraint ili:tid="o13">
+                <Constraints:attr1>text1</Constraints:attr1>
+            </Constraints:UniqueConstraint>
+            <Constraints:Implication ili:tid="o14">
+                <Constraints:attr1>val1</Constraints:attr1>
+            </Constraints:Implication>
+            <Constraints:Implication ili:tid="o15">
+                <Constraints:attr1>val1</Constraints:attr1>
+                <Constraints:geom>
+                    <geom:surface>
+                    <geom:exterior>
+                        <geom:polyline>
+                                            <geom:coord>
+                                                <geom:c1>2480000.111</geom:c1>
+                                                <geom:c2>1070000.111</geom:c2>
+                                            </geom:coord>
+                                            <geom:coord>
+                                                <geom:c1>2480000.222</geom:c1>
+                                                <geom:c2>1070000.222</geom:c2>
+                                            </geom:coord>
+                                            <geom:coord>
+                                                <geom:c1>2480000.333</geom:c1>
+                                                <geom:c2>1070000.333</geom:c2>
+                                            </geom:coord>
+                                            <geom:coord>
+                                                <geom:c1>1480000.111</geom:c1>
+                                                <geom:c2>1070000.111</geom:c2>
+                                            </geom:coord>
+                        </geom:polyline>
+                                        </geom:exterior>
+                    </geom:surface>
+                </Constraints:geom>
+            </Constraints:Implication>
+            <Constraints:Implication ili:tid="o16">
+                <Constraints:attr1>val2</Constraints:attr1>
+            </Constraints:Implication>
+        </Constraints:TopicA>
+    </ili:datasection>
+</ili:transfer>
