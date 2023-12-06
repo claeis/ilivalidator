@@ -1,5 +1,10 @@
 ilivalidator 1.14.0 (SNAPSHOT)
 --------------------------------
+- ILI2.4 Constraints zu Domains (#378)
+- ILI2.4 validate generic coords with concrete domain (#354)
+- ILI2.4 Add (BASKET) support for UNIQUE and SET CONSTRAINTS (#379)
+- ILI2.4 Evaluation Expressions with +,-,*,/,=> (#380)
+- Xtf24Reader: read reference attributes  (#395)
 - supply runtime paramters at cmdline (#383)
 - ili2c-5.4.0
 - iox-ili-1.22.0
