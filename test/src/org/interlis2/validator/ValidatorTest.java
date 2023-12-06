@@ -255,8 +255,9 @@ public class ValidatorTest {
 	}
     @Test
     public void xtfRuntimeParameterOk() {
-        System.setProperty("RuntimeSystem23.JobId", "test1");
-        boolean ret=Validator.runValidation("test/data/runtimeParameter/SimpleA.xtf", null);
+        Settings settings=new Settings();
+        settings.setValue(Validator.SETTING_RUNTIME_PARAMETERS, "RuntimeSystem23.JobId=test1;RuntimeSystem23.JobId2=test2");
+        boolean ret=Validator.runValidation("test/data/runtimeParameter/SimpleA.xtf", settings);
         assertTrue(ret);
     }
 

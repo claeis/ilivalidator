@@ -339,16 +339,31 @@ public class Validator {
 			}
 			td.setActualRuntimeParameter(ch.interlis.ili2c.metamodel.RuntimeParameters.MINIMAL_RUNTIME_SYSTEM01_RUNTIME_SYSTEM_NAME, Main.APP_NAME);
             td.setActualRuntimeParameter(ch.interlis.ili2c.metamodel.RuntimeParameters.MINIMAL_RUNTIME_SYSTEM01_RUNTIME_SYSTEM_VERSION, Main.getVersion());
-			java.util.Properties sysprops=System.getProperties();
-            for(ch.interlis.ili2c.metamodel.GraphicParameterDef param:getRuntimeParameters(td)) {
-                String paramName=param.getScopedName();
-                if(sysprops.containsKey(paramName)) {
-                    String value=sysprops.getProperty(paramName);
-                    if(value!=null) {
-                        td.setActualRuntimeParameter(paramName, value);
-                    }
-                }
-            }
+			String rtTxt=settings.getValue(SETTING_RUNTIME_PARAMETERS);
+			if(rtTxt!=null) {
+			    String rtv[]=rtTxt.split(";");
+			    for(String rt:rtv) {
+			        String kv[]=rt.split("=");
+			        if(kv.length==2) {
+			            if(kv[0]!=null) {
+			                if(td.getElement(kv[0])==null) {
+			                    EhiLogger.logAdaption("unknown runtime parameter <"+kv[0]+">; ignored");
+			                }else {
+	                            if(kv[1]!=null) {
+	                                EhiLogger.logState("runtime parameter "+kv[0]+" <"+kv[1]+">");
+	                                td.setActualRuntimeParameter(kv[0], kv[1]);
+	                            }
+			                }
+			            }else {
+                            EhiLogger.logError("strange runtime parameter syntax <"+rt+">");
+                            return false;
+			            }
+			        }else {
+	                    EhiLogger.logError("strange runtime parameter syntax <"+rt+">");
+	                    return false;
+			        }
+			    }
+			}
 			// process data files
 			EhiLogger.logState("validate data...");
 			ch.interlis.iox_j.validator.Validator validator=null;
@@ -784,6 +799,10 @@ public class Validator {
 	/** Assume that all objects are known to the validator. "true", "false". Default "false".
 	 */
 	public static final String SETTING_ALLOW_ITF_AREA_HOLES = "org.interlis2.validator.allowitfareaholes";
+    /** Define runtime parameters. Qualified ili-name equals value; semicolon separated.
+     * e.g. RuntimeSystem23.JobId1=test1;RuntimeSystem23.JobId2=test2
+     */
+    public static final String SETTING_RUNTIME_PARAMETERS = "org.interlis2.validator.runtimeParameters";
 	/** Name of the data file (XTF format) that receives the validation results.
 	 */
 	public static final String SETTING_XTFLOG = "org.interlis2.validator.xtflog";
