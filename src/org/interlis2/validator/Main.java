@@ -87,6 +87,9 @@ public class Main {
             }else if(arg.equals("--metaConfig")) {
                 argi++;
                 settings.setValue(Validator.SETTING_META_CONFIGFILE, args[argi]);
+            }else if(arg.equals("--runtimeParams")) {
+                argi++;
+                settings.setValue(Validator.SETTING_RUNTIME_PARAMETERS, args[argi]);
 			}else if(arg.equals("--forceTypeValidation")){
 				settings.setValue(Validator.SETTING_FORCE_TYPE_VALIDATION,Validator.TRUE);
 			}else if(arg.equals("--disableAreaValidation")){
@@ -167,6 +170,7 @@ public class Main {
 					System.err.println("--dataset             The requested Dataset ID to be updated");
 					System.err.println("--skipPolygonBuilding skip polygon building (only ITF).");
 					System.err.println("--allowItfAreaHoles   allow empty holes (unassigned inner boundaries) in ITF AREA attributes.");
+					System.err.println("--runtimeParams param=value define values of runtime parameters.");
                     System.err.println("--singlePass          skip any validations that require a second pass.");
 				    System.err.println("--log file            text file, that receives validation results.");
                     System.err.println("--logtime             include timestamps in logfile.");

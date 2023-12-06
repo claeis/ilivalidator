@@ -6,6 +6,9 @@ MODEL RuntimeSystem23
   
   IMPORTS MinimalRuntimeSystem01;
   
+  PARAMETER
+  	JobId : TEXT*150;
+  
   TOPIC TopicA =
     CLASS ClassA =
       attrA : TEXT;
@@ -19,6 +22,14 @@ MODEL RuntimeSystem23
       MANDATORY CONSTRAINT attrA==MinimalRuntimeSystem01.getParameterValue("MinimalRuntimeSystem01.CurrentTransferfile");
     END ClassB;
   END TopicB;
+  
+  TOPIC TopicC =
+    CLASS ClassC =
+      attrA : TEXT;
+      MANDATORY CONSTRAINT attrA==PARAMETER JobId;
+    END ClassC;
+  END TopicC;
+  
   
 END RuntimeSystem23.
 

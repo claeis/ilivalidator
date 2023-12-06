@@ -6,6 +6,7 @@ import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.HashSet;
+import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
 
@@ -20,6 +21,7 @@ import ch.ehi.basics.types.OutParam;
 import ch.interlis.ili2c.Ili2cException;
 import ch.interlis.ili2c.Ili2cFailure;
 import ch.interlis.ili2c.gui.UserSettings;
+import ch.interlis.ili2c.metamodel.GraphicParameterDef;
 import ch.interlis.ili2c.metamodel.Model;
 import ch.interlis.ili2c.metamodel.TransferDescription;
 import ch.interlis.ilirepository.Dataset;
@@ -337,7 +339,31 @@ public class Validator {
 			}
 			td.setActualRuntimeParameter(ch.interlis.ili2c.metamodel.RuntimeParameters.MINIMAL_RUNTIME_SYSTEM01_RUNTIME_SYSTEM_NAME, Main.APP_NAME);
             td.setActualRuntimeParameter(ch.interlis.ili2c.metamodel.RuntimeParameters.MINIMAL_RUNTIME_SYSTEM01_RUNTIME_SYSTEM_VERSION, Main.getVersion());
-			
+			String rtTxt=settings.getValue(SETTING_RUNTIME_PARAMETERS);
+			if(rtTxt!=null) {
+			    String rtv[]=rtTxt.split(";");
+			    for(String rt:rtv) {
+			        String kv[]=rt.split("=");
+			        if(kv.length==2) {
+			            if(kv[0]!=null) {
+			                if(td.getElement(kv[0])==null) {
+			                    EhiLogger.logAdaption("unknown runtime parameter <"+kv[0]+">; ignored");
+			                }else {
+	                            if(kv[1]!=null) {
+	                                EhiLogger.logState("runtime parameter "+kv[0]+" <"+kv[1]+">");
+	                                td.setActualRuntimeParameter(kv[0], kv[1]);
+	                            }
+			                }
+			            }else {
+                            EhiLogger.logError("strange runtime parameter syntax <"+rt+">");
+                            return false;
+			            }
+			        }else {
+	                    EhiLogger.logError("strange runtime parameter syntax <"+rt+">");
+	                    return false;
+			        }
+			    }
+			}
 			// process data files
 			EhiLogger.logState("validate data...");
 			ch.interlis.iox_j.validator.Validator validator=null;
@@ -464,6 +490,22 @@ public class Validator {
 		}
 		return ret;
 	}
+    private List<GraphicParameterDef> getRuntimeParameters(TransferDescription td) {
+        List<GraphicParameterDef> ret=new ArrayList<GraphicParameterDef>();
+        for(Iterator modelIt=td.iterator();modelIt.hasNext();) {
+            Object modelo=modelIt.next();
+            if(modelo instanceof Model) {
+                for(Iterator paramIt=((Model)modelo).iterator();paramIt.hasNext();) {
+                    Object paramo=paramIt.next();
+                    if(paramo instanceof GraphicParameterDef) {
+                        ret.add((GraphicParameterDef)paramo);
+                    }
+                }
+            }
+        }
+        return ret;
+    }
+
     private Settings readMetaConfig(File metaConfigFile,OutParam<String> baseConfig) throws IOException {
         Settings settings=new Settings();
         ValidationConfig config = IniFileReader.readFile(metaConfigFile);
@@ -757,6 +799,10 @@ public class Validator {
 	/** Assume that all objects are known to the validator. "true", "false". Default "false".
 	 */
 	public static final String SETTING_ALLOW_ITF_AREA_HOLES = "org.interlis2.validator.allowitfareaholes";
+    /** Define runtime parameters. Qualified ili-name equals value; semicolon separated.
+     * e.g. RuntimeSystem23.JobId1=test1;RuntimeSystem23.JobId2=test2
+     */
+    public static final String SETTING_RUNTIME_PARAMETERS = "org.interlis2.validator.runtimeParameters";
 	/** Name of the data file (XTF format) that receives the validation results.
 	 */
 	public static final String SETTING_XTFLOG = "org.interlis2.validator.xtflog";

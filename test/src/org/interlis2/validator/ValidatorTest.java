@@ -2,17 +2,14 @@ package org.interlis2.validator;
 
 import static org.junit.Assert.*;
 import java.io.File;
-import java.util.ArrayList;
 import java.util.HashMap;
 
-import org.junit.Assert;
 import org.junit.Ignore;
 import org.junit.Test;
 import ch.ehi.basics.logging.EhiLogger;
 import ch.ehi.basics.settings.Settings;
 import ch.interlis.iom.IomObject;
 import ch.interlis.iom_j.xtf.XtfReader;
-import ch.interlis.iom_j.xtf.XtfStartTransferEvent;
 import ch.interlis.iox.EndBasketEvent;
 import ch.interlis.iox.EndTransferEvent;
 import ch.interlis.iox.IoxEvent;
@@ -101,7 +98,6 @@ public class ValidatorTest {
 	public void xtfInvalidPlaceholderSettingFail() {
 		Settings settings=new Settings();
 		settings.setValue(Validator.SETTING_ILIDIRS, "%ILI_DIR;http://models.interlis.ch/;%JAR_DIR/ilimodels");
-		EhiLogger.getInstance().setTraceFilter(false); 
 		boolean ret=Validator.runValidation("test/data/Beispiel2a.xtf", settings);
 		assertFalse(ret);
 	}
@@ -109,7 +105,6 @@ public class ValidatorTest {
 	public void xtfValidPlaceholderSettingOk() {
 		Settings settings=new Settings();
 		settings.setValue(Validator.SETTING_ILIDIRS, "%ITF_DIR;http://models.interlis.ch/;%JAR_DIR/ilimodels");
-		EhiLogger.getInstance().setTraceFilter(false); 
 		boolean ret=Validator.runValidation("test/data/Beispiel2a.xtf", settings);
 		assertTrue(ret);
 	}
@@ -260,7 +255,9 @@ public class ValidatorTest {
 	}
     @Test
     public void xtfRuntimeParameterOk() {
-        boolean ret=Validator.runValidation("test/data/runtimeParameter/SimpleA.xtf", null);
+        Settings settings=new Settings();
+        settings.setValue(Validator.SETTING_RUNTIME_PARAMETERS, "RuntimeSystem23.JobId=test1;RuntimeSystem23.JobId2=test2");
+        boolean ret=Validator.runValidation("test/data/runtimeParameter/SimpleA.xtf", settings);
         assertTrue(ret);
     }
 
