@@ -6,6 +6,7 @@ import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.HashSet;
+import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
 
@@ -20,6 +21,7 @@ import ch.ehi.basics.types.OutParam;
 import ch.interlis.ili2c.Ili2cException;
 import ch.interlis.ili2c.Ili2cFailure;
 import ch.interlis.ili2c.gui.UserSettings;
+import ch.interlis.ili2c.metamodel.GraphicParameterDef;
 import ch.interlis.ili2c.metamodel.Model;
 import ch.interlis.ili2c.metamodel.TransferDescription;
 import ch.interlis.ilirepository.Dataset;
@@ -337,7 +339,16 @@ public class Validator {
 			}
 			td.setActualRuntimeParameter(ch.interlis.ili2c.metamodel.RuntimeParameters.MINIMAL_RUNTIME_SYSTEM01_RUNTIME_SYSTEM_NAME, Main.APP_NAME);
             td.setActualRuntimeParameter(ch.interlis.ili2c.metamodel.RuntimeParameters.MINIMAL_RUNTIME_SYSTEM01_RUNTIME_SYSTEM_VERSION, Main.getVersion());
-			
+			java.util.Properties sysprops=System.getProperties();
+            for(ch.interlis.ili2c.metamodel.GraphicParameterDef param:getRuntimeParameters(td)) {
+                String paramName=param.getScopedName();
+                if(sysprops.containsKey(paramName)) {
+                    String value=sysprops.getProperty(paramName);
+                    if(value!=null) {
+                        td.setActualRuntimeParameter(paramName, value);
+                    }
+                }
+            }
 			// process data files
 			EhiLogger.logState("validate data...");
 			ch.interlis.iox_j.validator.Validator validator=null;
@@ -464,6 +475,22 @@ public class Validator {
 		}
 		return ret;
 	}
+    private List<GraphicParameterDef> getRuntimeParameters(TransferDescription td) {
+        List<GraphicParameterDef> ret=new ArrayList<GraphicParameterDef>();
+        for(Iterator modelIt=td.iterator();modelIt.hasNext();) {
+            Object modelo=modelIt.next();
+            if(modelo instanceof Model) {
+                for(Iterator paramIt=((Model)modelo).iterator();paramIt.hasNext();) {
+                    Object paramo=paramIt.next();
+                    if(paramo instanceof GraphicParameterDef) {
+                        ret.add((GraphicParameterDef)paramo);
+                    }
+                }
+            }
+        }
+        return ret;
+    }
+
     private Settings readMetaConfig(File metaConfigFile,OutParam<String> baseConfig) throws IOException {
         Settings settings=new Settings();
         ValidationConfig config = IniFileReader.readFile(metaConfigFile);

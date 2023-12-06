@@ -16,5 +16,10 @@
 				<attrA>test/data/runtimeParameter/SimpleA.xtf</attrA>
 			</RuntimeSystem23.TopicB.ClassB>
 		</RuntimeSystem23.TopicB>
+		<RuntimeSystem23.TopicC BID="b3">
+			<RuntimeSystem23.TopicC.ClassC TID="o3">
+				<attrA>test1</attrA>
+			</RuntimeSystem23.TopicC.ClassC>
+		</RuntimeSystem23.TopicC>
 	</DATASECTION>
 </TRANSFER>

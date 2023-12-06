@@ -1,5 +1,6 @@
 ilivalidator 1.14.0 (SNAPSHOT)
 --------------------------------
+- supply runtime paramters at cmdline (#383)
 - ili2c-5.4.0
 - iox-ili-1.22.0
 
