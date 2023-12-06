@@ -1,4 +1,4 @@
-ilivalidator 1.14.0 (SNAPSHOT)
+ilivalidator 1.14.0 (2023-12-06)
 --------------------------------
 - ILI2.4 Constraints zu Domains (#378)
 - ILI2.4 validate generic coords with concrete domain (#354)
