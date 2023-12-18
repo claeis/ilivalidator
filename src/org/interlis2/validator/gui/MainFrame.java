@@ -708,7 +708,7 @@ public class MainFrame extends JFrame {
 			frame.setSettings(settings);
 			String logFile=settings.getValue(Validator.SETTING_LOGFILE);
 			frame.setLogFile(logFile);
-			EhiLogger.getInstance().addListener(new LogListener(frame,logFile));
+			resetLogListener(frame,logFile);
 			frame.setXtfFile(xtfFile);
 			String modelList=settings.getValue(Validator.SETTING_MODELNAMES);
 			frame.setModelNames(modelList);
@@ -721,6 +721,14 @@ public class MainFrame extends JFrame {
 			frame.setObjectsAccessible(Validator.TRUE.equals(settings.getValue(Validator.SETTING_ALL_OBJECTS_ACCESSIBLE)));
 			restoreWindowSizeAndLocation(frame, settings);
 			frame.show();
+	}
+	private LogListener logListener=null;
+	private static void resetLogListener(MainFrame frame,String logFile) {
+	    if(frame.logListener!=null) {
+	        EhiLogger.getInstance().removeListener(frame.logListener);
+	    }
+	    frame.logListener=new LogListener(frame,logFile);
+        EhiLogger.getInstance().addListener(frame.logListener);
 	}
 	private static void restoreWindowSizeAndLocation(JFrame frame, Settings settings) {
 		try {
@@ -756,6 +764,7 @@ public class MainFrame extends JFrame {
 						public Object construct() {
 							try {
 								boolean ret=Validator.runValidation(getXtfFile(),getSettings());
+								resetLogListener(MainFrame.this, getLogFile());
                                 getLogUi().setCaretPosition(getLogUi().getDocument().getLength());
 								Toolkit.getDefaultToolkit().beep();
                                 JOptionPane.showMessageDialog(MainFrame.this, ret?Validator.MSG_VALIDATION_DONE:Validator.MSG_VALIDATION_FAILED);                                   
