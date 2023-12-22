@@ -612,7 +612,7 @@ public class MainFrame extends JFrame {
 	{
 		// get values from UI
 		String logFile=getLogFile();
-		String xtflogFile=getXtfLogFile();
+		String datalogFile=getXtfLogFile();
 		String configFile=getConfigFile();
         String metaConfigFile=getMetaConfigFile();
 		String modelNames=getModelNames();
@@ -638,7 +638,11 @@ public class MainFrame extends JFrame {
 		
 		newSettings.setValue(ch.interlis.ili2c.gui.UserSettings.WORKING_DIRECTORY,workingDir);
 		newSettings.setValue(Validator.SETTING_LOGFILE,logFile);
-		newSettings.setValue(Validator.SETTING_XTFLOG,xtflogFile);
+		if(datalogFile!=null && GenericFileFilter.createCsvFilter().getExtension().equals(GenericFileFilter.getFileExtension(datalogFile))){
+	        newSettings.setValue(Validator.SETTING_CSVLOG,datalogFile);
+		}else {
+	        newSettings.setValue(Validator.SETTING_XTFLOG,datalogFile);
+		}
 		newSettings.setValue(Validator.SETTING_MODELNAMES,modelNames);
 		newSettings.setValue(Validator.SETTING_CONFIGFILE,configFile);
         newSettings.setValue(Validator.SETTING_META_CONFIGFILE,metaConfigFile);
@@ -843,7 +847,8 @@ public class MainFrame extends JFrame {
 					FileChooser fileDialog =  new FileChooser(file);
 					fileDialog.setCurrentDirectory(new File(getWorkingDirectory()));
 					fileDialog.setDialogTitle(rsrc.getString("MainFrame.xtflogFileChooserTitle"));
-					fileDialog.setFileFilter(new GenericFileFilter(rsrc.getString("MainFrame.xtfFileFilter"),"xtf"));
+                    fileDialog.addChoosableFileFilter(new GenericFileFilter(rsrc.getString("MainFrame.xtfFileFilter"),"xtf"));
+                    fileDialog.setFileFilter(GenericFileFilter.createCsvFilter());
 
 					if (fileDialog.showSaveDialog(MainFrame.this) == FileChooser.APPROVE_OPTION) {
 						setWorkingDirectory(fileDialog.getCurrentDirectory().getAbsolutePath());
