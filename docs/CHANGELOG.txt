@@ -1,8 +1,11 @@
 ilivalidator 1.14.1 (2023-12-xx)
 --------------------------------
+- implement Math_V2, Text_V2 (#375)
+- fix evaluation of multiple constraints on associations (#390)
 - GUI: skip logging errors to log window if to many errors (#259)
 - add --csvlog (#403)
-- iox-ili-1.22.1+
+- iox-ili-1.22.1
+- ili2c-5.4.1
 
 
 ilivalidator 1.14.0 (2023-12-06)
