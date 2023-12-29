@@ -1,4 +1,4 @@
-ilivalidator 1.14.1 (2023-12-xx)
+ilivalidator 1.14.1 (2023-12-29)
 --------------------------------
 - implement Math_V2, Text_V2 (#375)
 - fix evaluation of multiple constraints on associations (#390)
