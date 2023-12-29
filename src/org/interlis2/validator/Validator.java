@@ -42,6 +42,7 @@ import ch.interlis.iox_j.PipelinePool;
 import ch.interlis.iox_j.StartTransferEvent;
 import ch.interlis.iox_j.inifile.IniFileReader;
 import ch.interlis.iox_j.inifile.MetaConfig;
+import ch.interlis.iox_j.logging.CsvErrorsLogger;
 import ch.interlis.iox_j.logging.FileLogger;
 import ch.interlis.iox_j.logging.LogEventFactory;
 import ch.interlis.iox_j.logging.StdLogger;
@@ -91,6 +92,7 @@ public class Validator {
      * @see #SETTING_META_CONFIGFILE
 	 * @see #SETTING_LOGFILE
 	 * @see #SETTING_XTFLOG
+     * @see #SETTING_CSVLOG
 	 * @see #SETTING_PLUGINDIR
 	 */
 	public boolean validate(
@@ -106,9 +108,11 @@ public class Validator {
 		}
 	    String logFilename=settings.getValue(Validator.SETTING_LOGFILE);
 	    String xtflogFilename=settings.getValue(Validator.SETTING_XTFLOG);
+        String csvlogFilename=settings.getValue(Validator.SETTING_CSVLOG);
 	    boolean doTimestamp=TRUE.equals(settings.getValue(Validator.SETTING_LOGFILE_TIMESTAMP));
 		FileLogger logfile=null;
 		XtfErrorsLogger xtflog=null;
+        CsvErrorsLogger csvlog=null;
 		AbstractStdListener logStderr=null;
 		boolean ret=false;
 		try{
@@ -143,6 +147,21 @@ public class Validator {
                     return false;
                 }
 			}
+            if(csvlogFilename!=null){
+                File f=new java.io.File(csvlogFilename);
+                try {
+                    if(isWriteable(f)) {
+                        csvlog=new CsvErrorsLogger(f);
+                        EhiLogger.getInstance().addListener(csvlog);
+                    }else {
+                        EhiLogger.logError("failed to write to logfile <"+f.getPath()+">");
+                        return false;
+                    }
+                } catch (IOException e) {
+                    EhiLogger.logError("failed to write to logfile <"+f.getPath()+">",e);
+                    return false;
+                }
+            }
 			if(!TRUE.equals(settings.getValue(SETTING_DISABLE_STD_LOGGER))) {
 				logStderr=new StdLogger(logFilename);
 				EhiLogger.getInstance().addListener(logStderr);
@@ -477,6 +496,11 @@ public class Validator {
 				EhiLogger.getInstance().removeListener(xtflog);
 				xtflog=null;
 			}
+            if(csvlog!=null){
+                csvlog.close();
+                EhiLogger.getInstance().removeListener(csvlog);
+                csvlog=null;
+            }
 			if(logfile!=null){
 				logfile.close();
 				EhiLogger.getInstance().removeListener(logfile);
@@ -806,6 +830,9 @@ public class Validator {
 	/** Name of the data file (XTF format) that receives the validation results.
 	 */
 	public static final String SETTING_XTFLOG = "org.interlis2.validator.xtflog";
+    /** Name of the data file (CSV format) that receives the validation results.
+     */
+    public static final String SETTING_CSVLOG = "org.interlis2.validator.csvlog";
 	/** Name of the folder that contains jar files with plugins.
 	 */
 	public static final String SETTING_PLUGINFOLDER = "org.interlis2.validator.pluginfolder";

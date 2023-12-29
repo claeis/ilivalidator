@@ -612,7 +612,7 @@ public class MainFrame extends JFrame {
 	{
 		// get values from UI
 		String logFile=getLogFile();
-		String xtflogFile=getXtfLogFile();
+		String datalogFile=getXtfLogFile();
 		String configFile=getConfigFile();
         String metaConfigFile=getMetaConfigFile();
 		String modelNames=getModelNames();
@@ -638,7 +638,11 @@ public class MainFrame extends JFrame {
 		
 		newSettings.setValue(ch.interlis.ili2c.gui.UserSettings.WORKING_DIRECTORY,workingDir);
 		newSettings.setValue(Validator.SETTING_LOGFILE,logFile);
-		newSettings.setValue(Validator.SETTING_XTFLOG,xtflogFile);
+		if(datalogFile!=null && GenericFileFilter.createCsvFilter().getExtension().equals(GenericFileFilter.getFileExtension(datalogFile))){
+	        newSettings.setValue(Validator.SETTING_CSVLOG,datalogFile);
+		}else {
+	        newSettings.setValue(Validator.SETTING_XTFLOG,datalogFile);
+		}
 		newSettings.setValue(Validator.SETTING_MODELNAMES,modelNames);
 		newSettings.setValue(Validator.SETTING_CONFIGFILE,configFile);
         newSettings.setValue(Validator.SETTING_META_CONFIGFILE,metaConfigFile);
@@ -708,7 +712,7 @@ public class MainFrame extends JFrame {
 			frame.setSettings(settings);
 			String logFile=settings.getValue(Validator.SETTING_LOGFILE);
 			frame.setLogFile(logFile);
-			EhiLogger.getInstance().addListener(new LogListener(frame,logFile));
+			resetLogListener(frame,logFile);
 			frame.setXtfFile(xtfFile);
 			String modelList=settings.getValue(Validator.SETTING_MODELNAMES);
 			frame.setModelNames(modelList);
@@ -721,6 +725,14 @@ public class MainFrame extends JFrame {
 			frame.setObjectsAccessible(Validator.TRUE.equals(settings.getValue(Validator.SETTING_ALL_OBJECTS_ACCESSIBLE)));
 			restoreWindowSizeAndLocation(frame, settings);
 			frame.show();
+	}
+	private LogListener logListener=null;
+	private static void resetLogListener(MainFrame frame,String logFile) {
+	    if(frame.logListener!=null) {
+	        EhiLogger.getInstance().removeListener(frame.logListener);
+	    }
+	    frame.logListener=new LogListener(frame,logFile);
+        EhiLogger.getInstance().addListener(frame.logListener);
 	}
 	private static void restoreWindowSizeAndLocation(JFrame frame, Settings settings) {
 		try {
@@ -756,6 +768,7 @@ public class MainFrame extends JFrame {
 						public Object construct() {
 							try {
 								boolean ret=Validator.runValidation(getXtfFile(),getSettings());
+								resetLogListener(MainFrame.this, getLogFile());
                                 getLogUi().setCaretPosition(getLogUi().getDocument().getLength());
 								Toolkit.getDefaultToolkit().beep();
                                 JOptionPane.showMessageDialog(MainFrame.this, ret?Validator.MSG_VALIDATION_DONE:Validator.MSG_VALIDATION_FAILED);                                   
@@ -834,7 +847,8 @@ public class MainFrame extends JFrame {
 					FileChooser fileDialog =  new FileChooser(file);
 					fileDialog.setCurrentDirectory(new File(getWorkingDirectory()));
 					fileDialog.setDialogTitle(rsrc.getString("MainFrame.xtflogFileChooserTitle"));
-					fileDialog.setFileFilter(new GenericFileFilter(rsrc.getString("MainFrame.xtfFileFilter"),"xtf"));
+                    fileDialog.addChoosableFileFilter(new GenericFileFilter(rsrc.getString("MainFrame.xtfFileFilter"),"xtf"));
+                    fileDialog.setFileFilter(GenericFileFilter.createCsvFilter());
 
 					if (fileDialog.showSaveDialog(MainFrame.this) == FileChooser.APPROVE_OPTION) {
 						setWorkingDirectory(fileDialog.getCurrentDirectory().getAbsolutePath());

@@ -134,6 +134,9 @@ public class Main {
 			}else if(arg.equals("--xtflog")) {
 			    argi++;
 			    settings.setValue(Validator.SETTING_XTFLOG, args[argi]);
+            }else if(arg.equals("--csvlog")) {
+                argi++;
+                settings.setValue(Validator.SETTING_CSVLOG, args[argi]);
 			}else if(arg.equals("--plugins")) {
 			    argi++;
 			    settings.setValue(Validator.SETTING_PLUGINFOLDER, args[argi]);
@@ -175,6 +178,7 @@ public class Main {
 				    System.err.println("--log file            text file, that receives validation results.");
                     System.err.println("--logtime             include timestamps in logfile.");
 				    System.err.println("--xtflog file         INTERLIS transfer file, that receives validation results.");
+                    System.err.println("--csvlog file         CSV file, that receives validation results.");
 				    System.err.println("--models model		  user sets certain models, separated by a semicolon.");
 					System.err.println("--modeldir "+Validator.SETTING_DEFAULT_ILIDIRS+" list of directories/repositories with ili-files.");
 				    System.err.println("--plugins folder      directory with jar files that contain user defined functions.");
