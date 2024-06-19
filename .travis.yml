@@ -27,7 +27,7 @@ script:
 deploy:
   - provider: script
     skip_cleanup: true
-    script: ./gradlew -Drepos_pwd=${repos_pwd} -Drepos_usr=jql_jars-INTE uploadArchives
+    script: ./gradlew -Drepos_pwd=${repos_pwd} -Drepos_usr=jql_jars-INTE -Ddocs_pwd=${docs_pwd} -Ddocs_usr=jql_docs uploadArchives uploadDoc
     on:
       branch: master
   - provider: script
