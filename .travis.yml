@@ -1,14 +1,30 @@
 language: java
-  
+
+addons:
+  ssh_known_hosts:
+  - ftp.interlis.ch
+  apt:
+    packages:
+    - python3
+    - python3-pip
+
 branches:
   only:
     - master
     - stable
 
 install: true
-  
+
+before_script:
+    - python3 --version
+    - virtualenv -p python3 my_py3
+    - source my_py3/bin/activate # to activate the python3 environemt    
+    - python -m pip --trusted-host pypi.org --trusted-host pypi.python.org --trusted-host files.pythonhosted.org install docutils
+    - python -m pip --trusted-host pypi.org --trusted-host pypi.python.org --trusted-host files.pythonhosted.org install Pygments
+    - python -m pip freeze
+
 script: 
-  - ./gradlew build 
+  - ./gradlew -Drst2html=`which rst2html.py` build usrdoc
 deploy:
   - provider: script
     skip_cleanup: true
@@ -17,6 +33,6 @@ deploy:
       branch: master
   - provider: script
     skip_cleanup: true
-    script: ./gradlew -Dgithub_token=${github_token} -Drepos_pwd=${repos_pwd} -Drepos_usr=jql_jars-INTE '-Drelease=' -Ddownloads_pwd=${downloads_pwd} -Ddownloads_usr=jql_downloads uploadArchives uploadBin
+    script: ./gradlew -Drst2html=`which rst2html.py` -Dgithub_token=${github_token} -Drepos_pwd=${repos_pwd} -Drepos_usr=jql_jars-INTE '-Drelease=' -Ddownloads_pwd=${downloads_pwd} -Ddownloads_usr=jql_downloads -Ddocs_pwd=${docs_pwd} -Ddocs_usr=jql_docs uploadArchives uploadBin uploadDoc
     on:
       branch: stable

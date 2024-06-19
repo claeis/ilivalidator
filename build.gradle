@@ -8,7 +8,7 @@ allprojects {
 	compileJava.options.encoding = 'US-ASCII'
 }
 
-version '1.14.1'+System.getProperty('release','-SNAPSHOT')
+version '1.14.2'+System.getProperty('release','-SNAPSHOT')
 
 configurations {
     deployerJars
@@ -24,14 +24,16 @@ configurations {
 dependencies {
     compile group: 'ch.ehi', name: 'ehibasics', version: '1.4.1'
     compile group: 'ch.interlis', name: 'iox-api', version: '1.0.4'
-    compile group: 'ch.interlis', name: 'iox-ili', version: '1.22.1'
-    compile group: 'ch.interlis', name: 'ili2c-tool', version: "5.4.1"
-    compile group: 'ch.interlis', name: 'ili2c-core', version: "5.4.1"
+    compile group: 'ch.interlis', name: 'iox-ili', version: '1.23.0'
+    compile group: 'ch.interlis', name: 'ili2c-tool', version: "5.5.3"
+    compile group: 'ch.interlis', name: 'ili2c-core', version: "5.5.3"
     testCompile group: 'junit', name: 'junit', version: '4.12'
     deployerJars "org.apache.maven.wagon:wagon-ftp:3.3.3"
     deployerJars "org.apache.maven.wagon:wagon-ssh:3.3.3"
     
-    ftpAntTask "org.apache.ant:ant-commons-net:1.10.7"
+    //ftpAntTask "org.apache.ant:ant-commons-net:1.10.7"
+    //ftpAntTask "org.apache.ant:ant-commons-net:1.10.14"
+    ftpAntTask "org.apache.ant:ant-commons-net:1.9.16" // muss zu gradle builtin ant version passen!
     
     testRuntime project('demoplugin')
 }
@@ -54,6 +56,8 @@ def repos_pwd = System.getProperty('repos_pwd',properties.get('repos_pwd','repos
 def repos_usr = System.getProperty('repos_usr',properties.get('repos_usr','repos_usr'))
 def downloads_pwd = System.getProperty('downloads_pwd',properties.get('downloads_pwd','downloads_pwd'))
 def downloads_usr = System.getProperty('downloads_usr',properties.get('downloads_usr','downloads_usr'))
+def docs_pwd = System.getProperty('docs_pwd',properties.get('docs_pwd','docs_pwd'))
+def docs_usr = System.getProperty('docs_usr',properties.get('docs_usr','docs_usr'))
 def python= System.getProperty('python',properties.get('python','python'))
 def rst2html= System.getProperty('rst2html',properties.get('rst2html','rst2html'))
 def github_token= System.getProperty('github_token',properties.get('github_token','github_token'))
@@ -249,3 +253,22 @@ task uploadBin(dependsOn: bindist) {
 		createGithubReleaseFunc()
 	}
 }
+
+task uploadDoc(){  // dependsOn: [usrdoc,ilidoc]) {
+	doLast {
+		ant.taskdef(name: 'ftp',
+					classname: 'org.apache.tools.ant.taskdefs.optional.net.FTP',
+					classpath: configurations.ftpAntTask.asPath)
+		def remoteDir="/ilivalidator/"+project.version
+		ant.ftp(action:"mkdir", server: "jql.ftp.infomaniak.com", userid: docs_usr, password: docs_pwd, 
+			remoteDir: remoteDir, passive:"yes") {
+		}
+		ant.ftp(server: "jql.ftp.infomaniak.com", userid: docs_usr, password: docs_pwd, 
+			remoteDir: remoteDir, passive:"yes") {
+				fileset(dir:  "build/docs") {
+					include(name: "ilivalidator.html")
+				}
+		}
+	}
+}
+
