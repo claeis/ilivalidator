@@ -1,3 +1,10 @@
+ilivalidator 1.14.3 (2024-08-xx)
+--------------------------------
+- Validate VIEW in non-validation models (#324)
+- XTF-AREA Refactoring (#384)
+- ILI2 accept valid AREA overlaps (#366) 
+- iox-ili-1.23.1+
+
 ilivalidator 1.14.2 (2024-06-19)
 --------------------------------
 - iox-ili-1.23.0
