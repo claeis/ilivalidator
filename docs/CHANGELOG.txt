@@ -1,3 +1,13 @@
+ilivalidator 1.14.3 (2024-08-16)
+--------------------------------
+- Validate VIEW in non-validation models (#324)
+- XTF: AREA Refactoring (#384)
+- XTF: accept valid AREA overlaps (#366) 
+- support DMAVTYM_Topologie_V1_0 covers function
+- support where conditions (selections) in projection views (#408)
+- iox-ili-1.23.1
+- ili2c-5.5.4
+
 ilivalidator 1.14.2 (2024-06-19)
 --------------------------------
 - iox-ili-1.23.0
