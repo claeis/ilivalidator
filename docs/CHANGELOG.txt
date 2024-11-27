@@ -1,5 +1,8 @@
 ilivalidator 1.14.4 (2024-08-xx)
 --------------------------------
+- Xtf23: use Xtf23Reader by default
+- iox-ili-1.23.3+
+
 
 ilivalidator 1.14.3 (2024-08-16)
 --------------------------------
