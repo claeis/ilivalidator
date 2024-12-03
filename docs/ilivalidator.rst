@@ -711,6 +711,13 @@ Die qualifizierten Rollennamen werden auch im Log aufgeführt. z.B.
   Info: validate target of role ``M.T.BAttrB2.B``...
   Info: validate multiplicity of role ``M.T.BAttrB2.B``...
 
+Nicht implementierte Funktionen
+-------------------------------
+
+- Views (Syntaxregel ViewDef) mit Ausnahme von einfachen Projektionen werden nicht validiert
+- Linienattribute (Syntaxregel LineAttrDef) werden nicht validiert (Linienattribute gibt es in INTERLIS 2.4 nicht mehr)
+- zusätzliche Kurvenformen (Syntaxregel LineFormTypeDef), zusätzlich zu Geraden und Kreisbögen, werden nicht unterstützt
+  
 Hinweise zu Fehlermeldungen
 ---------------------------
 
