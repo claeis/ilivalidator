@@ -1,3 +1,11 @@
+ilivalidator 1.14.4 (2024-12-04)
+--------------------------------
+- fix INTERLIS.elementCount(undefined attribute) (#430)
+- Xtf23: use Xtf23Reader by default
+- ili2c-5.6.2
+- iox-ili-1.23.3
+
+
 ilivalidator 1.14.3 (2024-08-16)
 --------------------------------
 - Validate VIEW in non-validation models (#324)

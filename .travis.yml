@@ -24,7 +24,7 @@ before_script:
     - python -m pip freeze
 
 script: 
-  - ./gradlew -Drst2html=`which rst2html.py` build usrdoc
+  - ./gradlew -Drst2html=`which rst2html.py` usrdoc build 
 deploy:
   - provider: script
     skip_cleanup: true

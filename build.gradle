@@ -8,7 +8,7 @@ allprojects {
 	compileJava.options.encoding = 'US-ASCII'
 }
 
-version '1.14.3'+System.getProperty('release','-SNAPSHOT')
+version '1.14.4'+System.getProperty('release','-SNAPSHOT')
 
 configurations {
     deployerJars
@@ -24,9 +24,9 @@ configurations {
 dependencies {
     compile group: 'ch.ehi', name: 'ehibasics', version: '1.4.1'
     compile group: 'ch.interlis', name: 'iox-api', version: '1.0.4'
-    compile group: 'ch.interlis', name: 'iox-ili', version: '1.23.1'
-    compile group: 'ch.interlis', name: 'ili2c-tool', version: "5.5.4"
-    compile group: 'ch.interlis', name: 'ili2c-core', version: "5.5.4"
+    compile group: 'ch.interlis', name: 'iox-ili', version: '1.23.3'
+    compile group: 'ch.interlis', name: 'ili2c-tool', version: "5.6.2"
+    compile group: 'ch.interlis', name: 'ili2c-core', version: "5.6.2"
     testCompile group: 'junit', name: 'junit', version: '4.12'
     deployerJars "org.apache.maven.wagon:wagon-ftp:3.3.3"
     deployerJars "org.apache.maven.wagon:wagon-ssh:3.3.3"
@@ -61,6 +61,7 @@ def docs_usr = System.getProperty('docs_usr',properties.get('docs_usr','docs_usr
 def python= System.getProperty('python',properties.get('python','python'))
 def rst2html= System.getProperty('rst2html',properties.get('rst2html','rst2html'))
 def github_token= System.getProperty('github_token',properties.get('github_token','github_token'))
+def html_outfile=new File(project.buildDir,'docs/ilivalidator.html')
 
 def generatedResources = "$buildDir/generated-resources/main"
 
@@ -168,15 +169,14 @@ task usrdoc(type:Exec) {
 	group = JavaBasePlugin.DOCUMENTATION_GROUP
     description = 'Builds the user documentation (html)'
 	def infile=new File(project.projectDir,'docs/ilivalidator.rst')
-	def outfile=new File('docs/ilivalidator.html')
 	inputs.file infile
-	outputs.file outfile
+	outputs.file html_outfile
 	doFirst{
 		new File(project.buildDir,'docs').mkdir()
 	}
 		workingDir = project.buildDir
 		executable python
-		args = [rst2html, infile, outfile]
+		args = [rst2html, infile, html_outfile]
 }
 
 task bindist(type: Zip){
@@ -184,7 +184,7 @@ task bindist(type: Zip){
 	destinationDir = file('dist')
 	from jar
 	into('docs'){
-		from files(fileTree("docs").include("LICENSE.*"),"docs/README.txt","docs/CHANGELOG.txt","docs/Beispiel1.ili","docs/Beispiel1.ini","docs/Beispiel1.xtf","docs/IliVErrors.ili","docs/ilivalidator.html")
+		from files(fileTree("docs").include("LICENSE.*"),"docs/README.txt","docs/CHANGELOG.txt","docs/Beispiel1.ili","docs/Beispiel1.ini","docs/Beispiel1.xtf","docs/IliVErrors.ili",html_outfile)
 	}
 	into('libs'){
 		from configurations.runtimeClasspath
