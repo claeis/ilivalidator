@@ -1,6 +1,9 @@
 ilivalidator 1.14.5 (2024-12-xx)
 --------------------------------
 - Xtf23Reader: fix xml whitespace/comment reading in alias table (#431)
+- Xtf32Reader: fix missing object linenumber (#432)
+- Validator: ILI2.4 fix reference attributes at class level not evaluated (#434)
+- Validator: Inherited association is not evaluated (#422)
 - iox-ili-1.23.4+
 
 ilivalidator 1.14.4 (2024-12-04)
