@@ -2,6 +2,7 @@ ilivalidator 1.14.6 (2025-03-xx)
 --------------------------------
 - fix missing index in error log for list/bag of simple types (#440)
 - fix object path evaluation with mixed case INTERLIS.UUIDOID (#416)
+- fix IllegalArgumentException with plausibility constraint (#441)
 - iox-ili-1.23.5+
 
 ilivalidator 1.14.5 (2025-01-14)
