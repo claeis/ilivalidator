@@ -1,3 +1,11 @@
+ilivalidator 1.14.6 (2025-04-08)
+--------------------------------
+- fix missing index in error log for list/bag of simple types (#440)
+- fix object path evaluation with mixed case INTERLIS.UUIDOID (#416)
+- fix IllegalArgumentException with plausibility constraint (#441)
+- fix wrong object reported in set constraint error (#438)
+- iox-ili-1.23.5
+
 ilivalidator 1.14.5 (2025-01-14)
 --------------------------------
 - Xtf23Reader: fix xml whitespace/comment reading in alias table (#431)
