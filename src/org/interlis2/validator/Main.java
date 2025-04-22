@@ -102,6 +102,8 @@ public class Main {
 				settings.setValue(Validator.SETTING_ALL_OBJECTS_ACCESSIBLE,Validator.TRUE);
 			}else if(arg.equals("--allowItfAreaHoles")){
 				settings.setValue(Validator.SETTING_ALLOW_ITF_AREA_HOLES,Validator.TRUE);
+            }else if(arg.equals("--simpleBoundary")){
+                settings.setValue(Validator.SETTING_SIMPLE_BOUNDARY,Validator.TRUE);
 			}else if(arg.equals("--skipPolygonBuilding")){
 				settings.setValue(ch.interlis.iox_j.validator.Validator.CONFIG_DO_ITF_LINETABLES, ch.interlis.iox_j.validator.Validator.CONFIG_DO_ITF_LINETABLES_DO);
             }else if(arg.equals("--singlePass")){
@@ -173,6 +175,7 @@ public class Main {
 					System.err.println("--dataset             The requested Dataset ID to be updated");
 					System.err.println("--skipPolygonBuilding skip polygon building (only ITF).");
 					System.err.println("--allowItfAreaHoles   allow empty holes (unassigned inner boundaries) in ITF AREA attributes.");
+					System.err.println("--simpleBoundary      allow only simple lines as polygon boundary lines.");
 					System.err.println("--runtimeParams param=value define values of runtime parameters.");
                     System.err.println("--singlePass          skip any validations that require a second pass.");
 				    System.err.println("--log file            text file, that receives validation results.");

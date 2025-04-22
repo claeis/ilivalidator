@@ -97,6 +97,7 @@ public class MainFrame extends JFrame {
 	private JCheckBoxMenuItem optionsSkipPolygonBuildingItem = null;
 	private JCheckBoxMenuItem optionsMultiplicityOffItem = null;
 	private JCheckBoxMenuItem optionsAllowItfAreaHolesItem = null;
+    private JCheckBoxMenuItem optionsSimpleBoundaryItem = null;
     private JCheckBoxMenuItem optionsLogTimeItem = null;
 	private JCheckBoxMenuItem optionsTraceItem = null;
 	private JCheckBoxMenuItem optionsDisableConstraintValidationItem = null;
@@ -162,6 +163,9 @@ public class MainFrame extends JFrame {
         
         optionsAllowItfAreaHolesItem = new JCheckBoxMenuItem(rsrc.getString("MainFrame.OptionsAllowItfAreaHolesItem"));
         optionsMenu.add(optionsAllowItfAreaHolesItem);
+
+        optionsSimpleBoundaryItem = new JCheckBoxMenuItem(rsrc.getString("MainFrame.OptionsSimpleBoundaryItem"));
+        optionsMenu.add(optionsSimpleBoundaryItem);
 
         optionsDisableConstraintValidationItem = new JCheckBoxMenuItem(rsrc.getString("MainFrame.OptionsDisableConstraintValidationItem"));
         optionsMenu.add(optionsDisableConstraintValidationItem);
@@ -665,6 +669,9 @@ public class MainFrame extends JFrame {
 		if (optionsAllowItfAreaHolesItem.isSelected()) {
 		    newSettings.setValue(Validator.SETTING_ALLOW_ITF_AREA_HOLES,Validator.TRUE);
 		}
+        if (optionsSimpleBoundaryItem.isSelected()) {
+            newSettings.setValue(Validator.SETTING_SIMPLE_BOUNDARY,Validator.TRUE);
+        }
         if (optionsLogTimeItem.isSelected()) {
             newSettings.setValue(Validator.SETTING_LOGFILE_TIMESTAMP,Validator.TRUE);
         }
