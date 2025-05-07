@@ -1,3 +1,11 @@
+ilivalidator 1.14.7 (2025-05-07)
+--------------------------------
+- Validator: ILI2.4 fix the outer and inner edges must not be coded as a single line (#442)
+- Validator: Falsch codierte Donut-Polygone werden nicht erkannt (#429)
+- new option --simpleBoundary to allow only simple lines as polygon boundary lines (#331)
+- iox-ili-1.24.0
+- ili2c-5.6.4
+
 ilivalidator 1.14.6 (2025-04-08)
 --------------------------------
 - fix missing index in error log for list/bag of simple types (#440)

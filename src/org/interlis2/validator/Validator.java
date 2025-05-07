@@ -417,6 +417,10 @@ public class Validator {
 				if(settingsMultiplicityValidation!=null){
 					modelConfig.setConfigValue(ValidationConfig.PARAMETER, ValidationConfig.MULTIPLICITY, settingsMultiplicityValidation);
 				}
+                String settingsSimpleBoundary=settings.getValue(SETTING_SIMPLE_BOUNDARY);
+                if(settingsSimpleBoundary!=null){
+                    modelConfig.setConfigValue(ValidationConfig.PARAMETER, ValidationConfig.SIMPLE_BOUNDARY, settingsSimpleBoundary);
+                }
 				if (modelNamesFromConfig == null || modelNamesFromConfig.size() == 0) {
 				    if (specifiedModelNames != null) {
 				        modelConfig.setConfigValue(ValidationConfig.PARAMETER, ValidationConfig.ADDITIONAL_MODELS, specifiedModelNames);
@@ -557,6 +561,8 @@ public class Validator {
                     settings.setValue(Validator.SETTING_ALL_OBJECTS_ACCESSIBLE,config.getConfigValue(Validator.METACONFIG_ILIVALIDATOR, arg));
                 }else if(arg.equals("allowItfAreaHoles")){
                     settings.setValue(Validator.SETTING_ALLOW_ITF_AREA_HOLES,config.getConfigValue(Validator.METACONFIG_ILIVALIDATOR, arg));
+                }else if(arg.equals("simpleBoundary")){
+                    settings.setValue(Validator.SETTING_SIMPLE_BOUNDARY,config.getConfigValue(Validator.METACONFIG_ILIVALIDATOR, arg));
                 }else if(arg.equals("skipPolygonBuilding")){
                     settings.setValue(ch.interlis.iox_j.validator.Validator.CONFIG_DO_ITF_LINETABLES, config.getConfigValue(Validator.METACONFIG_ILIVALIDATOR, arg));
                 }else {
@@ -802,6 +808,9 @@ public class Validator {
 	/** Global setting for multiplicity validation. Possible values "on", "warning", "off". Default "on".
 	 */
 	public static final String SETTING_MULTIPLICITY_VALIDATION = null;
+    /** Validate if an XML element BOUNDARY is only one boundary (shell or hole) of the polygon. Possible values "true", "false".
+     */
+    public static final String SETTING_SIMPLE_BOUNDARY = "org.interlis2.validator.simpleBoundary";
 	/** Disable AREA validation. Possible values "true", "false".
 	 */
 	public static final String SETTING_DISABLE_AREA_VALIDATION = "org.interlis2.validator.disableareavalidation";
