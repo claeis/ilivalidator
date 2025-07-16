@@ -26,6 +26,7 @@ import ch.interlis.ili2c.metamodel.Model;
 import ch.interlis.ili2c.metamodel.TransferDescription;
 import ch.interlis.ilirepository.Dataset;
 import ch.interlis.ilirepository.IliManager;
+import ch.interlis.ilirepository.impl.RepositoryAccess;
 import ch.interlis.ilirepository.impl.RepositoryAccessException;
 import ch.interlis.iom_j.itf.ItfReader;
 import ch.interlis.iom_j.itf.ItfReader2;
@@ -439,6 +440,7 @@ public class Validator {
 			        if(ioxReader instanceof IoxIliReader){
 			            ((IoxIliReader) ioxReader).setModel(td);    
 			        }
+			        String fileMd5=RepositoryAccess.calcMD5(new File(filename));
 					statistics.setFilename(filename);
 					errFactory.setDataSource(filename);
 		            td.setActualRuntimeParameter(ch.interlis.ili2c.metamodel.RuntimeParameters.MINIMAL_RUNTIME_SYSTEM01_CURRENT_TRANSFERFILE, filename);
@@ -452,6 +454,9 @@ public class Validator {
 	                            EhiLogger.logState("...object count "+validator.getObjectCount()+" (structured elements "+validator.getStructCount()+")...");
 						    }
 							event=ioxReader.read();
+							if(event instanceof ch.interlis.iox_j.StartBasketEvent) {
+							    ((ch.interlis.iox_j.StartBasketEvent)event).setFileMd5(fileMd5);
+							}
 							// feed object by object to validator
 							validator.validate(event);
 							statistics.add(event);

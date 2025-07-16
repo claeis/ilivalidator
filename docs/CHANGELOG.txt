@@ -1,5 +1,6 @@
 ilivalidator 1.14.8 (2025-07-xx)
 --------------------------------
+- Validator: show basket end state and/or source file version/md5
 - Validator: ILI2.3 fix validation of a repeated attribute (#446)
 - iox-ili-1.24.1+
 
