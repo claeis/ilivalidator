@@ -1,3 +1,9 @@
+ilivalidator 1.14.8 (2025-07-xx)
+--------------------------------
+- Validator: ILI2.3 fix validation of a repeated attribute (#446)
+- iox-ili-1.24.1+
+
+
 ilivalidator 1.14.7 (2025-05-07)
 --------------------------------
 - Validator: ILI2.4 fix the outer and inner edges must not be coded as a single line (#442)
