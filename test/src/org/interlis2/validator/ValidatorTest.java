@@ -246,6 +246,11 @@ public class ValidatorTest {
         }, settings);
         assertFalse(ret);
     }
+    @Test
+    public void xtfHttpFileOk() {
+        boolean ret=Validator.runValidation("https://models.interlis.ch/refhb23/MiniCoordSysData-20200320.xml", null);
+        assertTrue(ret);
+    }
 	@Test
 	public void ili2cFail() {
 		Settings settings=new Settings();

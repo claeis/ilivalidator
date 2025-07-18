@@ -194,6 +194,12 @@ durch den Benutzer ins Repository übertragen werden.
 
 ``java -jar ilivalidator.jar --updateIliData --ilidata updatedIlidata.xml --repos http://models.geo.admin.ch --datasetId datasetId newVersionOfData.xml``
 
+Fall 12
+~~~~~~~
+
+Die Datei wird heruntergeladen und validiert/geprüft.
+
+``java -jar ilivalidator.jar https://models.interlis.ch/refhb23/MiniCoordSysData-20200320.xml``
 
 Referenz
 ========
@@ -210,6 +216,9 @@ Aufruf-Syntax
 
 ``file`` kann auch die Form ``ilidata:DatesetId`` oder ``ilidata:BasketId`` haben, 
 dann wird die entsprechende Datei aus den Repositories benutzt.
+
+``file`` kann auch die Form ``http:url`` oder ``https:url`` haben, 
+dann wird die entsprechende Datei heruntergeladen und benutzt.
 
 Ohne Kommandozeilenargumente erscheint die Bildschirmmaske, mit deren Hilfe die zu validierende Datei 
 ausgewählt und die Validierung gestartet werden kann.
