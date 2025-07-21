@@ -56,6 +56,7 @@ public class Main {
 		}
 		// arguments on export
 		String[] xtfFile=null;
+		java.util.List<String> xtfRefFile=new java.util.ArrayList<String>();
 		String httpProxyHost = null;
 		String httpProxyPort = null;
 		if(args.length==0){
@@ -81,6 +82,12 @@ public class Main {
 			}else if(arg.equals("--modeldir")){
 				argi++;
 				settings.setValue(Validator.SETTING_ILIDIRS, args[argi]);
+            }else if(arg.equals("--refdata")){
+                argi++;
+                String refdatav[]= args[argi].split(";");
+                for(String refdata:refdatav) {
+                    xtfRefFile.add(refdata);
+                }
 			}else if(arg.equals("--config")) {
 			    argi++;
 			    settings.setValue(Validator.SETTING_CONFIGFILE, args[argi]);
@@ -163,6 +170,7 @@ public class Main {
 					System.err.println("OPTIONS");
 					System.err.println();
 					System.err.println("--gui                 start GUI.");
+                    System.err.println("--refdata file        reference data file.");
 				    System.err.println("--config file         config file to control validation.");
 					System.err.println("--forceTypeValidation  restrict customization of validation related to \"multiplicity\".");
 					System.err.println("--disableAreaValidation  disable AREA validation.");
@@ -200,6 +208,7 @@ public class Main {
 				break;
 			}
 		}
+		settings.setValue(Validator.SETTING_REF_DATA,makeFileList(xtfRefFile.toArray(new String[xtfRefFile.size()])));
 		int dataFileCount=args.length-argi;
 		if(doGui){
 			if(dataFileCount>0) {
@@ -364,5 +373,18 @@ public class Main {
 	  }
 	  return null;
 	}
+    public static String makeFileList(String[] xtfRefFile) {
+        if(xtfRefFile==null) {
+            return null;
+        }
+        StringBuffer files=new StringBuffer();
+        String sep="";
+        for(String file:xtfRefFile) {
+            files.append(sep);
+            files.append(file);
+            sep=";";
+        }
+        return files.toString();
+    }
 	
 }
