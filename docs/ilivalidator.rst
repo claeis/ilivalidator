@@ -204,9 +204,10 @@ Die Datei wird heruntergeladen und validiert/geprüft.
 Fall 13
 ~~~~~~~
 
-Die Datei transfer.xtf wird validiert/geprüft und muss einen Basket des Topics TopicA aus dem Modell ModelA enthalten.
+Die Datei transfer.xtf wird validiert/geprüft und muss einen Basket des 
+Topics ``TopicA`` aus dem Modell ``ModelA`` enthalten.
 
-``java -jar ilivalidator.jar --mandatoryBakset ModelA.TopicA transfer.xtf``
+``java -jar ilivalidator.jar --mandatoryBasket ModelA.TopicA transfer.xtf``
 
 Referenz
 ========
