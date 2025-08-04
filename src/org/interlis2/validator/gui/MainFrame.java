@@ -66,10 +66,13 @@ public class MainFrame extends JFrame {
 	private javax.swing.JPanel jContentPane = null;
 
 	private javax.swing.JLabel xtfFileLabel = null;
+    private javax.swing.JLabel xtfRefFileLabel = null;
 	// area to display one file per line in multiple input file validation
 	private javax.swing.JTextArea xtfFileUi = null;
+    private javax.swing.JTextArea xtfRefFileUi = null;
 	private javax.swing.JCheckBox allObjectsAccessibleUi = null;
 	private javax.swing.JButton doXtfFileSelBtn = null;
+    private javax.swing.JButton doXtfRefFileSelBtn = null;
 	
 	private javax.swing.JLabel modelNamesLabel = null;
 	private javax.swing.JTextField modelNamesUi = null;
@@ -118,6 +121,7 @@ public class MainFrame extends JFrame {
 		
 		//creates a border, which looks like jtextfield border
 		xtfFileUi.setBorder(new JTextField().getBorder());
+        xtfRefFileUi.setBorder(new JTextField().getBorder());
 		
 	    //Create the menu bar.
 		JMenuBar menuBar = new JMenuBar();
@@ -239,9 +243,14 @@ public class MainFrame extends JFrame {
 			jContentPane = new javax.swing.JPanel();
 			java.awt.GridBagConstraints xtfFileLabelConstraints = new java.awt.GridBagConstraints();
 			java.awt.GridBagConstraints xtfFileUiConstraints = new java.awt.GridBagConstraints();
-			java.awt.GridBagConstraints allObjectsAccessibleConstraints = new java.awt.GridBagConstraints();
 			java.awt.GridBagConstraints doXtfFileSelBtnConstraints = new java.awt.GridBagConstraints();
+
+            java.awt.GridBagConstraints xtfRefFileLabelConstraints = new java.awt.GridBagConstraints();
+            java.awt.GridBagConstraints xtfRefFileUiConstraints = new java.awt.GridBagConstraints();
+            java.awt.GridBagConstraints doXtfRefFileSelBtnConstraints = new java.awt.GridBagConstraints();
 			
+			java.awt.GridBagConstraints allObjectsAccessibleConstraints = new java.awt.GridBagConstraints();
+
 			java.awt.GridBagConstraints modelNamesLabelConstraints = new java.awt.GridBagConstraints();
 			java.awt.GridBagConstraints modelNamesUiConstraints = new java.awt.GridBagConstraints();
 
@@ -267,110 +276,138 @@ public class MainFrame extends JFrame {
 			java.awt.GridBagConstraints doValidateConstraints = new java.awt.GridBagConstraints();
 			
 			// row 0
+			int row=0;
 			xtfFileLabelConstraints.gridx = 0;
-			xtfFileLabelConstraints.gridy = 0;
+			xtfFileLabelConstraints.gridy = row;
 			xtfFileLabelConstraints.anchor = java.awt.GridBagConstraints.NORTHWEST;
 			xtfFileUiConstraints.fill = java.awt.GridBagConstraints.HORIZONTAL;
 			xtfFileUiConstraints.weightx = 1.0;
 			xtfFileUiConstraints.gridx = 1;
-			xtfFileUiConstraints.gridy = 0;
+			xtfFileUiConstraints.gridy = row;
 			xtfFileUiConstraints.anchor = java.awt.GridBagConstraints.NORTHWEST;
 			doXtfFileSelBtnConstraints.gridx = 2;
-			doXtfFileSelBtnConstraints.gridy = 0;
+			doXtfFileSelBtnConstraints.gridy = row;
 			doXtfFileSelBtnConstraints.anchor = java.awt.GridBagConstraints.WEST;
 			
+            // row 1
+            row++;
+            xtfRefFileLabelConstraints.gridx = 0;
+            xtfRefFileLabelConstraints.gridy = row;
+            xtfRefFileLabelConstraints.anchor = java.awt.GridBagConstraints.NORTHWEST;
+            xtfRefFileUiConstraints.fill = java.awt.GridBagConstraints.HORIZONTAL;
+            xtfRefFileUiConstraints.weightx = 1.0;
+            xtfRefFileUiConstraints.gridx = 1;
+            xtfRefFileUiConstraints.gridy = row;
+            xtfRefFileUiConstraints.anchor = java.awt.GridBagConstraints.NORTHWEST;
+            doXtfRefFileSelBtnConstraints.gridx = 2;
+            doXtfRefFileSelBtnConstraints.gridy = row;
+            doXtfRefFileSelBtnConstraints.anchor = java.awt.GridBagConstraints.WEST;
+            
 			// row 1
+			row++;
 			allObjectsAccessibleConstraints.gridx = 1;
-			allObjectsAccessibleConstraints.gridy = 1;
+			allObjectsAccessibleConstraints.gridy = row;
 			allObjectsAccessibleConstraints.anchor = java.awt.GridBagConstraints.NORTHWEST;
 			
 			// row 2
+			row++;
 			modelNamesLabelConstraints.gridx = 0;
-			modelNamesLabelConstraints.gridy = 2;
+			modelNamesLabelConstraints.gridy = row;
 			modelNamesLabelConstraints.anchor = java.awt.GridBagConstraints.NORTHWEST;
 			modelNamesUiConstraints.fill = java.awt.GridBagConstraints.HORIZONTAL;
 			modelNamesUiConstraints.weightx = 1.0;
 			modelNamesUiConstraints.gridx = 1;
-			modelNamesUiConstraints.gridy = 2;
+			modelNamesUiConstraints.gridy = row;
 			modelNamesUiConstraints.anchor = java.awt.GridBagConstraints.NORTHWEST;
 			
 			// row 3
+			row++;
 			logFileLabelConstraints.gridx = 0;
-			logFileLabelConstraints.gridy = 3;
+			logFileLabelConstraints.gridy = row;
 			logFileLabelConstraints.anchor = java.awt.GridBagConstraints.NORTHWEST;
 			logFileUiConstraints.fill = java.awt.GridBagConstraints.HORIZONTAL;
 			logFileUiConstraints.weightx = 1.0;
 			logFileUiConstraints.gridx = 1;
-			logFileUiConstraints.gridy = 3;
+			logFileUiConstraints.gridy = row;
 			logFileUiConstraints.anchor = java.awt.GridBagConstraints.NORTHWEST;
 			doLogFileSelBtnConstraints.gridx = 2;
-			doLogFileSelBtnConstraints.gridy = 3;
+			doLogFileSelBtnConstraints.gridy = row;
 			doLogFileSelBtnConstraints.anchor = java.awt.GridBagConstraints.WEST;
 			
 			// row 4
+			row++;
 			xtfLogFileLabelConstraints.gridx = 0;
-			xtfLogFileLabelConstraints.gridy = 4;
+			xtfLogFileLabelConstraints.gridy = row;
 			xtfLogFileLabelConstraints.anchor = java.awt.GridBagConstraints.NORTHWEST;
 			xtfLogFileUiConstraints.fill = java.awt.GridBagConstraints.HORIZONTAL;
 			xtfLogFileUiConstraints.weightx = 1.0;
 			xtfLogFileUiConstraints.gridx = 1;
-			xtfLogFileUiConstraints.gridy = 4;
+			xtfLogFileUiConstraints.gridy = row;
 			xtfLogFileUiConstraints.anchor = java.awt.GridBagConstraints.NORTHWEST;
 			doXtfLogFileSelBtnConstraints.gridx = 2;
-			doXtfLogFileSelBtnConstraints.gridy = 4;
+			doXtfLogFileSelBtnConstraints.gridy = row;
 			doXtfLogFileSelBtnConstraints.anchor = java.awt.GridBagConstraints.WEST;
 			
 			// row 5
+			row++;
 			configFileLabelConstraints.gridx = 0;
-			configFileLabelConstraints.gridy = 5;
+			configFileLabelConstraints.gridy = row;
 			configFileLabelConstraints.anchor = java.awt.GridBagConstraints.NORTHWEST;
 			configFileUiConstraints.fill = java.awt.GridBagConstraints.HORIZONTAL;
 			configFileUiConstraints.weightx = 1.0;
 			configFileUiConstraints.gridx = 1;
-			configFileUiConstraints.gridy = 5;
+			configFileUiConstraints.gridy = row;
 			configFileUiConstraints.anchor = java.awt.GridBagConstraints.NORTHWEST;
 			doConfigFileSelBtnConstraints.gridx = 2;
-			doConfigFileSelBtnConstraints.gridy = 5;
+			doConfigFileSelBtnConstraints.gridy = row;
 			doConfigFileSelBtnConstraints.anchor = java.awt.GridBagConstraints.WEST;
             doNewConfigFileBtnConstraints.gridx = 3;
-            doNewConfigFileBtnConstraints.gridy = 5;
+            doNewConfigFileBtnConstraints.gridy = row;
 
             // row 6
+            row++;
             metaConfigFileLabelConstraints.gridx = 0;
-            metaConfigFileLabelConstraints.gridy = 6;
+            metaConfigFileLabelConstraints.gridy = row;
             metaConfigFileLabelConstraints.anchor = java.awt.GridBagConstraints.NORTHWEST;
             metaConfigFileUiConstraints.fill = java.awt.GridBagConstraints.HORIZONTAL;
             metaConfigFileUiConstraints.weightx = 1.0;
             metaConfigFileUiConstraints.gridx = 1;
-            metaConfigFileUiConstraints.gridy = 6;
+            metaConfigFileUiConstraints.gridy = row;
             metaConfigFileUiConstraints.anchor = java.awt.GridBagConstraints.NORTHWEST;
             doMetaConfigFileSelBtnConstraints.gridx = 2;
-            doMetaConfigFileSelBtnConstraints.gridy = 6;
+            doMetaConfigFileSelBtnConstraints.gridy = row;
             doMetaConfigFileSelBtnConstraints.anchor = java.awt.GridBagConstraints.WEST;
             
 			// row 7
+            row++;
 			logPaneConstraints.fill = java.awt.GridBagConstraints.BOTH;
 			logPaneConstraints.weightx = 1.0;
 			logPaneConstraints.weighty = 1.0;
 			logPaneConstraints.gridx = 0;
-			logPaneConstraints.gridy = 7;
+			logPaneConstraints.gridy = row;
 			logPaneConstraints.gridheight = 2;
 			logPaneConstraints.gridwidth = 2;
-			doValidateConstraints.gridy = 7;
+			doValidateConstraints.gridy = row;
 			doValidateConstraints.gridx = 2;
 			doValidateConstraints.gridwidth = 2;
 			doValidateConstraints.anchor = java.awt.GridBagConstraints.WEST;
 			
 			// row 8
+			row++;
 			clearlogBtnConstraints.gridx = 2;//2
-			clearlogBtnConstraints.gridy = 8;
+			clearlogBtnConstraints.gridy = row;
 			clearlogBtnConstraints.gridwidth = 2;
 			clearlogBtnConstraints.anchor = java.awt.GridBagConstraints.NORTHWEST;
 			
 			jContentPane.setLayout(new java.awt.GridBagLayout());
+			
 			jContentPane.add(getXtfFileLabel(), xtfFileLabelConstraints);
 			jContentPane.add(getXtfFileUi(), xtfFileUiConstraints);
 			jContentPane.add(getDoXtfFileSelBtn(), doXtfFileSelBtnConstraints);
+
+            jContentPane.add(getXtfRefFileLabel(), xtfRefFileLabelConstraints);
+            jContentPane.add(getXtfRefFileUi(), xtfRefFileUiConstraints);
+            jContentPane.add(getDoXtfRefFileSelBtn(), doXtfRefFileSelBtnConstraints);
 			
 			jContentPane.add(getModelNamesLabel(), modelNamesLabelConstraints);
 			jContentPane.add(getModelNamesUi(), modelNamesUiConstraints);
@@ -406,6 +443,13 @@ public class MainFrame extends JFrame {
 		}
 		return xtfFileLabel;
 	}
+    private javax.swing.JLabel getXtfRefFileLabel() {
+        if(xtfRefFileLabel == null) {
+            xtfRefFileLabel = new javax.swing.JLabel();
+            xtfRefFileLabel.setText(rsrc.getString("MainFrame.xtfRefFileLabel"));
+        }
+        return xtfRefFileLabel;
+    }
 	private javax.swing.JLabel getModelNamesLabel() {
 		if(modelNamesLabel == null) {
 			modelNamesLabel = new javax.swing.JLabel();
@@ -444,10 +488,17 @@ public class MainFrame extends JFrame {
 	private javax.swing.JTextArea getXtfFileUi() {
 		if(xtfFileUi == null) {
 			xtfFileUi = new javax.swing.JTextArea();
-			new DropTarget(xtfFileUi, getDragAndDropHandler());
+			new DropTarget(xtfFileUi, getXtfFileDragAndDropHandler());
 		}
 		return xtfFileUi;
 	}
+    private javax.swing.JTextArea getXtfRefFileUi() {
+        if(xtfRefFileUi == null) {
+            xtfRefFileUi = new javax.swing.JTextArea();
+            new DropTarget(xtfRefFileUi, getXtfRefFileDragAndDropHandler());
+        }
+        return xtfRefFileUi;
+    }
 	private javax.swing.JTextField getModelNamesUi() {
 		if(modelNamesUi == null) {
 			modelNamesUi = new javax.swing.JTextField();
@@ -504,7 +555,7 @@ public class MainFrame extends JFrame {
 		}
 		return allObjectsAccessibleUi;
 	}
-	private DropTargetListener getDragAndDropHandler() {
+	private DropTargetListener getXtfFileDragAndDropHandler() {
 		return new DropTargetListener() {
 			public void dragEnter(DropTargetDragEvent evt) {}
 			public void dragOver(DropTargetDragEvent evt) {}
@@ -532,12 +583,45 @@ public class MainFrame extends JFrame {
 			}
 		};
 	}
+    private DropTargetListener getXtfRefFileDragAndDropHandler() {
+        return new DropTargetListener() {
+            public void dragEnter(DropTargetDragEvent evt) {}
+            public void dragOver(DropTargetDragEvent evt) {}
+            public void dropActionChanged(DropTargetDragEvent evt) {}
+            public void dragExit(DropTargetEvent dte) {}
+            public void drop(DropTargetDropEvent evt) {
+                try {
+                    Transferable tr = evt.getTransferable();
+                    for (DataFlavor flavor : tr.getTransferDataFlavors()) {
+                        if (flavor.isFlavorJavaFileListType()){
+                            evt.acceptDrop(DnDConstants.ACTION_COPY_OR_MOVE);
+                            List<File> files = (List<File>)tr.getTransferData(flavor);
+                            String[] absolutePaths = new String[files.size()];
+                            for(int i = 0; i < files.size(); i++){
+                                absolutePaths[i] = files.get(i).getAbsolutePath();
+                            }
+                            setXtfRefFile(absolutePaths);
+                        }
+                    }
+                } catch (IOException e) {
+                    e.printStackTrace();
+                } catch (UnsupportedFlavorException e) {
+                    e.printStackTrace();
+                }
+            }
+        };
+    }
 	// selected files
 	public String[] getXtfFile(){
 		String fileTextInUi=getXtfFileUi().getText();
 		String[] files=splitFilenames(fileTextInUi);
 		return files;
 	}
+    public String[] getXtfRefFile(){
+        String fileTextInUi=getXtfRefFileUi().getText();
+        String[] files=splitFilenames(fileTextInUi);
+        return files;
+    }
 	/** unterteilt den mehrzeiligen String in einzelne Zeilen. 
 	 * Leerzeilen werden nicht ins Resultat uebernommen.
 	 * Leerzeichen am Anfang und Ende der einzelnen Zeilen werden entfernt.
@@ -572,6 +656,20 @@ public class MainFrame extends JFrame {
 	    }
 		getXtfFileUi().setText(stringBuilder.toString());
 	}
+    public void setXtfRefFile(String[] xtfFileList){
+        StringBuilder stringBuilder = new StringBuilder();
+        if(xtfFileList!=null) {
+            String newLine="";
+            for(int i=0;i<xtfFileList.length;i++){
+                if(xtfFileList[i]!=null) {
+                    stringBuilder.append(newLine);
+                    stringBuilder.append(xtfFileList[i]);
+                    newLine = "\n";
+                }
+            }
+        }
+        getXtfRefFileUi().setText(stringBuilder.toString());
+    }
 	// selected model names
 	public String getModelNames() {
 		return StringUtility.purge(getModelNamesUi().getText());
@@ -615,6 +713,8 @@ public class MainFrame extends JFrame {
 	public Settings getSettings()
 	{
 		// get values from UI
+        String xtfRefFiles=Main.makeFileList(getXtfRefFile());
+        
 		String logFile=getLogFile();
 		String datalogFile=getXtfLogFile();
 		String configFile=getConfigFile();
@@ -640,6 +740,7 @@ public class MainFrame extends JFrame {
 		
 		Settings newSettings=new Settings();
 		
+        newSettings.setValue(Validator.SETTING_REF_DATA,xtfRefFiles);
 		newSettings.setValue(ch.interlis.ili2c.gui.UserSettings.WORKING_DIRECTORY,workingDir);
 		newSettings.setValue(Validator.SETTING_LOGFILE,logFile);
 		if(datalogFile!=null && GenericFileFilter.createCsvFilter().getExtension().equals(GenericFileFilter.getFileExtension(datalogFile))){
@@ -714,13 +815,20 @@ public class MainFrame extends JFrame {
 		}
 		return jScrollPane;
 	}
-	public static void main(String[] xtfFile,Settings settings) {
+	@Deprecated
+    public static void main(String[] xtfFile,Settings settings) {
+        main(xtfFile,null,settings);
+    }
+	public static void main(String[] xtfFile,String[] xtfRefFile,Settings settings) {
 			MainFrame frame=new MainFrame();
 			frame.setSettings(settings);
 			String logFile=settings.getValue(Validator.SETTING_LOGFILE);
 			frame.setLogFile(logFile);
 			resetLogListener(frame,logFile);
 			frame.setXtfFile(xtfFile);
+			if(xtfRefFile!=null) {
+	            frame.setXtfRefFile(xtfRefFile);
+			}
 			String modelList=settings.getValue(Validator.SETTING_MODELNAMES);
 			frame.setModelNames(modelList);
 			String xtflogFile=settings.getValue(Validator.SETTING_XTFLOG);
@@ -791,11 +899,41 @@ public class MainFrame extends JFrame {
 		}
 		return doValidateBtn;
 	}
-	private javax.swing.JButton getDoXtfFileSelBtn() {
-		if(doXtfFileSelBtn == null) {
-			doXtfFileSelBtn = new javax.swing.JButton();
-			doXtfFileSelBtn.setText("...");
-			doXtfFileSelBtn.addActionListener(new java.awt.event.ActionListener() { 
+    private javax.swing.JButton getDoXtfFileSelBtn() {
+        if(doXtfFileSelBtn == null) {
+            doXtfFileSelBtn = new javax.swing.JButton();
+            doXtfFileSelBtn.setText("...");
+            doXtfFileSelBtn.addActionListener(new java.awt.event.ActionListener() { 
+                public void actionPerformed(java.awt.event.ActionEvent e) {    
+                    FileChooser fileDialog =  new FileChooser();
+                    fileDialog.setCurrentDirectory(new File(getWorkingDirectory()));
+                    fileDialog.setDialogTitle(rsrc.getString("MainFrame.xtfFileChooserTitle"));
+                    fileDialog.addChoosableFileFilter(new GenericFileFilter(rsrc.getString("MainFrame.itfFileFilter"),"itf"));
+                    fileDialog.addChoosableFileFilter(GenericFileFilter.createXmlFilter());
+                    FileNameExtensionFilter filter = new FileNameExtensionFilter(rsrc.getString("MainFrame.xtfFileFilter"), "xtf", "xml");
+                    fileDialog.setFileFilter(filter);
+                    
+                    fileDialog.setMultiSelectionEnabled(true);
+
+                    if (fileDialog.showOpenDialog(MainFrame.this) == FileChooser.APPROVE_OPTION) {
+                        setWorkingDirectory(fileDialog.getCurrentDirectory().getAbsolutePath());
+                        File[] multipleFiles = fileDialog.getSelectedFiles();
+                        String[] selectedFiles = new String[multipleFiles.length];
+                        for(int i=0;i<multipleFiles.length;i++){
+                            selectedFiles[i]=multipleFiles[i].getAbsolutePath();
+                        }
+                        setXtfFile(selectedFiles);
+                    }               
+                }
+            });
+        }
+        return doXtfFileSelBtn;
+    }
+	private javax.swing.JButton getDoXtfRefFileSelBtn() {
+		if(doXtfRefFileSelBtn == null) {
+			doXtfRefFileSelBtn = new javax.swing.JButton();
+			doXtfRefFileSelBtn.setText("...");
+			doXtfRefFileSelBtn.addActionListener(new java.awt.event.ActionListener() { 
 				public void actionPerformed(java.awt.event.ActionEvent e) {    
                     FileChooser fileDialog =  new FileChooser();
                     fileDialog.setCurrentDirectory(new File(getWorkingDirectory()));
@@ -814,12 +952,12 @@ public class MainFrame extends JFrame {
 						for(int i=0;i<multipleFiles.length;i++){
 							selectedFiles[i]=multipleFiles[i].getAbsolutePath();
 						}
-						setXtfFile(selectedFiles);
+						setXtfRefFile(selectedFiles);
 					}				
 				}
 			});
 		}
-		return doXtfFileSelBtn;
+		return doXtfRefFileSelBtn;
 	}
 	private javax.swing.JButton getDoLogFileSelBtn() {
 		if(doLogFileSelBtn == null) {

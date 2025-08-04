@@ -236,6 +236,16 @@ public class ValidatorTest {
         }, settings);
         assertTrue(ret);
     }
+    //@Test #437
+    public void xtfRefDataOk() {
+        Settings settings=new Settings();
+        settings.setValue(Validator.SETTING_ALL_OBJECTS_ACCESSIBLE, Validator.TRUE);
+        settings.setValue(Validator.SETTING_REF_DATA, "test/data/Beispiel2allObjExtrefOk1.xtf");
+        boolean ret=Validator.runValidation(new String[] {
+                "test/data/Beispiel2allObjExtrefOk2.xtf"
+        }, settings);
+        assertTrue(ret);
+    }
     @Test
     public void xtfAllObjExtrefFail() {
         Settings settings=new Settings();
@@ -245,6 +255,11 @@ public class ValidatorTest {
                 "test/data/Beispiel2allObjExtrefFail2.xtf"
         }, settings);
         assertFalse(ret);
+    }
+    @Test
+    public void xtfHttpFileOk() {
+        boolean ret=Validator.runValidation("https://models.interlis.ch/refhb23/MiniCoordSysData-20200320.xml", null);
+        assertTrue(ret);
     }
 	@Test
 	public void ili2cFail() {

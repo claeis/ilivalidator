@@ -1,3 +1,15 @@
+ilivalidator 1.14.8 (2025-08-04)
+--------------------------------
+- Validator: new options mandatoryBaskets, optionalBaskets, bannedBaskets (#433)
+- Validator: report error when validating INTERLIS 2.4 translated XTF
+- Validator: show basket end state and/or source file version/md5
+- Validator: ILI2.3 fix validation of a repeated attribute (#446)
+- Validator: support data files with http/https URL
+- Validator: skip validation of reference data (#437)
+- iox-ili-1.24.1
+- ili2c-5.6.6
+
+
 ilivalidator 1.14.7 (2025-05-07)
 --------------------------------
 - Validator: ILI2.4 fix the outer and inner edges must not be coded as a single line (#442)

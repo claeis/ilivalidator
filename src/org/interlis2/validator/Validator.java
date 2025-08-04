@@ -26,6 +26,7 @@ import ch.interlis.ili2c.metamodel.Model;
 import ch.interlis.ili2c.metamodel.TransferDescription;
 import ch.interlis.ilirepository.Dataset;
 import ch.interlis.ilirepository.IliManager;
+import ch.interlis.ilirepository.impl.RepositoryAccess;
 import ch.interlis.ilirepository.impl.RepositoryAccessException;
 import ch.interlis.iom_j.itf.ItfReader;
 import ch.interlis.iom_j.itf.ItfReader2;
@@ -75,12 +76,12 @@ public class Validator {
 		return runValidation(new String[]{dataFilename},settings);
 	}
 	
-	public static boolean runValidation(
-			String dataFiles[],
-			Settings settings
-		) {
-		return new Validator().validate(dataFiles,settings);
-	}
+    public static boolean runValidation(
+            String dataFiles[],
+            Settings settings
+        ) {
+        return new Validator().validate(dataFiles,settings);
+    }
 	/** main workhorse function.
 	 * @param dataFilename File to validate.
 	 * @param settings Configuration of program. 
@@ -262,6 +263,11 @@ public class Validator {
                 }
                 dataFiles=newdata;
             }
+            String refDataFromSettings=settings.getValue(Validator.SETTING_REF_DATA);
+            String[] refDataFiles=new String[]{};
+            if(refDataFromSettings!=null) {
+                refDataFiles = refDataFromSettings.split(";");
+            }
 			// get local copies of remote files
             for(int idx=0;idx<dataFiles.length;idx++){
                 String dataFile=dataFiles[idx];
@@ -273,6 +279,17 @@ public class Validator {
                     return false;
                 }
                 dataFiles[idx]=localFile.getPath();
+            }
+            for(int idx=0;idx<refDataFiles.length;idx++){
+                String dataFile=refDataFiles[idx];
+                java.io.File localFile;
+                try {
+                    localFile = IliManager.getLocalCopyOfReposFile(repoManager, dataFile);
+                } catch (Ili2cException e) {
+                    EhiLogger.logError("failed to get local copy of data file <"+dataFile+">", e);
+                    return false;
+                }
+                refDataFiles[idx]=localFile.getPath();
             }
             // get local copy of configFile
             java.io.File configFile=null;
@@ -301,6 +318,13 @@ public class Validator {
 					}
 					modelnames.addAll(modelnameFromFile);
 				}
+                for(String dataFile:refDataFiles){
+                    List<String> modelnameFromFile=ch.interlis.iox_j.IoxUtility.getModels(new java.io.File(dataFile));
+                    if(modelnameFromFile==null){
+                        return false;
+                    }
+                    modelnames.addAll(modelnameFromFile);
+                }
 			}
 			for(String dataFile:dataFiles){
 				if(isItfFilename(dataFile)){
@@ -411,6 +435,18 @@ public class Validator {
 				if(settingsAllObjectsAccessible!=null) {
 	                modelConfig.setConfigValue(ValidationConfig.PARAMETER, ValidationConfig.ALL_OBJECTS_ACCESSIBLE, settingsAllObjectsAccessible);
 				}
+                final String mandatoryBaskets = settings.getValue(SETTING_MANDATORY_BASKETS);
+                if(mandatoryBaskets!=null) {
+                    modelConfig.setConfigValue(ValidationConfig.PARAMETER, ValidationConfig.MANDATORY_BASKETS, mandatoryBaskets);
+                }
+                final String optionalBaskets = settings.getValue(SETTING_OPTIONAL_BASKETS);
+                if(optionalBaskets!=null) {
+                    modelConfig.setConfigValue(ValidationConfig.PARAMETER, ValidationConfig.OPTIONAL_BASKETS, optionalBaskets);
+                }
+                final String bannedBaskets = settings.getValue(SETTING_BANNED_BASKETS);
+                if(bannedBaskets!=null) {
+                    modelConfig.setConfigValue(ValidationConfig.PARAMETER, ValidationConfig.BANNED_BASKETS, bannedBaskets);
+                }
 				allowItfAreaHoles = TRUE.equals(settings.getValue(SETTING_ALLOW_ITF_AREA_HOLES));
 				skipGeometryErrors=ValidationConfig.OFF.equals(modelConfig.getConfigValue(ValidationConfig.PARAMETER, ValidationConfig.DEFAULT_GEOMETRY_TYPE_VALIDATION));
 				String settingsMultiplicityValidation=settings.getValue(SETTING_MULTIPLICITY_VALIDATION);
@@ -439,6 +475,7 @@ public class Validator {
 			        if(ioxReader instanceof IoxIliReader){
 			            ((IoxIliReader) ioxReader).setModel(td);    
 			        }
+			        String fileMd5=RepositoryAccess.calcMD5(new File(filename));
 					statistics.setFilename(filename);
 					errFactory.setDataSource(filename);
 		            td.setActualRuntimeParameter(ch.interlis.ili2c.metamodel.RuntimeParameters.MINIMAL_RUNTIME_SYSTEM01_CURRENT_TRANSFERFILE, filename);
@@ -452,6 +489,9 @@ public class Validator {
 	                            EhiLogger.logState("...object count "+validator.getObjectCount()+" (structured elements "+validator.getStructCount()+")...");
 						    }
 							event=ioxReader.read();
+							if(event instanceof ch.interlis.iox_j.StartBasketEvent) {
+							    ((ch.interlis.iox_j.StartBasketEvent)event).setFileMd5(fileMd5);
+							}
 							// feed object by object to validator
 							validator.validate(event);
 							statistics.add(event);
@@ -467,6 +507,45 @@ public class Validator {
 						}
 					}
 				}
+                for(String filename:refDataFiles){
+                    // setup data reader (ITF or XTF)
+                    IoxReader ioxReader=null;
+                    ioxReader = createReader(filename, td,errFactory,settings,pool);
+                    if(ioxReader instanceof IoxIliReader){
+                        ((IoxIliReader) ioxReader).setModel(td);    
+                    }
+                    String fileMd5=RepositoryAccess.calcMD5(new File(filename));
+                    statistics.setFilename(filename);
+                    errFactory.setDataSource(filename);
+                    td.setActualRuntimeParameter(ch.interlis.ili2c.metamodel.RuntimeParameters.MINIMAL_RUNTIME_SYSTEM01_CURRENT_TRANSFERFILE, filename);
+                    try{
+                        IoxEvent event=null;
+                        do{
+                            long currentTime=System.currentTimeMillis();
+                            long slice=(currentTime-startTime)/1000l/60l/10l;
+                            if(slice>currentSlice) {
+                                currentSlice=slice;
+                                EhiLogger.logState("...object count "+validator.getObjectCount()+" (structured elements "+validator.getStructCount()+")...");
+                            }
+                            event=ioxReader.read();
+                            if(event instanceof ch.interlis.iox_j.StartBasketEvent) {
+                                ((ch.interlis.iox_j.StartBasketEvent)event).setFileMd5(fileMd5);
+                            }
+                            // feed object by object to validator
+                            validator.addReferenceData(event);
+                            statistics.add(event);
+                        }while(!(event instanceof EndTransferEvent));
+                    }finally{
+                        if(ioxReader!=null){
+                            try {
+                                ioxReader.close();
+                            } catch (IoxException e) {
+                                EhiLogger.logError(e);
+                            }
+                            ioxReader=null;
+                        }
+                    }
+                }
 
 				validator.doSecondPass();
                 EhiLogger.logState("object count "+validator.getObjectCount()+" (structured elements "+validator.getStructCount()+")");
@@ -539,7 +618,7 @@ public class Validator {
         ValidationConfig config = IniFileReader.readFile(metaConfigFile);
         baseConfig.value=config.getConfigValue(MetaConfig.CONFIGURATION, MetaConfig.CONFIG_BASE_CONFIG);
         String referenceData=config.getConfigValue(MetaConfig.CONFIGURATION, MetaConfig.CONFIG_REFERENCE_DATA);
-        settings.setValue(Validator.SETTING_DATA, referenceData);
+        settings.setValue(Validator.SETTING_REF_DATA, referenceData);
         String validConfig=config.getConfigValue(MetaConfig.CONFIGURATION, MetaConfig.CONFIG_VALIDATOR_CONFIG);
         settings.setValue(Validator.SETTING_CONFIGFILE, validConfig);
         java.util.Set<String> params=config.getConfigParams(Validator.METACONFIG_ILIVALIDATOR);
@@ -565,6 +644,12 @@ public class Validator {
                     settings.setValue(Validator.SETTING_SIMPLE_BOUNDARY,config.getConfigValue(Validator.METACONFIG_ILIVALIDATOR, arg));
                 }else if(arg.equals("skipPolygonBuilding")){
                     settings.setValue(ch.interlis.iox_j.validator.Validator.CONFIG_DO_ITF_LINETABLES, config.getConfigValue(Validator.METACONFIG_ILIVALIDATOR, arg));
+                }else if(arg.equals("mandatoryBaskets")){
+                    settings.setValue(Validator.SETTING_MANDATORY_BASKETS, config.getConfigValue(Validator.METACONFIG_ILIVALIDATOR, arg));
+                }else if(arg.equals("optionalBaskets")){
+                    settings.setValue(Validator.SETTING_OPTIONAL_BASKETS, config.getConfigValue(Validator.METACONFIG_ILIVALIDATOR, arg));
+                }else if(arg.equals("bannedBaskets")){
+                    settings.setValue(Validator.SETTING_BANNED_BASKETS, config.getConfigValue(Validator.METACONFIG_ILIVALIDATOR, arg));
                 }else {
                     EhiLogger.logAdaption("unknown parameter in metaconfig <"+arg+">");
                 }
@@ -778,6 +863,9 @@ public class Validator {
     /** data files to include in validation. Multiple files are separated by semicolon (';'). 
      */
     public static final String SETTING_DATA="org.interlis2.validator.data";
+    /** reference data files to include in validation. Multiple files are separated by semicolon (';'). 
+     */
+    public static final String SETTING_REF_DATA="org.interlis2.validator.refdata";
 	/** the main folder of program.
 	 */
 	public static final String SETTING_APPHOME="org.interlis2.validator.appHome";
@@ -836,6 +924,18 @@ public class Validator {
      * e.g. RuntimeSystem23.JobId1=test1;RuntimeSystem23.JobId2=test2
      */
     public static final String SETTING_RUNTIME_PARAMETERS = "org.interlis2.validator.runtimeParameters";
+    /** List of required topics in transfer. Qualified ili-name of topics; semicolon separated.
+     * e.g. ModelA.TopicA;ModelA.TopicB
+     */
+    public static final String SETTING_MANDATORY_BASKETS = "org.interlis2.validator.mandatoryBaskets";
+    /** List of optional topics in transfer. Qualified ili-name of topics; semicolon separated.
+     * e.g. ModelA.TopicA;ModelA.TopicB
+     */
+    public static final String SETTING_OPTIONAL_BASKETS = "org.interlis2.validator.optionalBaskets";
+    /** List of not allowed topics in transfer. Qualified ili-name of topics; semicolon separated.
+     * e.g. ModelA.TopicA;ModelA.TopicB
+     */
+    public static final String SETTING_BANNED_BASKETS = "org.interlis2.validator.bannedBaskets";
 	/** Name of the data file (XTF format) that receives the validation results.
 	 */
 	public static final String SETTING_XTFLOG = "org.interlis2.validator.xtflog";

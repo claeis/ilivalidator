@@ -56,6 +56,7 @@ public class Main {
 		}
 		// arguments on export
 		String[] xtfFile=null;
+		java.util.List<String> xtfRefFile=new java.util.ArrayList<String>();
 		String httpProxyHost = null;
 		String httpProxyPort = null;
 		if(args.length==0){
@@ -81,6 +82,12 @@ public class Main {
 			}else if(arg.equals("--modeldir")){
 				argi++;
 				settings.setValue(Validator.SETTING_ILIDIRS, args[argi]);
+            }else if(arg.equals("--refdata")){
+                argi++;
+                String refdatav[]= args[argi].split(";");
+                for(String refdata:refdatav) {
+                    xtfRefFile.add(refdata);
+                }
 			}else if(arg.equals("--config")) {
 			    argi++;
 			    settings.setValue(Validator.SETTING_CONFIGFILE, args[argi]);
@@ -90,6 +97,15 @@ public class Main {
             }else if(arg.equals("--runtimeParams")) {
                 argi++;
                 settings.setValue(Validator.SETTING_RUNTIME_PARAMETERS, args[argi]);
+            }else if(arg.equals("--mandatoryBaskets")) {
+                argi++;
+                settings.setValue(Validator.SETTING_MANDATORY_BASKETS, args[argi]);
+            }else if(arg.equals("--optionalBaskets")) {
+                argi++;
+                settings.setValue(Validator.SETTING_OPTIONAL_BASKETS, args[argi]);
+            }else if(arg.equals("--bannedBaskets")) {
+                argi++;
+                settings.setValue(Validator.SETTING_BANNED_BASKETS, args[argi]);
 			}else if(arg.equals("--forceTypeValidation")){
 				settings.setValue(Validator.SETTING_FORCE_TYPE_VALIDATION,Validator.TRUE);
 			}else if(arg.equals("--disableAreaValidation")){
@@ -163,6 +179,7 @@ public class Main {
 					System.err.println("OPTIONS");
 					System.err.println();
 					System.err.println("--gui                 start GUI.");
+                    System.err.println("--refdata file        reference data file.");
 				    System.err.println("--config file         config file to control validation.");
 					System.err.println("--forceTypeValidation  restrict customization of validation related to \"multiplicity\".");
 					System.err.println("--disableAreaValidation  disable AREA validation.");
@@ -177,6 +194,9 @@ public class Main {
 					System.err.println("--allowItfAreaHoles   allow empty holes (unassigned inner boundaries) in ITF AREA attributes.");
 					System.err.println("--simpleBoundary      allow only simple lines as polygon boundary lines.");
 					System.err.println("--runtimeParams param=value define values of runtime parameters.");
+                    System.err.println("--mandatoryBaskets Topics list of required topics in transfer file.");
+                    System.err.println("--optionalBaskets Topics list of optional topics in transfer file.");
+                    System.err.println("--bannedBaskets Topics list of not allowed topics in transfer file.");
                     System.err.println("--singlePass          skip any validations that require a second pass.");
 				    System.err.println("--log file            text file, that receives validation results.");
                     System.err.println("--logtime             include timestamps in logfile.");
@@ -200,6 +220,7 @@ public class Main {
 				break;
 			}
 		}
+		settings.setValue(Validator.SETTING_REF_DATA,makeFileList(xtfRefFile.toArray(new String[xtfRefFile.size()])));
 		int dataFileCount=args.length-argi;
 		if(doGui){
 			if(dataFileCount>0) {
@@ -364,5 +385,18 @@ public class Main {
 	  }
 	  return null;
 	}
+    public static String makeFileList(String[] xtfRefFile) {
+        if(xtfRefFile==null) {
+            return null;
+        }
+        StringBuffer files=new StringBuffer();
+        String sep="";
+        for(String file:xtfRefFile) {
+            files.append(sep);
+            files.append(file);
+            sep=";";
+        }
+        return files.toString();
+    }
 	
 }

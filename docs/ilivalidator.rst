@@ -194,6 +194,20 @@ durch den Benutzer ins Repository übertragen werden.
 
 ``java -jar ilivalidator.jar --updateIliData --ilidata updatedIlidata.xml --repos http://models.geo.admin.ch --datasetId datasetId newVersionOfData.xml``
 
+Fall 12
+~~~~~~~
+
+Die Datei wird heruntergeladen und validiert/geprüft.
+
+``java -jar ilivalidator.jar https://models.interlis.ch/refhb23/MiniCoordSysData-20200320.xml``
+
+Fall 13
+~~~~~~~
+
+Die Datei transfer.xtf wird validiert/geprüft und muss einen Basket des 
+Topics ``TopicA`` aus dem Modell ``ModelA`` enthalten.
+
+``java -jar ilivalidator.jar --mandatoryBasket ModelA.TopicA transfer.xtf``
 
 Referenz
 ========
@@ -210,6 +224,9 @@ Aufruf-Syntax
 
 ``file`` kann auch die Form ``ilidata:DatesetId`` oder ``ilidata:BasketId`` haben, 
 dann wird die entsprechende Datei aus den Repositories benutzt.
+
+``file`` kann auch die Form ``http:url`` oder ``https:url`` haben, 
+dann wird die entsprechende Datei heruntergeladen und benutzt.
 
 Ohne Kommandozeilenargumente erscheint die Bildschirmmaske, mit deren Hilfe die zu validierende Datei 
 ausgewählt und die Validierung gestartet werden kann.
@@ -287,6 +304,15 @@ Optionen:
 +---------------------------------------------+----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------+
 | ``--simpleBoundary``                        | Lässt bei XTF SURFACE/AREA Attributen als XML BOUNDARY Elemente nur einfache Linien zu.                                                                                                                                                                                                                                                                                                                                                                                                                                                |
 |                                             | Jeder Rand muss also als eigenes BOUNDARY Element codiert sein.                                                                                                                                                                                                                                                                                                                                                                                                                                                                        |
+|                                             |                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                        |
++---------------------------------------------+----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------+
+| ``--mandatoryBaskets topicnames``           | Die Transferdatei muss Baskets der gegebenen Topics enthalten. Mehrere Topicnamen können durch Semikolon ‚;‘ getrennt werden.                                                                                                                                                                                                                                                                                                                                                                                                          |
+|                                             |                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                        |
++---------------------------------------------+----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------+
+| ``--optionalBaskets topicnames``            | Die Transferdatei kann Baskets der gegebenen Topics enthalten. Mehrere Topicnamen können durch Semikolon ‚;‘ getrennt werden.                                                                                                                                                                                                                                                                                                                                                                                                          |
+|                                             |                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                        |
++---------------------------------------------+----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------+
+| ``--bannedBaskets topicnames``              | Die Transferdatei darf keine Baskets der gegebenen Topics enthalten. Mehrere Topicnamen können durch Semikolon ‚;‘ getrennt werden.                                                                                                                                                                                                                                                                                                                                                                                                    |
 |                                             |                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                        |
 +---------------------------------------------+----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------+
 | ``--models modelnames``                     | Setzt spezifische Modellnamen, welche sich innerhalb von ili-Dateien befinden. Mehrere Modellnamen können durch Semikolon ‚;‘ getrennt werden. Das Setzen des Pfades, der zu den Modellen führt, muss mittels '--modeldir path' angegeben werden.                                                                                                                                                                                                                                                                                      |
@@ -441,6 +467,24 @@ In der Meta-Konfigurationsdatei werden die folgenden Parameter unterstützt (hie
 |                                 |   skipPolygonBuilding=true                         |                                                                                   |  
 |                                 |                                                    |                                                                                   |
 +---------------------------------+----------------------------------------------------+-----------------------------------------------------------------------------------+
+|                                 | .. code::                                          |                                                                                   |
+|                                 |                                                    |                                                                                   |
+| mandatoryBaskets                |   [ch.ehi.ilivalidator]                            | Entspricht dem Kommandozeilenargument ``--mandatoryBaskets``                      |
+|                                 |   mandatoryBaskets=ModelA.TopicA;ModelB.TopicC     |                                                                                   |  
+|                                 |                                                    |                                                                                   |
++---------------------------------+----------------------------------------------------+-----------------------------------------------------------------------------------+
+|                                 | .. code::                                          |                                                                                   |
+|                                 |                                                    |                                                                                   |
+| optionalBaskets                 |   [ch.ehi.ilivalidator]                            | Entspricht dem Kommandozeilenargument ``--optionalBaskets``                       |
+|                                 |   optionalBaskets=ModelA.TopicA;ModelB.TopicC      |                                                                                   |  
+|                                 |                                                    |                                                                                   |
++---------------------------------+----------------------------------------------------+-----------------------------------------------------------------------------------+
+|                                 | .. code::                                          |                                                                                   |
+|                                 |                                                    |                                                                                   |
+| bannedBaskets                   |   [ch.ehi.ilivalidator]                            | Entspricht dem Kommandozeilenargument ``--bannedBaskets``                         |
+|                                 |   bannedBaskets=ModelA.TopicA;ModelB.TopicC        |                                                                                   |  
+|                                 |                                                    |                                                                                   |
++---------------------------------+----------------------------------------------------+-----------------------------------------------------------------------------------+
 
 
 
@@ -476,71 +520,89 @@ INI-Konfigurationsdatei
 INI-Globale Konfigurationen
 ~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
-+---------------------------------+-------------------------------------------+-----------------------------------------------------------------------------------+
-| Konfiguration                   | Beispiel                                  | Beschreibung                                                                      |
-+=================================+===========================================+===================================================================================+
-| additionalModels                | ["PARAMETER"]                             | "Model1" und "Modell2" sind die Namen der Modelle mit Definitionen von            |
-|                                 | additionalModels="Model1;Modell2"         | zusätzlichen Validierungen (in Form von Interlis Konsistenbedingungen).           |
-|                                 |                                           |                                                                                   |
-|                                 |                                           | Mehrere Zusatzmodelle werden mit einem Strichpunkt ";" getrennt.                  |
-|                                 |                                           |                                                                                   |
-+---------------------------------+-------------------------------------------+-----------------------------------------------------------------------------------+
-| validation                      | ["PARAMETER"]                             | "off" schaltet generell alle Prüfungen aus.                                       |
-|                                 | validation="off"                          | Mögliche Einstellungen sind: "off", "on". DEFAULT ist "on".                       |
-|                                 |                                           |                                                                                   |
-+---------------------------------+-------------------------------------------+-----------------------------------------------------------------------------------+
-| areaOverlapValidation           | ["PARAMETER"]                             | "off" schaltet die AREA-Topology Prüfung aus.                                     |
-|                                 | areaOverlapValidation="off"               | Mögliche Einstellungen sind: "off", "on". DEFAULT ist "on".                       |
-|                                 |                                           |                                                                                   |
-+---------------------------------+-------------------------------------------+-----------------------------------------------------------------------------------+
-| constraintValidation            | ["PARAMETER"]                             | "off" schaltet alle Prüfungen von Konsistenzbedingungen aus.                      |
-|                                 | constraintValidation="off"                | Mögliche Einstellungen sind: "off", "on". DEFAULT ist "on".                       |
-|                                 |                                           |                                                                                   |
-+---------------------------------+-------------------------------------------+-----------------------------------------------------------------------------------+
-| defaultGeometryTypeValidation   | ["PARAMETER"]                             | Der Default-Wert für die Datentypprüfung bei Geometrie-Attributen.                |
-|                                 | defaultGeometryTypeValidation="off"       | Mögliche Einstellungen sind: "warning", "off", "on". DEFAULT ist "on".            |
-|                                 |                                           |                                                                                   |
-+---------------------------------+-------------------------------------------+-----------------------------------------------------------------------------------+
-| allowOnlyMultiplicityReduction  | ["PARAMETER"]                             | "true" ignoriert die Konfiguration der Typprüfungen (mittels Metaattribut         |
-|                                 | allowOnlyMultiplicityReduction="true"     | ``!!@ ilivalid.type``) aus der ili-Datei,                                         |
-|                                 |                                           | d.h. es kann nur die Prüfung der Multiplizität konfiguriert werden.               |
-|                                 |                                           | Mögliche Einstellungen sind: "true", "false". DEFAULT ist "false".                |
-|                                 |                                           |                                                                                   |
-+---------------------------------+-------------------------------------------+-----------------------------------------------------------------------------------+
-| allObjectsAccessible            | ["PARAMETER"]                             | "true" definiert, dass die mitgegebenen Dateien alle                              |
-|                                 | allObjectsAccessible="true"               | Objekte enthalten, d.h. dass alle Referenzen (insb. mit EXTERNAL) auflösbar sind. |
-|                                 |                                           | Mit false können bei Referenzen mit EXTERNAL                                      |
-|                                 |                                           | nicht alle Prüfungen durchgeführt werden.                                         |
-|                                 |                                           | Mögliche Einstellungen sind: "true", "false". DEFAULT ist "false".                |
-|                                 |                                           |                                                                                   |
-+---------------------------------+-------------------------------------------+-----------------------------------------------------------------------------------+
-| multiplicity                    | ["PARAMETER"]                             | "off" schaltet die Multiplizitätsprüfung für alle Attribute und Rollen aus.       |
-|                                 | multiplicity="off"                        | Mögliche Einstellungen sind: "on", "warning", "off". DEFAULT ist "on".            |
-|                                 |                                           |                                                                                   |
-+---------------------------------+-------------------------------------------+-----------------------------------------------------------------------------------+
-| disableRounding                 | ["PARAMETER"]                             | "true" schaltet das Runden vor der Validierung von                                |
-|                                 | disableRounding="true"                    | numerischen Werten aus (inkl. Koordinaten).                                       |
-|                                 |                                           | Mögliche Einstellungen sind: "true", "false". DEFAULT ist "false".                |
-+---------------------------------+-------------------------------------------+-----------------------------------------------------------------------------------+
-| simpleBoundary                  | ["PARAMETER"]                             | "true" wie das Kommandzeilenargument --simpleBoundary                             |
-|                                 | simpleBoundary="true"                     |                                                                                   |
-|                                 |                                           | Mögliche Einstellungen sind: "true", "false".                                     |
-|                                 |                                           | DEFAULT ist "false"; bei einem 2.4 Modell "true".                                 |
-+---------------------------------+-------------------------------------------+-----------------------------------------------------------------------------------+
-| disableAreAreasMessages         | ["PARAMETER"]                             | "true" schaltet die Meldungen bei areAreas() Funktionen aus, d.h. die Funktion    |
-|                                 | disableAreAreasMessages="true"            | gibt keine Meldung aus, und liefert nur via den Funktioneswert, ob die Daten die  |
-|                                 |                                           | AREA Bedingung erfüllen, oder nicht.                                              |
-|                                 |                                           | Bei "false" gibt die areAreas() Funktionen zusätzlich zum Funktionswert           |
-|                                 |                                           | Meldungen aus, wo die Daten die                                                   |
-|                                 |                                           | AREA Bedingung nicht erfüllen.                                                    |
-|                                 |                                           | Betrifft: INTERLIS.areAreas(), INTERLIS_ext.areAreas2(), INTERLIS_ext.areaAreas3()|
-|                                 |                                           | Mögliche Einstellungen sind: "true", "false". DEFAULT ist "false".                |
-+---------------------------------+-------------------------------------------+-----------------------------------------------------------------------------------+
-| verifyModelVersion              | ["PARAMETER"]                             | "true" es wird geprüft, ob die VERSIONs Angabe zum Model in der HEADERSECTION     |
-|                                 | verifyModelVersion="true"                 | der XTF-Datei mit der Angabe im Modell (.ili-Datei)  übereinstimmt.               |
-|                                 |                                           | Wenn die Angabe nicht übereinstimmt, erfolt eine Info-Meldung.                    |
-|                                 |                                           | Mögliche Einstellungen sind: "true", "false". DEFAULT ist "false".                |
-+---------------------------------+-------------------------------------------+-----------------------------------------------------------------------------------+
++---------------------------------+-------------------------------------------------+-----------------------------------------------------------------------------------+
+| Konfiguration                   | Beispiel                                        | Beschreibung                                                                      |
++=================================+=================================================+===================================================================================+
+| additionalModels                | ["PARAMETER"]                                   | "Model1" und "Modell2" sind die Namen der Modelle mit Definitionen von            |
+|                                 | additionalModels="Model1;Modell2"               | zusätzlichen Validierungen (in Form von Interlis Konsistenbedingungen).           |
+|                                 |                                                 |                                                                                   |
+|                                 |                                                 | Mehrere Zusatzmodelle werden mit einem Strichpunkt ";" getrennt.                  |
+|                                 |                                                 |                                                                                   |
++---------------------------------+-------------------------------------------------+-----------------------------------------------------------------------------------+
+| validation                      | ["PARAMETER"]                                   | "off" schaltet generell alle Prüfungen aus.                                       |
+|                                 | validation="off"                                | Mögliche Einstellungen sind: "off", "on". DEFAULT ist "on".                       |
+|                                 |                                                 |                                                                                   |
++---------------------------------+-------------------------------------------------+-----------------------------------------------------------------------------------+
+| areaOverlapValidation           | ["PARAMETER"]                                   | "off" schaltet die AREA-Topology Prüfung aus.                                     |
+|                                 | areaOverlapValidation="off"                     | Mögliche Einstellungen sind: "off", "on". DEFAULT ist "on".                       |
+|                                 |                                                 |                                                                                   |
++---------------------------------+-------------------------------------------------+-----------------------------------------------------------------------------------+
+| constraintValidation            | ["PARAMETER"]                                   | "off" schaltet alle Prüfungen von Konsistenzbedingungen aus.                      |
+|                                 | constraintValidation="off"                      | Mögliche Einstellungen sind: "off", "on". DEFAULT ist "on".                       |
+|                                 |                                                 |                                                                                   |
++---------------------------------+-------------------------------------------------+-----------------------------------------------------------------------------------+
+| defaultGeometryTypeValidation   | ["PARAMETER"]                                   | Der Default-Wert für die Datentypprüfung bei Geometrie-Attributen.                |
+|                                 | defaultGeometryTypeValidation="off"             | Mögliche Einstellungen sind: "warning", "off", "on". DEFAULT ist "on".            |
+|                                 |                                                 |                                                                                   |
++---------------------------------+-------------------------------------------------+-----------------------------------------------------------------------------------+
+| allowOnlyMultiplicityReduction  | ["PARAMETER"]                                   | "true" ignoriert die Konfiguration der Typprüfungen (mittels Metaattribut         |
+|                                 | allowOnlyMultiplicityReduction="true"           | ``!!@ ilivalid.type``) aus der ili-Datei,                                         |
+|                                 |                                                 | d.h. es kann nur die Prüfung der Multiplizität konfiguriert werden.               |
+|                                 |                                                 | Mögliche Einstellungen sind: "true", "false". DEFAULT ist "false".                |
+|                                 |                                                 |                                                                                   |
++---------------------------------+-------------------------------------------------+-----------------------------------------------------------------------------------+
+| allObjectsAccessible            | ["PARAMETER"]                                   | "true" definiert, dass die mitgegebenen Dateien alle                              |
+|                                 | allObjectsAccessible="true"                     | Objekte enthalten, d.h. dass alle Referenzen (insb. mit EXTERNAL) auflösbar sind. |
+|                                 |                                                 | Mit false können bei Referenzen mit EXTERNAL                                      |
+|                                 |                                                 | nicht alle Prüfungen durchgeführt werden.                                         |
+|                                 |                                                 | Mögliche Einstellungen sind: "true", "false". DEFAULT ist "false".                |
+|                                 |                                                 |                                                                                   |
++---------------------------------+-------------------------------------------------+-----------------------------------------------------------------------------------+
+| multiplicity                    | ["PARAMETER"]                                   | "off" schaltet die Multiplizitätsprüfung für alle Attribute und Rollen aus.       |
+|                                 | multiplicity="off"                              | Mögliche Einstellungen sind: "on", "warning", "off". DEFAULT ist "on".            |
+|                                 |                                                 |                                                                                   |
++---------------------------------+-------------------------------------------------+-----------------------------------------------------------------------------------+
+| disableRounding                 | ["PARAMETER"]                                   | "true" schaltet das Runden vor der Validierung von                                |
+|                                 | disableRounding="true"                          | numerischen Werten aus (inkl. Koordinaten).                                       |
+|                                 |                                                 | Mögliche Einstellungen sind: "true", "false". DEFAULT ist "false".                |
++---------------------------------+-------------------------------------------------+-----------------------------------------------------------------------------------+
+| simpleBoundary                  | ["PARAMETER"]                                   | "true" wie das Kommandzeilenargument --simpleBoundary                             |
+|                                 | simpleBoundary="true"                           |                                                                                   |
+|                                 |                                                 | Mögliche Einstellungen sind: "true", "false".                                     |
+|                                 |                                                 | DEFAULT ist "false"; bei einem 2.4 Modell "true".                                 |
++---------------------------------+-------------------------------------------------+-----------------------------------------------------------------------------------+
+| disableAreAreasMessages         | ["PARAMETER"]                                   | "true" schaltet die Meldungen bei areAreas() Funktionen aus, d.h. die Funktion    |
+|                                 | disableAreAreasMessages="true"                  | gibt keine Meldung aus, und liefert nur via den Funktioneswert, ob die Daten die  |
+|                                 |                                                 | AREA Bedingung erfüllen, oder nicht.                                              |
+|                                 |                                                 | Bei "false" gibt die areAreas() Funktionen zusätzlich zum Funktionswert           |
+|                                 |                                                 | Meldungen aus, wo die Daten die                                                   |
+|                                 |                                                 | AREA Bedingung nicht erfüllen.                                                    |
+|                                 |                                                 | Betrifft: INTERLIS.areAreas(), INTERLIS_ext.areAreas2(), INTERLIS_ext.areaAreas3()|
+|                                 |                                                 | Mögliche Einstellungen sind: "true", "false". DEFAULT ist "false".                |
++---------------------------------+-------------------------------------------------+-----------------------------------------------------------------------------------+
+| verifyModelVersion              | ["PARAMETER"]                                   | "true" es wird geprüft, ob die VERSIONs Angabe zum Model in der HEADERSECTION     |
+|                                 | verifyModelVersion="true"                       | der XTF-Datei mit der Angabe im Modell (.ili-Datei)  übereinstimmt.               |
+|                                 |                                                 | Wenn die Angabe nicht übereinstimmt, erfolt eine Info-Meldung.                    |
+|                                 |                                                 | Mögliche Einstellungen sind: "true", "false". DEFAULT ist "false".                |
++---------------------------------+-------------------------------------------------+-----------------------------------------------------------------------------------+
+| mandatoryBaskets                | ["PARAMETER"]                                   | "ModelA.TopicA" und "ModelB.TopicC" sind die qualifizierten Namen der Topics      |
+|                                 | mandatoryBaskets="ModelA.TopicA;ModelB.TopicC"  | die in der Transferdatei vorkommen müssen.                                        |
+|                                 |                                                 |                                                                                   |
+|                                 |                                                 | Mehrere Topics werden mit einem Strichpunkt ";" getrennt.                         |
+|                                 |                                                 |                                                                                   |
++---------------------------------+-------------------------------------------------+-----------------------------------------------------------------------------------+
+| optionalBaskets                 | ["PARAMETER"]                                   | "ModelA.TopicA" und "ModelB.TopicC" sind die qualifizierten Namen der Topics      |
+|                                 | optionalBaskets="ModelA.TopicA;ModelB.TopicC"   | die in der Transferdatei vorkommen müssen.                                        |
+|                                 |                                                 |                                                                                   |
+|                                 |                                                 | Mehrere Topics werden mit einem Strichpunkt ";" getrennt.                         |
+|                                 |                                                 |                                                                                   |
++---------------------------------+-------------------------------------------------+-----------------------------------------------------------------------------------+
+| bannedBaskets                   | ["PARAMETER"]                                   | "ModelA.TopicA" und "ModelB.TopicC" sind die qualifizierten Namen der Topics      |
+|                                 | bannedBaskets="ModelA.TopicA;ModelB.TopicC"     | die in der Transferdatei vorkommen müssen.                                        |
+|                                 |                                                 |                                                                                   |
+|                                 |                                                 | Mehrere Topics werden mit einem Strichpunkt ";" getrennt.                         |
+|                                 |                                                 |                                                                                   |
++---------------------------------+-------------------------------------------------+-----------------------------------------------------------------------------------+
 
 INTERLIS-Metaattribute
 ~~~~~~~~~~~~~~~~~~~~~~
@@ -675,6 +737,20 @@ Modell IliVErrors
 `IliVErrors.ili`_
 
 .. _IliVErrors.ili: IliVErrors.ili
+
+
+Umfang der Transferdatei
+------------------------
+Mit den Parameteren ``--mandatoryBaskets``, ``--optionalBaskets``, ``--bannedBaskets`` kann der Umfang der Transferdatei
+definiert werden. 
+
+Mit dem Spezialwert ``ANY`` kann definiert werden, dass irgendein Basket vorkommen muss, kann oder nicht vorkommen darf.
+
+Falls keiner dieser Parameter definiert wurde, gilt: ``--optionalBaskets=ANY``. Also jeder Basket darf im Transfer vorkommen, aber keiner muss und keiner darf nicht vorkommen.
+
+Falls optionalBaskets gesetzt ist und bannedBaskets nicht gesetzt ist, gilt: ``--bannedBaskets=ANY``.
+
+Falls mandatoryBaskets gesetzt ist und optionalBaskets nicht gesetzt ist, gilt: ``--optionalBaskets=ANY``.
 
 
 INTERLIS 1
