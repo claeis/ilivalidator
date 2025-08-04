@@ -435,6 +435,18 @@ public class Validator {
 				if(settingsAllObjectsAccessible!=null) {
 	                modelConfig.setConfigValue(ValidationConfig.PARAMETER, ValidationConfig.ALL_OBJECTS_ACCESSIBLE, settingsAllObjectsAccessible);
 				}
+                final String mandatoryBaskets = settings.getValue(SETTING_MANDATORY_BASKETS);
+                if(mandatoryBaskets!=null) {
+                    modelConfig.setConfigValue(ValidationConfig.PARAMETER, ValidationConfig.MANDATORY_BASKETS, mandatoryBaskets);
+                }
+                final String optionalBaskets = settings.getValue(SETTING_OPTIONAL_BASKETS);
+                if(optionalBaskets!=null) {
+                    modelConfig.setConfigValue(ValidationConfig.PARAMETER, ValidationConfig.OPTIONAL_BASKETS, optionalBaskets);
+                }
+                final String bannedBaskets = settings.getValue(SETTING_BANNED_BASKETS);
+                if(bannedBaskets!=null) {
+                    modelConfig.setConfigValue(ValidationConfig.PARAMETER, ValidationConfig.BANNED_BASKETS, bannedBaskets);
+                }
 				allowItfAreaHoles = TRUE.equals(settings.getValue(SETTING_ALLOW_ITF_AREA_HOLES));
 				skipGeometryErrors=ValidationConfig.OFF.equals(modelConfig.getConfigValue(ValidationConfig.PARAMETER, ValidationConfig.DEFAULT_GEOMETRY_TYPE_VALIDATION));
 				String settingsMultiplicityValidation=settings.getValue(SETTING_MULTIPLICITY_VALIDATION);
@@ -632,6 +644,12 @@ public class Validator {
                     settings.setValue(Validator.SETTING_SIMPLE_BOUNDARY,config.getConfigValue(Validator.METACONFIG_ILIVALIDATOR, arg));
                 }else if(arg.equals("skipPolygonBuilding")){
                     settings.setValue(ch.interlis.iox_j.validator.Validator.CONFIG_DO_ITF_LINETABLES, config.getConfigValue(Validator.METACONFIG_ILIVALIDATOR, arg));
+                }else if(arg.equals("mandatoryBaskets")){
+                    settings.setValue(Validator.SETTING_MANDATORY_BASKETS, config.getConfigValue(Validator.METACONFIG_ILIVALIDATOR, arg));
+                }else if(arg.equals("optionalBaskets")){
+                    settings.setValue(Validator.SETTING_OPTIONAL_BASKETS, config.getConfigValue(Validator.METACONFIG_ILIVALIDATOR, arg));
+                }else if(arg.equals("bannedBaskets")){
+                    settings.setValue(Validator.SETTING_BANNED_BASKETS, config.getConfigValue(Validator.METACONFIG_ILIVALIDATOR, arg));
                 }else {
                     EhiLogger.logAdaption("unknown parameter in metaconfig <"+arg+">");
                 }
@@ -906,6 +924,18 @@ public class Validator {
      * e.g. RuntimeSystem23.JobId1=test1;RuntimeSystem23.JobId2=test2
      */
     public static final String SETTING_RUNTIME_PARAMETERS = "org.interlis2.validator.runtimeParameters";
+    /** List of required topics in transfer. Qualified ili-name of topics; semicolon separated.
+     * e.g. ModelA.TopicA;ModelA.TopicB
+     */
+    public static final String SETTING_MANDATORY_BASKETS = "org.interlis2.validator.mandatoryBaskets";
+    /** List of optional topics in transfer. Qualified ili-name of topics; semicolon separated.
+     * e.g. ModelA.TopicA;ModelA.TopicB
+     */
+    public static final String SETTING_OPTIONAL_BASKETS = "org.interlis2.validator.optionalBaskets";
+    /** List of not allowed topics in transfer. Qualified ili-name of topics; semicolon separated.
+     * e.g. ModelA.TopicA;ModelA.TopicB
+     */
+    public static final String SETTING_BANNED_BASKETS = "org.interlis2.validator.bannedBaskets";
 	/** Name of the data file (XTF format) that receives the validation results.
 	 */
 	public static final String SETTING_XTFLOG = "org.interlis2.validator.xtflog";
