@@ -266,7 +266,17 @@ public class Validator {
             String refDataFromSettings=settings.getValue(Validator.SETTING_REF_DATA);
             String[] refDataFiles=new String[]{};
             if(refDataFromSettings!=null) {
-                refDataFiles = refDataFromSettings.split(";");
+                List<String> refFiles=new ArrayList<String>();
+                String refFilev[] = refDataFromSettings.split(";");
+                for(String refFile:refFilev){
+                    if(refFile.length()>0) {
+                        refFiles.add(refFile);
+                    }
+                }
+                refDataFiles=refFiles.toArray(new String[refFiles.size()]);
+            }
+            for(String refDataFile:refDataFiles){
+                EhiLogger.logState("refDataFile <"+refDataFile+">");
             }
 			// get local copies of remote files
             for(int idx=0;idx<dataFiles.length;idx++){
