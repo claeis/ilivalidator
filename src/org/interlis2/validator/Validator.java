@@ -322,7 +322,19 @@ public class Validator {
 					}
 					modelnames.addAll(modelnameFromFile);
 				}
-                for(String dataFile:refDataFiles){
+				String localRefDataFiles[]=new String[refDataFiles.length];
+                for(int idx=0;idx<refDataFiles.length;idx++){
+                    String dataFile=refDataFiles[idx];
+                    java.io.File localFile;
+                    try {
+                        localFile = IliManager.getLocalCopyOfReposFile(repoManager, dataFile);
+                    } catch (Ili2cException e) {
+                        EhiLogger.logError("failed to get local copy of data file <"+dataFile+">", e);
+                        return false;
+                    }
+                    localRefDataFiles[idx]=localFile.getPath();
+                }
+                for(String dataFile:localRefDataFiles){
                     List<String> modelnameFromFile=ch.interlis.iox_j.IoxUtility.getModels(new java.io.File(dataFile));
                     if(modelnameFromFile==null){
                         return false;
@@ -385,10 +397,6 @@ public class Validator {
 				return false;
 			}
 			String scope=settings.getValue(Validator.SETTING_VALIDATION_SCOPE);
-			if(scope!=null) {
-                EhiLogger.logState("validatonScope <"+scope+">");
-	            td.setActualRuntimeParameter("IliVRefData.Scope", scope);
-			}
 			td.setActualRuntimeParameter(ch.interlis.ili2c.metamodel.RuntimeParameters.MINIMAL_RUNTIME_SYSTEM01_RUNTIME_SYSTEM_NAME, Main.APP_NAME);
             td.setActualRuntimeParameter(ch.interlis.ili2c.metamodel.RuntimeParameters.MINIMAL_RUNTIME_SYSTEM01_RUNTIME_SYSTEM_VERSION, Main.getVersion());
 			String rtTxt=settings.getValue(SETTING_RUNTIME_PARAMETERS);
@@ -416,6 +424,14 @@ public class Validator {
 			        }
 			    }
 			}
+            if(scope!=null) {
+                td.setActualRuntimeParameter("IliVRefData.Scope", scope);
+            }else {
+                scope=(String)td.getActualRuntimeParameter("IliVRefData.Scope");
+            }
+            if(scope!=null) {
+                EhiLogger.logState("validatonScope <"+scope+">");
+            }
 			// read mapping files
 			RefMapping refMapping=new RefMapping();
             for(String file:refMappingFiles){
