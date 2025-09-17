@@ -1,3 +1,7 @@
+ilivalidator 1.15.0 (2025-09-xx)
+--------------------------------
+- new options --scope and --refmapping to evaluate reference data
+
 ilivalidator 1.14.9 (2025-08-05)
 --------------------------------
 - fix java.io.FileNotFoundException with version 1.14.8 (#450)

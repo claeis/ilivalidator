@@ -12,6 +12,7 @@ import java.util.Map;
 
 import ch.interlis.iox_j.statistics.Stopwatch;
 import org.interlis2.validator.impl.ErrorTracker;
+import org.interlis2.validator.refmapping.RefMapping;
 
 import ch.ehi.basics.logging.AbstractStdListener;
 import ch.ehi.basics.logging.EhiLogger;
@@ -263,20 +264,13 @@ public class Validator {
                 }
                 dataFiles=newdata;
             }
-            String refDataFromSettings=settings.getValue(Validator.SETTING_REF_DATA);
-            String[] refDataFiles=new String[]{};
-            if(refDataFromSettings!=null) {
-                List<String> refFiles=new ArrayList<String>();
-                String refFilev[] = refDataFromSettings.split(";");
-                for(String refFile:refFilev){
-                    if(refFile.length()>0) {
-                        refFiles.add(refFile);
-                    }
-                }
-                refDataFiles=refFiles.toArray(new String[refFiles.size()]);
-            }
+            String[] refDataFiles=getValueList(settings.getValue(Validator.SETTING_REF_DATA));
             for(String refDataFile:refDataFiles){
                 EhiLogger.logState("refDataFile <"+refDataFile+">");
+            }
+            String[] refMappingFiles=getValueList(settings.getValue(Validator.SETTING_REF_MAPPING_DATA));
+            for(String refDataFile:refMappingFiles){
+                EhiLogger.logState("refMappingFile <"+refDataFile+">");
             }
 			// get local copies of remote files
             for(int idx=0;idx<dataFiles.length;idx++){
@@ -290,8 +284,8 @@ public class Validator {
                 }
                 dataFiles[idx]=localFile.getPath();
             }
-            for(int idx=0;idx<refDataFiles.length;idx++){
-                String dataFile=refDataFiles[idx];
+            for(int idx=0;idx<refMappingFiles.length;idx++){
+                String dataFile=refMappingFiles[idx];
                 java.io.File localFile;
                 try {
                     localFile = IliManager.getLocalCopyOfReposFile(repoManager, dataFile);
@@ -299,7 +293,7 @@ public class Validator {
                     EhiLogger.logError("failed to get local copy of data file <"+dataFile+">", e);
                     return false;
                 }
-                refDataFiles[idx]=localFile.getPath();
+                refMappingFiles[idx]=localFile.getPath();
             }
             // get local copy of configFile
             java.io.File configFile=null;
@@ -390,6 +384,11 @@ public class Validator {
 			if(td==null){
 				return false;
 			}
+			String scope=settings.getValue(Validator.SETTING_VALIDATION_SCOPE);
+			if(scope!=null) {
+                EhiLogger.logState("validatonScope <"+scope+">");
+	            td.setActualRuntimeParameter("IliVRefData.Scope", scope);
+			}
 			td.setActualRuntimeParameter(ch.interlis.ili2c.metamodel.RuntimeParameters.MINIMAL_RUNTIME_SYSTEM01_RUNTIME_SYSTEM_NAME, Main.APP_NAME);
             td.setActualRuntimeParameter(ch.interlis.ili2c.metamodel.RuntimeParameters.MINIMAL_RUNTIME_SYSTEM01_RUNTIME_SYSTEM_VERSION, Main.getVersion());
 			String rtTxt=settings.getValue(SETTING_RUNTIME_PARAMETERS);
@@ -417,6 +416,11 @@ public class Validator {
 			        }
 			    }
 			}
+			// read mapping files
+			RefMapping refMapping=new RefMapping();
+            for(String file:refMappingFiles){
+                refMapping.addFile(new File(file));
+            }
 			// process data files
 			EhiLogger.logState("validate data...");
 			ch.interlis.iox_j.validator.Validator validator=null;
@@ -477,6 +481,7 @@ public class Validator {
 				validator=new ch.interlis.iox_j.validator.Validator(td,modelConfig, errHandler, errFactory, pool,settings);
 				validator.setAutoSecondPass(false);
 				statistics=new IoxStatistics(td,settings);
+				java.util.Set<String> topics=new HashSet<String>();
 				// loop over data objects
 				for(String filename:dataFiles){
 					// setup data reader (ITF or XTF)
@@ -499,6 +504,9 @@ public class Validator {
 	                            EhiLogger.logState("...object count "+validator.getObjectCount()+" (structured elements "+validator.getStructCount()+")...");
 						    }
 							event=ioxReader.read();
+                            if(event instanceof ch.interlis.iox.StartBasketEvent) {
+                                topics.add(((ch.interlis.iox.StartBasketEvent)event).getType());
+                            }
 							if(event instanceof ch.interlis.iox_j.StartBasketEvent) {
 							    ((ch.interlis.iox_j.StartBasketEvent)event).setFileMd5(fileMd5);
 							}
@@ -517,6 +525,19 @@ public class Validator {
 						}
 					}
 				}
+				String autoRefDataFiles[]=refMapping.getRefData(scope,topics.toArray(new String[topics.size()]));
+				refDataFiles=mergeValueList(refDataFiles,autoRefDataFiles);
+	            for(int idx=0;idx<refDataFiles.length;idx++){
+	                String dataFile=refDataFiles[idx];
+	                java.io.File localFile;
+	                try {
+	                    localFile = IliManager.getLocalCopyOfReposFile(repoManager, dataFile);
+	                } catch (Ili2cException e) {
+	                    EhiLogger.logError("failed to get local copy of data file <"+dataFile+">", e);
+	                    return false;
+	                }
+	                refDataFiles[idx]=localFile.getPath();
+	            }
                 for(String filename:refDataFiles){
                     // setup data reader (ITF or XTF)
                     IoxReader ioxReader=null;
@@ -607,6 +628,36 @@ public class Validator {
 		}
 		return ret;
 	}
+
+    private String[] mergeValueList(String[] refDataFiles, String[] autoRefDataFiles) {
+        List<String> refFiles=new ArrayList<String>();
+        for(String file:refDataFiles) {
+            if(file!=null && file.length()>0 && !refFiles.contains(file)) {
+                refFiles.add(file);
+            }
+        }
+        for(String file:autoRefDataFiles) {
+            if(file!=null && file.length()>0 && !refFiles.contains(file)) {
+                refFiles.add(file);
+            }
+        }
+        return refFiles.toArray(new String[refFiles.size()]);
+    }
+
+    private String[] getValueList(String refDataFromSettings) {
+        String[] refDataFiles=new String[]{};
+        if(refDataFromSettings!=null) {
+            List<String> refFiles=new ArrayList<String>();
+            String refFilev[] = refDataFromSettings.split(";");
+            for(String refFile:refFilev){
+                if(refFile.length()>0) {
+                    refFiles.add(refFile);
+                }
+            }
+            refDataFiles=refFiles.toArray(new String[refFiles.size()]);
+        }
+        return refDataFiles;
+    }
     private List<GraphicParameterDef> getRuntimeParameters(TransferDescription td) {
         List<GraphicParameterDef> ret=new ArrayList<GraphicParameterDef>();
         for(Iterator modelIt=td.iterator();modelIt.hasNext();) {
@@ -660,6 +711,8 @@ public class Validator {
                     settings.setValue(Validator.SETTING_OPTIONAL_BASKETS, config.getConfigValue(Validator.METACONFIG_ILIVALIDATOR, arg));
                 }else if(arg.equals("bannedBaskets")){
                     settings.setValue(Validator.SETTING_BANNED_BASKETS, config.getConfigValue(Validator.METACONFIG_ILIVALIDATOR, arg));
+                }else if(arg.equals("refmapping")){
+                    settings.setValue(Validator.SETTING_REF_MAPPING_DATA, config.getConfigValue(Validator.METACONFIG_ILIVALIDATOR, arg));
                 }else {
                     EhiLogger.logAdaption("unknown parameter in metaconfig <"+arg+">");
                 }
@@ -876,6 +929,12 @@ public class Validator {
     /** reference data files to include in validation. Multiple files are separated by semicolon (';'). 
      */
     public static final String SETTING_REF_DATA="org.interlis2.validator.refdata";
+    /** mapping to evaluate reference data files to include in validation. Multiple files are separated by semicolon (';'). 
+     */
+    public static final String SETTING_REF_MAPPING_DATA="org.interlis2.validator.refmapping";
+    /** Id of validation scope to evaluate reference data (e.g. municipality id or canton). 
+     */
+    public static final String SETTING_VALIDATION_SCOPE="org.interlis2.validator.validationScope";
 	/** the main folder of program.
 	 */
 	public static final String SETTING_APPHOME="org.interlis2.validator.appHome";

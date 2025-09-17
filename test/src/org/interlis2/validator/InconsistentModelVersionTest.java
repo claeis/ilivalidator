@@ -39,7 +39,7 @@ public class InconsistentModelVersionTest {
     }
 
     private boolean hasAnInfoLogMsgForTheInconsistentVersion(LogCollector logCollector) {
-        ArrayList<LogEvent> errs = logCollector.getErrs();
+        ArrayList<LogEvent> errs = logCollector.getEvents();
         for (LogEvent err : errs) {
             if (err instanceof LogEventImpl) {
                 String infoMsg = "The VERSION in model (Beispiel2) and transferfile do not match (2011-12-22!=2011-12-23)";
