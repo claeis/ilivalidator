@@ -1,6 +1,7 @@
 ilivalidator 1.15.0 (2025-09-xx)
 --------------------------------
 - new options --scope and --refmapping to evaluate reference data
+- iox-ili-1.24.2
 
 ilivalidator 1.14.9 (2025-08-05)
 --------------------------------
