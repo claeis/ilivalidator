@@ -209,6 +209,25 @@ Topics ``TopicA`` aus dem Modell ``ModelA`` enthalten.
 
 ``java -jar ilivalidator.jar --mandatoryBasket ModelA.TopicA transfer.xtf``
 
+Fall 14
+~~~~~~~
+
+Es wird eine INTERLIS 2-Datei inkl. den Referenzen auf den Katalog validiert/geprüft.
+Die Katalogdaten (=Referenzdaten) selbst werden nicht geprüft.
+
+``java -jar ilivalidator.jar --allObjectsAccessible --refdata ilidata:catalogDatasetId path/to/data.xtf``
+
+Fall 15
+~~~~~~~
+
+Es wird eine INTERLIS 2-Datei validiert/geprüft.
+Die benötigten Referenzdaten (werden automatisch ermittelt) anhand des gegebenen 
+Datenumfangs (``--scope CH``) und der 
+Referenzdaten-Abbildungstabelle (``--refmapping ilidata:RefDataMappingDatasetId``).
+
+``java -jar ilivalidator.jar --allObjectsAccessible --scope CH --refmapping ilidata:RefDataMappingDatasetId path/to/data.xtf``
+
+
 Referenz
 ========
 
@@ -241,6 +260,16 @@ Optionen:
 +---------------------------------------------+----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------+
 | Option                                      | Beschreibung                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                           |
 +=============================================+========================================================================================================================================================================================================================================================================================================================================================================================================================================================================================================================================+
+| ``--refdata  filename``                     | Konfiguriert Referenzdaten. Referenzdaten werden selbst nicht validiert aber z.B. zum Prüfen von EXTERNAL Referenzen benötigt.                                                                                                                                                                                                                                                                                                                                                                                                         |
+|                                             | ``filename`` kann auch die Form ``ilidata:DatesetId``  haben,                                                                                                                                                                                                                                                                                                                                                                                                                                                                          |
+|                                             | dann wird die entsprechende Datei aus den Repositories benutzt.                                                                                                                                                                                                                                                                                                                                                                                                                                                                        |
++---------------------------------------------+----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------+
+| ``--refmapping  filename``                  | Konfiguriert die Herleitung der benötigten Referenzdaten. Die Referenzdaten werden anhand des spezifizierten Validierungsumfangs ``--scope`` und des Topics der Daten ermittelt.                                                                                                                                                                                                                                                                                                                                                       |
+|                                             | ``filename`` kann auch die Form ``ilidata:DatesetId``  haben,                                                                                                                                                                                                                                                                                                                                                                                                                                                                          |
+|                                             | dann wird die entsprechende Datei aus den Repositories benutzt.                                                                                                                                                                                                                                                                                                                                                                                                                                                                        |
++---------------------------------------------+----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------+
+| ``--scope  scopeId``                        | Konfiguriert den Umfang der aktuellen Validierung, z.B. die Gemeinde-Id oder das Kantonskürzel. Dient zum Ermitteln der benötigten Referenzdaten.                                                                                                                                                                                                                                                                                                                                                                                      |
++---------------------------------------------+----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------+
 | ``--config  filename``                      | Konfiguriert die Datenprüfung mit Hilfe einer INI-Datei.                                                                                                                                                                                                                                                                                                                                                                                                                                                                               |
 |                                             | ``filename`` kann auch die Form ``ilidata:DatesetId``  haben,                                                                                                                                                                                                                                                                                                                                                                                                                                                                          |
 |                                             | dann wird die entsprechende Datei aus den Repositories benutzt.                                                                                                                                                                                                                                                                                                                                                                                                                                                                        |
@@ -373,6 +402,16 @@ Optionen:
 | ``--version``                               | Zeigt die Version des Programmes an.                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                   |
 +---------------------------------------------+----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------+
 
+Referenzdaten
+-------------
+Referenzdaten sind Daten, die selbst nicht geprüft werden, aber für die 
+vollständige Validierung benötigt werden. Also z.B. Katalog oder andere 
+referenzierte Objekte in anderen Datensätzen oder auch Geometrien des 
+Perimeters des Datensatzs wie z.B. Kantons- oder Gemeindegrenzen.
+
+Rerferenzdaten können explizit definiert werden (Option ``--refdata``)
+oder durch den Validator ermittelt werden (Option ``--scope`` und ``--refmapping``).
+
 Meta-Konfiguration
 ------------------
 In der Meta-Konfigurationsdatei werden die folgenden Parameter unterstützt (hier nicht aufgeführte Kommandozeilenargument werden in der Meta-Konfiguration nicht unterstützt).
@@ -485,8 +524,12 @@ In der Meta-Konfigurationsdatei werden die folgenden Parameter unterstützt (hie
 |                                 |   bannedBaskets=ModelA.TopicA;ModelB.TopicC        |                                                                                   |  
 |                                 |                                                    |                                                                                   |
 +---------------------------------+----------------------------------------------------+-----------------------------------------------------------------------------------+
-
-
+|                                 | .. code::                                          |                                                                                   |
+|                                 |                                                    |                                                                                   |
+| refmapping                      |   [ch.ehi.ilivalidator]                            | Entspricht dem Kommandozeilenargument ``--refmapping``                                |
+|                                 |   refmapping=ilidata:DatesetId                     |                                                                                   |  
+|                                 |                                                    |                                                                                   |
++---------------------------------+----------------------------------------------------+-----------------------------------------------------------------------------------+
 
 Konfiguration
 -------------
@@ -697,7 +740,7 @@ Falls der Wert (rechts von ```=```) aus mehreren durch Leerstellen getrennten W�
 | ConstraintDef    | ::                       | Constraint-Prüfung ein/ausschalten bzw. nur als Hinweis.                          |
 |                  |                          | Prüfen ob die Konsistenzbedingung erfüllt ist oder nicht.                         |
 |                  |  ilivalid.check          | Werte sind on/warning/off                                                         |
-|                  |                          |                                                                                   |
+|                  |  category                |                                                                                   |
 |                  |                          | ::                                                                                |
 |                  |                          |                                                                                   |
 |                  |                          |   !!@ ilivalid.check = warning                                                    |
@@ -708,8 +751,8 @@ Falls der Wert (rechts von ```=```) aus mehreren durch Leerstellen getrennten W�
 |                  |                          | Wird ergänzt um Objektidentifikation und Name des Constraints.                    |
 |                  |  ilivalid.msg            | inkl. Attributwerte in {}                                                         |
 |                  |  ilivalid.msg_de         |                                                                                   |
-|                  |                          | ::                                                                                |
-|                  |                          |                                                                                   |
+|                  |  message                 | ::                                                                                |
+|                  |  message_de              |                                                                                   |
 |                  |                          |   !!@ ilivalid.msg_de = "AndereArt muss definiert sein"                           |
 |                  |                          |                                                                                   |
 |                  |                          |                                                                                   |
@@ -737,6 +780,33 @@ Modell IliVErrors
 `IliVErrors.ili`_
 
 .. _IliVErrors.ili: IliVErrors.ili
+
+Modell IliVRefData
+------------------
+`IliVRefData.ili`_
+
+Mit Daten gemäss diesem Modell und der Definition des Validierungsumfangs 
+(``--scope``) kann der Validator selber die benötigten 
+Referenzdaten ermitteln.
+
+Pro Validierungsumfang und Topic können Referenzdaten definiert werden. z.B.::
+
+	<RefData ili:tid="o2">
+		<topic>ModelA.TopicA</topic>
+		<scope>1</scope>
+		<refdata>ilidata:1</refdata>
+	</RefData>
+
+Wenn die Angabe zum ``topic`` fehlt, gilt der Eintrag unabhängig vom Topic der 
+zu validierenden Daten.
+
+Wenn die Angabe zum ``scope`` fehlt, gilt der Eintrag unabhängig vom 
+Validierungsumfang des aktuellen Validierungslaufs.
+
+Für die Angabe ``refdata`` sind alle URLs möglich, die auch für 
+die Angabe der zu validierenden Transferdatei möglich sind.
+
+.. _IliVRefData.ili: IliVRefData.ili
 
 
 Umfang der Transferdatei
