@@ -5,7 +5,7 @@ INTERLIS 2.4;
 
 MODEL IliVRefData
   AT "mailto:ceis@localhost"
-  VERSION "2025-09-16" =
+  VERSION "2025-09-22" =
   
   PARAMETER
   	/** Der aktuelle/tatsaechliche scope fuer den Validierungslauf 
@@ -14,6 +14,7 @@ MODEL IliVRefData
     Scope : TEXT*250; 
 
   TOPIC Mapping =
+  	BASKET OID AS INTERLIS.UUIDOID;
   
   	/** topic und/oder sope muessen gegeben sein.
   	* Falls topic fehlt, gilt die Konfig für alle Behaelter mit dem gegebene scope.

@@ -6,14 +6,14 @@
 		</ili:models>
 	</ili:headersection>
 	<ili:datasection>
-		<Mapping ili:bid="b1">
+		<Mapping ili:bid="6bb31413-8abe-438e-8575-9549ab878a79">
 			<RefData ili:tid="o1">
 			 <scope>A</scope>
-			 <refdata>test/data/AutoRefData/RefA.xtf</refdata>
+			 <refdata>file:test/data/AutoRefData/RefA.xtf</refdata>
 			</RefData>
-			<RefData ili:tid="o1">
+			<RefData ili:tid="o2">
 			 <scope>B</scope>
-			 <refdata>test/data/AutoRefData/RefB.xtf</refdata>
+			 <refdata>file:test/data/AutoRefData/RefB.xtf</refdata>
 			</RefData>
 		</Mapping>
 	</ili:datasection>
