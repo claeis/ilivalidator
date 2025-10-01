@@ -775,11 +775,41 @@ Referenzierung eine Name aus der interne Id des Constraints erzeugt. Die
 interne Id ist eine aufsteigende Zahl und beginnt pro Klasse mit 1. Das 
 erste Constraint einer Klasse heisst also ``Constraint1``, das Zweite ``Constraint2`` usw.
 
+INTERLIS-Laufzeitparameter
+--------------------------
+
+Der IliValidator definiert die folgenden INTERLIS-Laufzeitparameter.
+
++---------------------------------+--------------------------------------------------------------+
+| Parameter                       | Beschreibung                                                 |
++=================================+==============================================================+
+| MinimalRuntimeSystem01.RuntimeSystemName     | Der Umfang der aktuellen Validierung,           |
+| MinimalRuntimeSystem01.RuntimeSystemVersion  | Der Umfang der aktuellen Validierung,           |
+| MinimalRuntimeSystem01.OperatingSystemName   | Der Umfang der aktuellen Validierung,           |
+| MinimalRuntimeSystem01.HostName              | Der Umfang der aktuellen Validierung,           |
+| MinimalRuntimeSystem01.CurrentUserName       | Der Umfang der aktuellen Validierung,           |
+| MinimalRuntimeSystem01.CurrentDateTime       | Der Umfang der aktuellen Validierung,           |
+| MinimalRuntimeSystem01.CurrentTransferfile   | Der Umfang der aktuellen Validierung,           |
++---------------------------------+--------------------------------------------------------------+
+| IliVRuntime.Scope               | Der Umfang der aktuellen Validierung,                        |
+|                                 | z.B. die Gemeinde-Id oder das Kantonskürzel.                 |
+|                                 | Muss mittels dem Parameter ``--scope`` gesetzt               |
+|                                 | werden, bleibt sonst undefiniert.                            |
+|                                 |                                                              |
++---------------------------------+--------------------------------------------------------------+
+
 Modell IliVErrors
 -----------------
 `IliVErrors.ili`_
 
 .. _IliVErrors.ili: IliVErrors.ili
+
+Modell IliVRuntime
+------------------
+`IliVRuntime.ili`_
+
+Dieses Datenmodell definiert spezifische Laufzeitdaten des Validators, die über 
+das allegemeine Modell ``MinimalRuntimeSystem01`` hinausgehen.
 
 Modell IliVRefData
 ------------------

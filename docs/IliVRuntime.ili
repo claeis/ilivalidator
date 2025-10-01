@@ -1,0 +1,14 @@
+INTERLIS 2.4;
+
+MODEL IliVRuntime
+  AT "mailto:ceis@localhost"
+  VERSION "2025-10-01" =
+  
+  PARAMETER
+  	/** Der aktuelle/tatsaechliche scope fuer den Validierungslauf 
+  	  * z.B. bfsNr, oder Kantons-Kuerzel, oder NBIdent
+  	  */
+    Scope : TEXT*250; 
+
+END IliVRuntime.
+
