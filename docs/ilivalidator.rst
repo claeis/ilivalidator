@@ -243,17 +243,10 @@ Aufruf-Syntax
 
 ``file`` kann mehrere Formen haben:
 
-- Dateipfad: Pfad zur lokal vorliegenden Transferdatei (.xtf/.itf) wie im 
-Fall 1 oben (``path/to/data.itf``)
-
-- Dataset: Angabe des Datensatzes mittels ``ilidata:DatesetId`` oder ``ilidata:BasketId``, 
-dann wird die entsprechende Datei aus den Repositories benutzt.
-
-- Web-Resource: Angabe einer URL mittels ``http:url`` oder ``https:url``, 
-dann wird die entsprechende Datei heruntergeladen und benutzt.
-
-``file`` kann auch aus mehreren der oben genannten Einträgen bestehen. 
-Diese müssen durch ein Leerzeichen voneinander getrennt sein.
+- Dateipfad: Pfad zur lokal vorliegenden Transferdatei (.xtf/.itf) wie im Fall 1 oben (``path/to/data.itf``)
+- Dataset: Angabe des Datensatzes mittels ``ilidata:DatesetId`` oder ``ilidata:BasketId``, dann wird die entsprechende Datei aus den Repositories benutzt.
+- Web-Resource: Angabe einer URL mittels ``http:url`` oder ``https:url``, dann wird die entsprechende Datei heruntergeladen und benutzt.
+``file`` kann auch aus mehreren der oben genannten Einträgen bestehen. Diese müssen durch ein Leerzeichen voneinander getrennt sein.
 
 Ohne Kommandozeilenargumente erscheint die Bildschirmmaske, mit deren Hilfe die zu validierende Datei 
 ausgewählt und die Validierung gestartet werden kann.
