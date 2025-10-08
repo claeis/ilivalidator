@@ -239,14 +239,12 @@ einzelner Anwendungsfälle beispielhaft im Kapitel „Funktionsweise“
 Aufruf-Syntax
 -------------
 
-``java -jar ilivalidator.jar [Options] [file]``
+``java -jar ilivalidator.jar [Options] [path...] [ilidata-URL...] [http-URL...]``
 
-``file`` kann mehrere Formen haben:
+- path: Pfad zu einer oder mehreren lokal vorliegenden Transferdateien (.xtf/.itf) wie im Fall 1 oben (``path/to/data.itf``)
+- ilidata-URL: Angabe von einem oder mehreren Datensätzen mittels ``ilidata:DatesetId`` oder ``ilidata:BasketId``. Es werden die entsprechenden Dateien aus den Repositories benutzt.
+- http-URL: Angabe von einer oder mehrerer URL mittels ``http:url`` oder ``https:url``. Es werden die entsprechenden Dateien heruntergeladen und benutzt.
 
-- Dateipfad: Pfad zur lokal vorliegenden Transferdatei (.xtf/.itf) wie im Fall 1 oben (``path/to/data.itf``)
-- Dataset: Angabe des Datensatzes mittels ``ilidata:DatesetId`` oder ``ilidata:BasketId``, dann wird die entsprechende Datei aus den Repositories benutzt.
-- Web-Resource: Angabe einer URL mittels ``http:url`` oder ``https:url``, dann wird die entsprechende Datei heruntergeladen und benutzt.
-``file`` kann auch aus mehreren der oben genannten Einträgen bestehen. Diese müssen durch ein Leerzeichen voneinander getrennt sein.
 
 Ohne Kommandozeilenargumente erscheint die Bildschirmmaske, mit deren Hilfe die zu validierende Datei 
 ausgewählt und die Validierung gestartet werden kann.
