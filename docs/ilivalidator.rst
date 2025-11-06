@@ -525,7 +525,7 @@ In der Meta-Konfigurationsdatei werden die folgenden Parameter unterstützt (hie
 +---------------------------------+----------------------------------------------------+-----------------------------------------------------------------------------------+
 |                                 | .. code::                                          |                                                                                   |
 |                                 |                                                    |                                                                                   |
-| refmapping                      |   [ch.ehi.ilivalidator]                            | Entspricht dem Kommandozeilenargument ``--refmapping``                                |
+| refmapping                      |   [ch.ehi.ilivalidator]                            | Entspricht dem Kommandozeilenargument ``--refmapping``                            |
 |                                 |   refmapping=ilidata:DatesetId                     |                                                                                   |  
 |                                 |                                                    |                                                                                   |
 +---------------------------------+----------------------------------------------------+-----------------------------------------------------------------------------------+
