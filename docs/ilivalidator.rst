@@ -239,13 +239,12 @@ einzelner Anwendungsfälle beispielhaft im Kapitel „Funktionsweise“
 Aufruf-Syntax
 -------------
 
-``java -jar ilivalidator.jar [Options] [file]``
+``java -jar ilivalidator.jar [Options] [path...] [ilidata-URL...] [http-URL...]``
 
-``file`` kann auch die Form ``ilidata:DatesetId`` oder ``ilidata:BasketId`` haben, 
-dann wird die entsprechende Datei aus den Repositories benutzt.
+- path: Pfad zu einer oder mehreren lokal vorliegenden Transferdateien (.xtf/.itf) wie im Fall 1 oben (``path/to/data.itf``)
+- ilidata-URL: Angabe von einem oder mehreren Datensätzen mittels ``ilidata:DatesetId`` oder ``ilidata:BasketId``. Es werden die entsprechenden Dateien aus den Repositories benutzt.
+- http-URL: Angabe von einer oder mehrerer URL mittels ``http:url`` oder ``https:url``. Es werden die entsprechenden Dateien heruntergeladen und benutzt.
 
-``file`` kann auch die Form ``http:url`` oder ``https:url`` haben, 
-dann wird die entsprechende Datei heruntergeladen und benutzt.
 
 Ohne Kommandozeilenargumente erscheint die Bildschirmmaske, mit deren Hilfe die zu validierende Datei 
 ausgewählt und die Validierung gestartet werden kann.
@@ -526,7 +525,7 @@ In der Meta-Konfigurationsdatei werden die folgenden Parameter unterstützt (hie
 +---------------------------------+----------------------------------------------------+-----------------------------------------------------------------------------------+
 |                                 | .. code::                                          |                                                                                   |
 |                                 |                                                    |                                                                                   |
-| refmapping                      |   [ch.ehi.ilivalidator]                            | Entspricht dem Kommandozeilenargument ``--refmapping``                                |
+| refmapping                      |   [ch.ehi.ilivalidator]                            | Entspricht dem Kommandozeilenargument ``--refmapping``                            |
 |                                 |   refmapping=ilidata:DatesetId                     |                                                                                   |  
 |                                 |                                                    |                                                                                   |
 +---------------------------------+----------------------------------------------------+-----------------------------------------------------------------------------------+
