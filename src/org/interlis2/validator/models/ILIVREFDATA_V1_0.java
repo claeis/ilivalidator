@@ -1,14 +1,14 @@
 package org.interlis2.validator.models;
-public class ILIVREFDATA{
-  private ILIVREFDATA() {}
-  public final static String MODEL= "IliVRefData";
-  public final static String Mapping= "IliVRefData.Mapping";
-  public static ch.interlis.iom_j.xtf.XtfModel getXtfModel(){ return new ch.interlis.iom_j.xtf.XtfModel("IliVRefData","mailto:ceis@localhost","2025-09-16"); }
+public class ILIVREFDATA_V1_0{
+  private ILIVREFDATA_V1_0() {}
+  public final static String MODEL= "IliVRefData_V1_0";
+  public final static String Mapping= "IliVRefData_V1_0.Mapping";
+  public static ch.interlis.iom_j.xtf.XtfModel getXtfModel(){ return new ch.interlis.iom_j.xtf.XtfModel("IliVRefData_V1_0","mailto:ceis@localhost","2025-10-01"); }
   static public ch.interlis.iox.IoxFactory getIoxFactory()
   {
     return new ch.interlis.iox.IoxFactory(){
       public ch.interlis.iom.IomObject createIomObject(String type,String oid) throws ch.interlis.iox.IoxException {
-      if(type.equals("IliVRefData.Mapping.RefData"))return new org.interlis2.validator.models.IliVRefData.Mapping.RefData(oid);
+      if(type.equals("IliVRefData_V1_0.Mapping.RefData"))return new org.interlis2.validator.models.IliVRefData_V1_0.Mapping.RefData(oid);
       return null;
       }
     };
@@ -17,9 +17,9 @@ public class ILIVREFDATA{
   {
     ch.interlis.iom_j.ViewableProperties mapping=new ch.interlis.iom_j.ViewableProperties();
     java.util.HashMap<String,String> nameMap=new java.util.HashMap<String,String>();
-    nameMap.put("IliVRefData.Mapping","Mapping");
-    nameMap.put("IliVRefData.Mapping.RefData", "RefData");
-    mapping.defineClass("IliVRefData.Mapping.RefData", new String[]{   "ignore"
+    nameMap.put("IliVRefData_V1_0.Mapping","Mapping");
+    nameMap.put("IliVRefData_V1_0.Mapping.RefData", "RefData");
+    mapping.defineClass("IliVRefData_V1_0.Mapping.RefData", new String[]{   "ignore"
       ,"topic"
       ,"scope"
       ,"refdata"

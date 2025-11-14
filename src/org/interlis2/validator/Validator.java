@@ -64,7 +64,7 @@ import ch.interlis.models.DatasetIdx16.DataFile;
  */
 public class Validator {
 	
-    public static final String ILIVRUNTIME_SCOPE = "IliVRuntime.Scope";
+    public static final String ILIVRUNTIME_SCOPE = "IliVRuntime_V1_0.Scope";
     public static final String MSG_VALIDATION_DONE = "...validation done";
     public static final String MSG_VALIDATION_FAILED = "...validation failed";
     public static boolean runValidation(

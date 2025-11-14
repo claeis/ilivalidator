@@ -1,7 +1,7 @@
-package org.interlis2.validator.models.IliVRefData.Mapping;
+package org.interlis2.validator.models.IliVRefData_V1_0.Mapping;
 public class RefData extends ch.interlis.iom_j.Iom_jObject
 {
-  public final static String tag= "IliVRefData.Mapping.RefData";
+  public final static String tag= "IliVRefData_V1_0.Mapping.RefData";
   public RefData(String oid) {
     super(tag,oid);
   }

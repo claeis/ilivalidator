@@ -3,7 +3,7 @@ INTERLIS 2.4;
 !! fuer das Ermitteln/Konfigurieren der Referenzdaten 
 !! eines Validierungslaufes
 
-MODEL IliVRefData
+MODEL IliVRefData_V1_0
   AT "mailto:ceis@localhost"
   VERSION "2025-10-01" =
   
@@ -26,5 +26,5 @@ MODEL IliVRefData
 	
   END Mapping;
 
-END IliVRefData.
+END IliVRefData_V1_0.
 

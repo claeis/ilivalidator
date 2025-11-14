@@ -794,7 +794,7 @@ Der ilivalidator definiert die folgenden INTERLIS-Laufzeitparameter.
 +----------------------------------------------+------------------------------------------------------------------+
 | MinimalRuntimeSystem01.CurrentTransferfile   | Der Name inkl. Pfad der aktuell validierten Transferdatei.       |
 +----------------------------------------------+------------------------------------------------------------------+
-| IliVRuntime.Scope                            | Der Umfang der aktuellen Validierung,                            |
+| IliVRuntime_V1_0.Scope                       | Der Umfang der aktuellen Validierung,                            |
 |                                              | z.B. die Gemeinde-Id oder das Kantonskürzel.                     |
 |                                              | Muss mittels dem Parameter ``--scope`` gesetzt                   |
 |                                              | werden, bleibt sonst undefiniert.                                |
@@ -807,16 +807,16 @@ Modell IliVErrors
 
 .. _IliVErrors.ili: IliVErrors.ili
 
-Modell IliVRuntime
-------------------
-`IliVRuntime.ili`_
+Modell IliVRuntime_V1_0
+-----------------------
+`IliVRuntime_V1_0.ili`_
 
 Dieses Datenmodell definiert spezifische Laufzeitdaten des Validators, die über 
 das allegemeine Modell ``MinimalRuntimeSystem01`` hinausgehen.
 
-Modell IliVRefData
-------------------
-`IliVRefData.ili`_
+Modell IliVRefData_V1_0
+-----------------------
+`IliVRefData_V1_0.ili`_
 
 Mit Daten gemäss diesem Modell und der Definition des Validierungsumfangs 
 (``--scope``) kann der Validator selber die benötigten 
@@ -839,7 +839,7 @@ Validierungsumfang des aktuellen Validierungslaufs.
 Für die Angabe ``refdata`` sind alle URLs möglich, die auch für 
 die Angabe der zu validierenden Transferdatei möglich sind.
 
-.. _IliVRefData.ili: IliVRefData.ili
+.. _IliVRefData_V1_0.ili: IliVRefData_V1_0.ili
 
 
 Umfang der Transferdatei

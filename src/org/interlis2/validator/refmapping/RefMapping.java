@@ -7,7 +7,7 @@ import java.util.Collection;
 import java.util.Collections;
 import java.util.List;
 
-import org.interlis2.validator.models.IliVRefData.Mapping.RefData;
+import org.interlis2.validator.models.IliVRefData_V1_0.Mapping.RefData;
 
 import ch.ehi.basics.logging.EhiLogger;
 import ch.interlis.ili2c.metamodel.TransferDescription;
@@ -68,11 +68,11 @@ public class RefMapping {
             td=new TransferDescription();
             java.io.Reader stream=null;
             try {
-                stream = new java.io.InputStreamReader(getClass().getResourceAsStream("/IliVRefData.ili"));
+                stream = new java.io.InputStreamReader(getClass().getResourceAsStream("/IliVRefData_V1_0.ili"));
             } catch (Exception ex) {
                 throw new IoxException(ex);
             }
-            if (!Ili24Parser.parseIliFile(td, "IliVRefData.ili", stream,
+            if (!Ili24Parser.parseIliFile(td, "IliVRefData_V1_0.ili", stream,
                     false, 0,null)) {
                 throw new IoxException("failed to read ili file");
             }
@@ -82,7 +82,7 @@ public class RefMapping {
         try {
             reader=new ch.interlis.iom_j.xtf.Xtf24Reader(file);
             reader.setModel(td);
-            reader.getFactory().registerFactory(org.interlis2.validator.models.ILIVREFDATA.getIoxFactory());
+            reader.getFactory().registerFactory(org.interlis2.validator.models.ILIVREFDATA_V1_0.getIoxFactory());
             ch.interlis.iox.IoxEvent event=null;
             do{
                  event=reader.read();

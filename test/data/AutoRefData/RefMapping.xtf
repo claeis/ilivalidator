@@ -1,8 +1,8 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<ili:transfer xmlns="http://www.interlis.ch/xtf/2.4/IliVRefData" xmlns:ili="http://www.interlis.ch/xtf/2.4/INTERLIS">
+<ili:transfer xmlns="http://www.interlis.ch/xtf/2.4/IliVRefData_V1_0" xmlns:ili="http://www.interlis.ch/xtf/2.4/INTERLIS">
 	<ili:headersection SENDER="ili2c-4.5.22-20160520" VERSION="2.3">
 		<ili:models>
-			<ili:model>IliVRefData</ili:model>
+			<ili:model>IliVRefData_V1_0</ili:model>
 		</ili:models>
 	</ili:headersection>
 	<ili:datasection>

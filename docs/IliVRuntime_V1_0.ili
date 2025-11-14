@@ -1,6 +1,6 @@
 INTERLIS 2.4;
 
-MODEL IliVRuntime
+MODEL IliVRuntime_V1_0
   AT "mailto:ceis@localhost"
   VERSION "2025-10-01" =
   
@@ -10,5 +10,5 @@ MODEL IliVRuntime
   	  */
     Scope : TEXT*250; 
 
-END IliVRuntime.
+END IliVRuntime_V1_0.
 
