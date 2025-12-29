@@ -1,3 +1,26 @@
+ilivalidator 1.15.0 (2025-12-29)
+--------------------------------
+- new options --scope and --refmapping to evaluate reference data
+- Validator: show only one "first pass" message with refdata
+- Validator: Fixes uniqueness check if target object is external (#448)
+- Validator: allObjects() performance improvements
+- fix NPE with --singlePass (#452)
+- Validator: ILI2.4 fix Validator.getValueFromObjectPath() with list of simple values
+- Validator: ILI2.4 fix INTERLIS.elementCount() with list of simple values (#445)
+- Validator: validate existence constraints only if all objects accessible
+- Validator: validate existence constraints to referenceData (if all objects accessible)
+- new functions model Elements_V1_0 
+- new FUNCTION ObjectPool_V1_0.filter()
+- new FUNCTION ObjectPool_V1_0.allObjects()
+- new FUNCTION DMAVTYM_Topologie_V1_1.coversWithTolerance()
+- new FUNCTION DMAVTYM_Topologie_V1_1.hasGeometrySameControlPoints()
+- new FUNCTION DMAVTYM_Topologie_V1_1.isGeometrySpatiallyEqual()
+- new FUNCTION DMAVTYM_Topologie_V1_1.isInside()
+- new FUNCTION DMAVTYM_Topologie_V1_1.pointInPoints()
+- Validator: support new standard meta-attrs category, message (#386)
+- iox-ili-1.24.4
+- ili2c-5.6.8
+
 ilivalidator 1.14.9 (2025-08-05)
 --------------------------------
 - fix java.io.FileNotFoundException with version 1.14.8 (#450)

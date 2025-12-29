@@ -57,6 +57,7 @@ public class Main {
 		// arguments on export
 		String[] xtfFile=null;
 		java.util.List<String> xtfRefFile=new java.util.ArrayList<String>();
+        java.util.List<String> xtfRefMappingFile=new java.util.ArrayList<String>();
 		String httpProxyHost = null;
 		String httpProxyPort = null;
 		if(args.length==0){
@@ -88,6 +89,12 @@ public class Main {
                 for(String refdata:refdatav) {
                     xtfRefFile.add(refdata);
                 }
+            }else if(arg.equals("--refmapping")){
+                argi++;
+                String refdatav[]= args[argi].split(";");
+                for(String refdata:refdatav) {
+                    xtfRefMappingFile.add(refdata);
+                }
 			}else if(arg.equals("--config")) {
 			    argi++;
 			    settings.setValue(Validator.SETTING_CONFIGFILE, args[argi]);
@@ -97,6 +104,9 @@ public class Main {
             }else if(arg.equals("--runtimeParams")) {
                 argi++;
                 settings.setValue(Validator.SETTING_RUNTIME_PARAMETERS, args[argi]);
+            }else if(arg.equals("--scope")) {
+                argi++;
+                settings.setValue(Validator.SETTING_VALIDATION_SCOPE, args[argi]);
             }else if(arg.equals("--mandatoryBaskets")) {
                 argi++;
                 settings.setValue(Validator.SETTING_MANDATORY_BASKETS, args[argi]);
@@ -181,6 +191,8 @@ public class Main {
 					System.err.println("--gui                 start GUI.");
                     System.err.println("--refdata file        reference data file.");
 				    System.err.println("--config file         config file to control validation.");
+                    System.err.println("--refmapping file     mapping file to evaluate reference data.");
+                    System.err.println("--scope id            scope of validation (e.g. municipality id or canton).");
 					System.err.println("--forceTypeValidation  restrict customization of validation related to \"multiplicity\".");
 					System.err.println("--disableAreaValidation  disable AREA validation.");
 					System.err.println("--disableConstraintValidation  disable constraint validation.");
@@ -221,6 +233,7 @@ public class Main {
 			}
 		}
 		settings.setValue(Validator.SETTING_REF_DATA,makeFileList(xtfRefFile.toArray(new String[xtfRefFile.size()])));
+        settings.setValue(Validator.SETTING_REF_MAPPING_DATA,makeFileList(xtfRefMappingFile.toArray(new String[xtfRefMappingFile.size()])));
 		int dataFileCount=args.length-argi;
 		if(doGui){
 			if(dataFileCount>0) {

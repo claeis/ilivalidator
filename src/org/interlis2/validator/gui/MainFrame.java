@@ -77,6 +77,13 @@ public class MainFrame extends JFrame {
 	private javax.swing.JLabel modelNamesLabel = null;
 	private javax.swing.JTextField modelNamesUi = null;
 	
+    private javax.swing.JLabel scopeLabel = null;
+    private javax.swing.JTextField scopeUi = null;
+    
+    private javax.swing.JLabel refMappingFileLabel = null;
+    private javax.swing.JTextField refMappingFileUi = null;
+    private javax.swing.JButton doRefMappingFileBtn = null;
+    
 	private javax.swing.JLabel configFileLabel = null;
 	private javax.swing.JTextField configFileUi = null;
 	private javax.swing.JButton doConfigFileSelBtn = null;
@@ -253,7 +260,14 @@ public class MainFrame extends JFrame {
 
 			java.awt.GridBagConstraints modelNamesLabelConstraints = new java.awt.GridBagConstraints();
 			java.awt.GridBagConstraints modelNamesUiConstraints = new java.awt.GridBagConstraints();
+			
+            java.awt.GridBagConstraints scopeLabelConstraints = new java.awt.GridBagConstraints();
+            java.awt.GridBagConstraints scopeUiConstraints = new java.awt.GridBagConstraints();
 
+            java.awt.GridBagConstraints refMappingFileLabelConstraints = new java.awt.GridBagConstraints();
+            java.awt.GridBagConstraints refMappingFileUiConstraints = new java.awt.GridBagConstraints();
+            java.awt.GridBagConstraints doRefMappingFileSelBtnConstraints = new java.awt.GridBagConstraints();
+            
 			java.awt.GridBagConstraints logFileLabelConstraints = new java.awt.GridBagConstraints();
 			java.awt.GridBagConstraints logFileUiConstraints = new java.awt.GridBagConstraints();
 			java.awt.GridBagConstraints doLogFileSelBtnConstraints = new java.awt.GridBagConstraints();
@@ -275,7 +289,6 @@ public class MainFrame extends JFrame {
 			java.awt.GridBagConstraints logPaneConstraints = new java.awt.GridBagConstraints();
 			java.awt.GridBagConstraints doValidateConstraints = new java.awt.GridBagConstraints();
 			
-			// row 0
 			int row=0;
 			xtfFileLabelConstraints.gridx = 0;
 			xtfFileLabelConstraints.gridy = row;
@@ -289,7 +302,6 @@ public class MainFrame extends JFrame {
 			doXtfFileSelBtnConstraints.gridy = row;
 			doXtfFileSelBtnConstraints.anchor = java.awt.GridBagConstraints.WEST;
 			
-            // row 1
             row++;
             xtfRefFileLabelConstraints.gridx = 0;
             xtfRefFileLabelConstraints.gridy = row;
@@ -303,13 +315,34 @@ public class MainFrame extends JFrame {
             doXtfRefFileSelBtnConstraints.gridy = row;
             doXtfRefFileSelBtnConstraints.anchor = java.awt.GridBagConstraints.WEST;
             
-			// row 1
+            row++;
+            refMappingFileLabelConstraints.gridx = 0;
+            refMappingFileLabelConstraints.gridy = row;
+            refMappingFileLabelConstraints.anchor = java.awt.GridBagConstraints.NORTHWEST;
+            refMappingFileUiConstraints.fill = java.awt.GridBagConstraints.HORIZONTAL;
+            refMappingFileUiConstraints.weightx = 1.0;
+            refMappingFileUiConstraints.gridx = 1;
+            refMappingFileUiConstraints.gridy = row;
+            refMappingFileUiConstraints.anchor = java.awt.GridBagConstraints.NORTHWEST;
+            doRefMappingFileSelBtnConstraints.gridx = 2;
+            doRefMappingFileSelBtnConstraints.gridy = row;
+            doRefMappingFileSelBtnConstraints.anchor = java.awt.GridBagConstraints.WEST;
+            
+            row++;
+            scopeLabelConstraints.gridx = 0;
+            scopeLabelConstraints.gridy = row;
+            scopeLabelConstraints.anchor = java.awt.GridBagConstraints.NORTHWEST;
+            scopeUiConstraints.fill = java.awt.GridBagConstraints.HORIZONTAL;
+            scopeUiConstraints.weightx = 1.0;
+            scopeUiConstraints.gridx = 1;
+            scopeUiConstraints.gridy = row;
+            scopeUiConstraints.anchor = java.awt.GridBagConstraints.NORTHWEST;
+            
 			row++;
 			allObjectsAccessibleConstraints.gridx = 1;
 			allObjectsAccessibleConstraints.gridy = row;
 			allObjectsAccessibleConstraints.anchor = java.awt.GridBagConstraints.NORTHWEST;
 			
-			// row 2
 			row++;
 			modelNamesLabelConstraints.gridx = 0;
 			modelNamesLabelConstraints.gridy = row;
@@ -320,7 +353,6 @@ public class MainFrame extends JFrame {
 			modelNamesUiConstraints.gridy = row;
 			modelNamesUiConstraints.anchor = java.awt.GridBagConstraints.NORTHWEST;
 			
-			// row 3
 			row++;
 			logFileLabelConstraints.gridx = 0;
 			logFileLabelConstraints.gridy = row;
@@ -334,7 +366,6 @@ public class MainFrame extends JFrame {
 			doLogFileSelBtnConstraints.gridy = row;
 			doLogFileSelBtnConstraints.anchor = java.awt.GridBagConstraints.WEST;
 			
-			// row 4
 			row++;
 			xtfLogFileLabelConstraints.gridx = 0;
 			xtfLogFileLabelConstraints.gridy = row;
@@ -348,7 +379,6 @@ public class MainFrame extends JFrame {
 			doXtfLogFileSelBtnConstraints.gridy = row;
 			doXtfLogFileSelBtnConstraints.anchor = java.awt.GridBagConstraints.WEST;
 			
-			// row 5
 			row++;
 			configFileLabelConstraints.gridx = 0;
 			configFileLabelConstraints.gridy = row;
@@ -364,7 +394,6 @@ public class MainFrame extends JFrame {
             doNewConfigFileBtnConstraints.gridx = 3;
             doNewConfigFileBtnConstraints.gridy = row;
 
-            // row 6
             row++;
             metaConfigFileLabelConstraints.gridx = 0;
             metaConfigFileLabelConstraints.gridy = row;
@@ -378,7 +407,6 @@ public class MainFrame extends JFrame {
             doMetaConfigFileSelBtnConstraints.gridy = row;
             doMetaConfigFileSelBtnConstraints.anchor = java.awt.GridBagConstraints.WEST;
             
-			// row 7
             row++;
 			logPaneConstraints.fill = java.awt.GridBagConstraints.BOTH;
 			logPaneConstraints.weightx = 1.0;
@@ -392,7 +420,6 @@ public class MainFrame extends JFrame {
 			doValidateConstraints.gridwidth = 2;
 			doValidateConstraints.anchor = java.awt.GridBagConstraints.WEST;
 			
-			// row 8
 			row++;
 			clearlogBtnConstraints.gridx = 2;//2
 			clearlogBtnConstraints.gridy = row;
@@ -412,6 +439,13 @@ public class MainFrame extends JFrame {
 			jContentPane.add(getModelNamesLabel(), modelNamesLabelConstraints);
 			jContentPane.add(getModelNamesUi(), modelNamesUiConstraints);
 			
+            jContentPane.add(getScopeLabel(), scopeLabelConstraints);
+            jContentPane.add(getScopeUi(), scopeUiConstraints);
+            
+            jContentPane.add(getRefMappingFileLabel(), refMappingFileLabelConstraints);
+            jContentPane.add(getRefMappingFileUi(), refMappingFileUiConstraints);
+            jContentPane.add(getDoRefMappingFileBtn(), doRefMappingFileSelBtnConstraints);
+
 			jContentPane.add(getLogFileLabel(), logFileLabelConstraints);
 			jContentPane.add(getLogFileUi(), logFileUiConstraints);
 			jContentPane.add(getDoLogFileSelBtn(), doLogFileSelBtnConstraints);
@@ -457,6 +491,13 @@ public class MainFrame extends JFrame {
 		}
 		return modelNamesLabel;
 	}
+    private javax.swing.JLabel getScopeLabel() {
+        if(scopeLabel == null) {
+            scopeLabel = new javax.swing.JLabel();
+            scopeLabel.setText(rsrc.getString("MainFrame.scopeLabel"));
+        }
+        return scopeLabel;
+    }
 	private javax.swing.JLabel getConfigFileLabel() {
 		if(configFileLabel == null) {
 			configFileLabel = new javax.swing.JLabel();
@@ -470,6 +511,13 @@ public class MainFrame extends JFrame {
             metaConfigFileLabel.setText(rsrc.getString("MainFrame.metaConfigFileLabel"));
         }
         return metaConfigFileLabel;
+    }
+    private javax.swing.JLabel getRefMappingFileLabel() {
+        if(refMappingFileLabel == null) {
+            refMappingFileLabel = new javax.swing.JLabel();
+            refMappingFileLabel.setText(rsrc.getString("MainFrame.refMappingFileLabel"));
+        }
+        return refMappingFileLabel;
     }
 	private javax.swing.JLabel getLogFileLabel() {
 		if(logFileLabel == null) {
@@ -505,6 +553,18 @@ public class MainFrame extends JFrame {
 		}
 		return modelNamesUi;
 	}
+    private javax.swing.JTextField getScopeUi() {
+        if(scopeUi == null) {
+            scopeUi = new javax.swing.JTextField();
+        }
+        return scopeUi;
+    }
+    private javax.swing.JTextField getRefMappingFileUi() {
+        if(refMappingFileUi == null) {
+            refMappingFileUi = new javax.swing.JTextField();
+        }
+        return refMappingFileUi;
+    }
 	private javax.swing.JTextField getConfigFileUi() {
 		if(configFileUi == null) {
 			configFileUi = new javax.swing.JTextField();
@@ -678,6 +738,20 @@ public class MainFrame extends JFrame {
 	public void setModelNames(String modelNames){
 		getModelNamesUi().setText(modelNames);
 	}
+    public String getScope() {
+        return StringUtility.purge(getScopeUi().getText());
+    }
+    
+    public void setScope(String modelNames){
+        getScopeUi().setText(modelNames);
+    }
+    public String getRefMappingFile() {
+        return StringUtility.purge(getRefMappingFileUi().getText());
+    }
+    
+    public void setRefMappingFile(String modelNames){
+        getRefMappingFileUi().setText(modelNames);
+    }
 	
 	public String getConfigFile(){
 		return StringUtility.purge(getConfigFileUi().getText());
@@ -721,6 +795,8 @@ public class MainFrame extends JFrame {
         String metaConfigFile=getMetaConfigFile();
 		String modelNames=getModelNames();
 		String objectsAccess=getObjectsAccessible()?Validator.TRUE:Validator.FALSE;
+        String scope=getScope();
+        String refMappingFile=getRefMappingFile();
 		
 		// keep some values from current settings
 		String workingDir=settings.getValue(ch.interlis.ili2c.gui.UserSettings.WORKING_DIRECTORY);
@@ -751,6 +827,8 @@ public class MainFrame extends JFrame {
 		newSettings.setValue(Validator.SETTING_MODELNAMES,modelNames);
 		newSettings.setValue(Validator.SETTING_CONFIGFILE,configFile);
         newSettings.setValue(Validator.SETTING_META_CONFIGFILE,metaConfigFile);
+        newSettings.setValue(Validator.SETTING_VALIDATION_SCOPE,scope);
+        newSettings.setValue(Validator.SETTING_REF_MAPPING_DATA,refMappingFile);
 		newSettings.setValue(Validator.SETTING_ALL_OBJECTS_ACCESSIBLE,objectsAccess);
 		newSettings.setValue(Validator.SETTING_ILIDIRS,ilidirs);
 		newSettings.setValue(Validator.SETTING_APPHOME, appHome);
@@ -1146,6 +1224,28 @@ public class MainFrame extends JFrame {
             });
         }
         return doMetaConfigFileSelBtn;
+    }
+    private javax.swing.JButton getDoRefMappingFileBtn() {
+        if(doRefMappingFileBtn == null) {
+            doRefMappingFileBtn = new javax.swing.JButton();
+            doRefMappingFileBtn.setText("...");
+            doRefMappingFileBtn.addActionListener(new java.awt.event.ActionListener() { 
+                public void actionPerformed(java.awt.event.ActionEvent e) {    
+                    String file=getRefMappingFile();
+                    FileChooser fileDialog =  new FileChooser(file);
+                    fileDialog.setCurrentDirectory(new File(getWorkingDirectory()));
+                    fileDialog.setDialogTitle(rsrc.getString("MainFrame.refMappingFileChooserTitle"));
+                    fileDialog.addChoosableFileFilter(new GenericFileFilter(rsrc.getString("MainFrame.xtfFileFilter"),"xtf"));
+
+                    if (fileDialog.showOpenDialog(MainFrame.this) == FileChooser.APPROVE_OPTION) {
+                        setWorkingDirectory(fileDialog.getCurrentDirectory().getAbsolutePath());
+                        file=fileDialog.getSelectedFile().getAbsolutePath();
+                        setRefMappingFile(file);
+                    }
+                }
+            });
+        }
+        return doRefMappingFileBtn;
     }
     private GenericFileFilter createConfigFileFilter() {
         return new GenericFileFilter(rsrc.getString("MainFrame.configFileFilter"),"ini");

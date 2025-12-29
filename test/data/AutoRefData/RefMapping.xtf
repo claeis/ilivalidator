@@ -1,0 +1,20 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<ili:transfer xmlns="http://www.interlis.ch/xtf/2.4/IliVRefData_V1_0" xmlns:ili="http://www.interlis.ch/xtf/2.4/INTERLIS">
+	<ili:headersection SENDER="ili2c-4.5.22-20160520" VERSION="2.3">
+		<ili:models>
+			<ili:model>IliVRefData_V1_0</ili:model>
+		</ili:models>
+	</ili:headersection>
+	<ili:datasection>
+		<Mapping ili:bid="6bb31413-8abe-438e-8575-9549ab878a79">
+			<RefData ili:tid="o1">
+			 <scope>A</scope>
+			 <refdata>file:test/data/AutoRefData/RefA.xtf</refdata>
+			</RefData>
+			<RefData ili:tid="o2">
+			 <scope>B</scope>
+			 <refdata>file:test/data/AutoRefData/RefB.xtf</refdata>
+			</RefData>
+		</Mapping>
+	</ili:datasection>
+</ili:transfer>

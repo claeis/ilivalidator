@@ -1,0 +1,30 @@
+INTERLIS 2.4;
+
+!! fuer das Ermitteln/Konfigurieren der Referenzdaten 
+!! eines Validierungslaufes
+
+MODEL IliVRefData_V1_0
+  AT "mailto:ceis@localhost"
+  VERSION "2025-10-01" =
+  
+  TOPIC Mapping =
+  	BASKET OID AS INTERLIS.UUIDOID;
+  
+  	/** topic und/oder sope muessen gegeben sein.
+  	* Falls topic fehlt, gilt die Konfig für alle Behaelter mit dem gegebene scope.
+  	* Falls scope fehlt, gilt die Konfig für alle Behaelter mit dem gegeben topic.
+  	* Als refdata kann man auch die vom ilivalidator unterstützen http oder https URLs benutzen.
+  	*/
+	CLASS RefData =
+		 ignore: BOOLEAN; !! true falls der Eintrag aktuell ignoriert werden soll
+		 topic: TEXT*250; !! qualifzierter ili-Namen, z.B. DMAV.Liegenschaften
+		 scope: TEXT*250; !! z.B. bfsNr, oder Kantons-Kuerzel, oder NBIdent
+		 refdata: BAG {1..*} OF URI; !! URI der Referenzdaten z.B. ilidata:2523348976734
+		 comment : MTEXT; !! Kommentar zum Eintrag 
+		 MANDATORY CONSTRAINT DEFINED(topic) OR DEFINED (scope);
+	END RefData;
+	
+  END Mapping;
+
+END IliVRefData_V1_0.
+
