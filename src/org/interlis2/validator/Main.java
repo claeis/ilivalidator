@@ -399,7 +399,7 @@ public class Main {
 	  return null;
 	}
     public static String makeFileList(String[] xtfRefFile) {
-        if(xtfRefFile==null) {
+        if(xtfRefFile==null || xtfRefFile.length == 0) {
             return null;
         }
         StringBuffer files=new StringBuffer();
