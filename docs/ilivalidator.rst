@@ -634,13 +634,13 @@ INI-Globale Konfigurationen
 |                                 |                                                 |                                                                                   |
 +---------------------------------+-------------------------------------------------+-----------------------------------------------------------------------------------+
 | optionalBaskets                 | ["PARAMETER"]                                   | "ModelA.TopicA" und "ModelB.TopicC" sind die qualifizierten Namen der Topics      |
-|                                 | optionalBaskets="ModelA.TopicA;ModelB.TopicC"   | die in der Transferdatei vorkommen müssen.                                        |
+|                                 | optionalBaskets="ModelA.TopicA;ModelB.TopicC"   | die in der Transferdatei vorkommen dürfen aber nicht müssen.                      |
 |                                 |                                                 |                                                                                   |
 |                                 |                                                 | Mehrere Topics werden mit einem Strichpunkt ";" getrennt.                         |
 |                                 |                                                 |                                                                                   |
 +---------------------------------+-------------------------------------------------+-----------------------------------------------------------------------------------+
 | bannedBaskets                   | ["PARAMETER"]                                   | "ModelA.TopicA" und "ModelB.TopicC" sind die qualifizierten Namen der Topics      |
-|                                 | bannedBaskets="ModelA.TopicA;ModelB.TopicC"     | die in der Transferdatei vorkommen müssen.                                        |
+|                                 | bannedBaskets="ModelA.TopicA;ModelB.TopicC"     | die in der Transferdatei nicht vorkommen dürfen.                                  |
 |                                 |                                                 |                                                                                   |
 |                                 |                                                 | Mehrere Topics werden mit einem Strichpunkt ";" getrennt.                         |
 |                                 |                                                 |                                                                                   |
