@@ -478,6 +478,10 @@ public class Validator {
                 if(bannedBaskets!=null) {
                     modelConfig.setConfigValue(ValidationConfig.PARAMETER, ValidationConfig.BANNED_BASKETS, bannedBaskets);
                 }
+                final String skippedBaskets = settings.getValue(SETTING_SKIPPED_BASKETS);
+                if(skippedBaskets!=null) {
+                    modelConfig.setConfigValue(ValidationConfig.PARAMETER, ValidationConfig.SKIPPED_BASKETS, skippedBaskets);
+                }
 				allowItfAreaHoles = TRUE.equals(settings.getValue(SETTING_ALLOW_ITF_AREA_HOLES));
 				skipGeometryErrors=ValidationConfig.OFF.equals(modelConfig.getConfigValue(ValidationConfig.PARAMETER, ValidationConfig.DEFAULT_GEOMETRY_TYPE_VALIDATION));
 				String settingsMultiplicityValidation=settings.getValue(SETTING_MULTIPLICITY_VALIDATION);
@@ -530,6 +534,9 @@ public class Validator {
 							// feed object by object to validator
 							validator.validate(event);
 							statistics.add(event);
+							if (event instanceof ch.interlis.iox.StartBasketEvent && validator.isSkippingCurrentBasket()) {
+								statistics.markCurrentBasketSkipped();
+							}
 						}while(!(event instanceof EndTransferEvent));
 					}finally{
 						if(ioxReader!=null){
@@ -728,6 +735,8 @@ public class Validator {
                     settings.setValue(Validator.SETTING_OPTIONAL_BASKETS, config.getConfigValue(Validator.METACONFIG_ILIVALIDATOR, arg));
                 }else if(arg.equals("bannedBaskets")){
                     settings.setValue(Validator.SETTING_BANNED_BASKETS, config.getConfigValue(Validator.METACONFIG_ILIVALIDATOR, arg));
+                }else if(arg.equals("skippedBaskets")){
+                    settings.setValue(Validator.SETTING_SKIPPED_BASKETS, config.getConfigValue(Validator.METACONFIG_ILIVALIDATOR, arg));
                 }else if(arg.equals("refmapping")){
                     settings.setValue(Validator.SETTING_REF_MAPPING_DATA, config.getConfigValue(Validator.METACONFIG_ILIVALIDATOR, arg));
                 }else {
@@ -1022,6 +1031,10 @@ public class Validator {
      * e.g. ModelA.TopicA;ModelA.TopicB
      */
     public static final String SETTING_BANNED_BASKETS = "org.interlis2.validator.bannedBaskets";
+    /** List of topics skipped from transfer. Does not affect the topics of referenced data (`--refdata`).
+     * Qualified ili-name of topics; semicolon separated. e.g. ModelA.TopicA;ModelA.TopicB
+     */
+    public static final String SETTING_SKIPPED_BASKETS = "org.interlis2.validator.skippedBaskets";
 	/** Name of the data file (XTF format) that receives the validation results.
 	 */
 	public static final String SETTING_XTFLOG = "org.interlis2.validator.xtflog";
