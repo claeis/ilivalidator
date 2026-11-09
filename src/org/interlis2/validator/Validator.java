@@ -478,9 +478,11 @@ public class Validator {
                 if(bannedBaskets!=null) {
                     modelConfig.setConfigValue(ValidationConfig.PARAMETER, ValidationConfig.BANNED_BASKETS, bannedBaskets);
                 }
-                final String skippedBaskets = settings.getValue(SETTING_SKIPPED_BASKETS);
-                if(skippedBaskets!=null) {
-                    modelConfig.setConfigValue(ValidationConfig.PARAMETER, ValidationConfig.SKIPPED_BASKETS, skippedBaskets);
+                final String skippedBasketsSetting = settings.getValue(SETTING_SKIPPED_BASKETS);
+                String[] skippedBaskets = skippedBasketsSetting == null ? null : skippedBasketsSetting.split(ValidationConfig.SEP);
+                if (skippedBaskets != null && skippedBaskets.length > 0) {
+                    EhiLogger.logState("skippedBaskets <" + skippedBasketsSetting + ">");
+                    modelConfig.setConfigValue(ValidationConfig.PARAMETER, ValidationConfig.SKIPPED_BASKETS, skippedBasketsSetting);
                 }
 				allowItfAreaHoles = TRUE.equals(settings.getValue(SETTING_ALLOW_ITF_AREA_HOLES));
 				skipGeometryErrors=ValidationConfig.OFF.equals(modelConfig.getConfigValue(ValidationConfig.PARAMETER, ValidationConfig.DEFAULT_GEOMETRY_TYPE_VALIDATION));
@@ -509,7 +511,9 @@ public class Validator {
 					IoxReader ioxReader=null;
 					ioxReader = createReader(filename, td,errFactory,settings,pool);
 			        if(ioxReader instanceof IoxIliReader){
-			            ((IoxIliReader) ioxReader).setModel(td);    
+                        IoxIliReader ioxIliReader = (IoxIliReader) ioxReader;
+                        ioxIliReader.setModel(td);
+                        ioxIliReader.setSkipTopicFilter(skippedBaskets);
 			        }
 			        String fileMd5=RepositoryAccess.calcMD5(new File(filename));
 					statistics.setFilename(filename);
@@ -534,9 +538,6 @@ public class Validator {
 							// feed object by object to validator
 							validator.validate(event);
 							statistics.add(event);
-							if (event instanceof ch.interlis.iox.StartBasketEvent && validator.isSkippingCurrentBasket()) {
-								statistics.markCurrentBasketSkipped();
-							}
 						}while(!(event instanceof EndTransferEvent));
 					}finally{
 						if(ioxReader!=null){
