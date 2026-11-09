@@ -622,6 +622,11 @@ INI-Globale Konfigurationen
 |                                 |                                                 | Betrifft: INTERLIS.areAreas(), INTERLIS_ext.areAreas2(), INTERLIS_ext.areaAreas3()|
 |                                 |                                                 | Mögliche Einstellungen sind: "true", "false". DEFAULT ist "false".                |
 +---------------------------------+-------------------------------------------------+-----------------------------------------------------------------------------------+
+| degeneratedArcValidation        | ["PARAMETER"]                                   | Legt fest, wie ein Kreisbogen gemeldet wird, dessen drei Punkte auf               |
+|                                 | degeneratedArcValidation="off"                  | einer Geraden liegen (Meldung "arc is straight"). Ein solcher                     |
+|                                 |                                                 | Kreisbogen wird als Gerade geprüft.                                               |
+|                                 |                                                 | Mögliche Einstellungen sind: "on", "warning", "off". DEFAULT ist "warning".       |
++---------------------------------+-------------------------------------------------+-----------------------------------------------------------------------------------+
 | verifyModelVersion              | ["PARAMETER"]                                   | "true" es wird geprüft, ob die VERSIONs Angabe zum Model in der HEADERSECTION     |
 |                                 | verifyModelVersion="true"                       | der XTF-Datei mit der Angabe im Modell (.ili-Datei)  übereinstimmt.               |
 |                                 |                                                 | Wenn die Angabe nicht übereinstimmt, erfolt eine Info-Meldung.                    |
