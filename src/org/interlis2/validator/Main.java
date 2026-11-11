@@ -116,9 +116,9 @@ public class Main {
             }else if(arg.equals("--bannedBaskets")) {
                 argi++;
                 settings.setValue(Validator.SETTING_BANNED_BASKETS, args[argi]);
-            }else if(arg.equals("--skippedBaskets")) {
+            }else if(arg.equals("--skipBaskets")) {
                 argi++;
-                settings.setValue(Validator.SETTING_SKIPPED_BASKETS, args[argi]);
+                settings.setValue(Validator.SETTING_SKIP_BASKETS, args[argi]);
 			}else if(arg.equals("--forceTypeValidation")){
 				settings.setValue(Validator.SETTING_FORCE_TYPE_VALIDATION,Validator.TRUE);
 			}else if(arg.equals("--disableAreaValidation")){

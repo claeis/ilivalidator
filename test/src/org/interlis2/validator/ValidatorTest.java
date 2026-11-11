@@ -311,7 +311,7 @@ public class ValidatorTest {
 		Settings settings = new Settings();
 		settings.setValue(Validator.SETTING_ALL_OBJECTS_ACCESSIBLE, Validator.TRUE);
 		// both the transfer and ref data contain an object "o1" in TopicA, skipping it from the transfer falls back to ref data without id conflict
-		settings.setValue(Validator.SETTING_SKIPPED_BASKETS, "SkippedBaskets.TopicA");
+		settings.setValue(Validator.SETTING_SKIP_BASKETS, "SkippedBaskets.TopicA");
 		settings.setValue(Validator.SETTING_REF_DATA, "test/data/skippedBaskets/refData.xtf");
 		boolean ret = Validator.runValidation(new String[] { "test/data/skippedBaskets/skippedBaskets.xtf" }, settings);
 		assertTrue(ret);
