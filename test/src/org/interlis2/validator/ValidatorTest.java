@@ -170,7 +170,7 @@ public class ValidatorTest {
                 }
              }while(!(event instanceof EndTransferEvent));
             assertEquals(1,objs.size());
-            assertEquals("Beschreibung fehlt (\u00E4\u00F6\u00FC)",objs.values().iterator().next().getattrvalue("Message"));
+            assertEquals("Beschreibung fehlt (\u00E4\u00F6\u00FC) Beispiel4.Bodenbedeckung.GebaeudeArt.Constraint1",objs.values().iterator().next().getattrvalue("Message"));
         }finally {
             if(reader!=null) {
                 reader.close();
