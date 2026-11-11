@@ -116,6 +116,9 @@ public class Main {
             }else if(arg.equals("--bannedBaskets")) {
                 argi++;
                 settings.setValue(Validator.SETTING_BANNED_BASKETS, args[argi]);
+            }else if(arg.equals("--skippedBaskets")) {
+                argi++;
+                settings.setValue(Validator.SETTING_SKIPPED_BASKETS, args[argi]);
 			}else if(arg.equals("--forceTypeValidation")){
 				settings.setValue(Validator.SETTING_FORCE_TYPE_VALIDATION,Validator.TRUE);
 			}else if(arg.equals("--disableAreaValidation")){
@@ -209,6 +212,7 @@ public class Main {
                     System.err.println("--mandatoryBaskets Topics list of required topics in transfer file.");
                     System.err.println("--optionalBaskets Topics list of optional topics in transfer file.");
                     System.err.println("--bannedBaskets Topics list of not allowed topics in transfer file.");
+                    System.err.println("--skippedBaskets      List of topics skipped from transfer file. Does not affect topics in refdata files.");
                     System.err.println("--singlePass          skip any validations that require a second pass.");
 				    System.err.println("--log file            text file, that receives validation results.");
                     System.err.println("--logtime             include timestamps in logfile.");

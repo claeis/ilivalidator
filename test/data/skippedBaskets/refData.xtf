@@ -1,0 +1,16 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<ili:transfer xmlns:ili="http://www.interlis.ch/xtf/2.4/INTERLIS"
+              xmlns:SkippedBaskets="http://www.interlis.ch/xtf/2.4/SkippedBaskets">
+    <ili:headersection>
+        <ili:models>
+            <ili:model>SkippedBaskets</ili:model>
+        </ili:models>
+        <ili:sender>ili2gpkg-4.6.1-63db90def1260a503f0f2d4cb846686cd4851184</ili:sender>
+    </ili:headersection>
+    <ili:datasection>
+        <SkippedBaskets:TopicA ili:bid="b1">
+            <SkippedBaskets:ClassA ili:tid="o1">
+            </SkippedBaskets:ClassA>
+        </SkippedBaskets:TopicA>
+    </ili:datasection>
+</ili:transfer>
