@@ -7,6 +7,7 @@ import java.util.HashMap;
 import org.junit.Ignore;
 import org.junit.Test;
 import ch.ehi.basics.logging.EhiLogger;
+import ch.ehi.basics.logging.LogEvent;
 import ch.ehi.basics.settings.Settings;
 import ch.interlis.iom.IomObject;
 import ch.interlis.iom_j.xtf.XtfReader;
@@ -197,6 +198,35 @@ public class ValidatorTest {
         settings.setValue(Validator.SETTING_CONFIGFILE, "test/data/Beispiel2AreaOverlap.ini");
         boolean ret=Validator.runValidation("test/data/Beispiel2AreaOverlap.xtf", settings);
         assertTrue(ret);
+    }
+    @Test
+    public void xtfOkWithDegeneratedArc() {
+        LogCollector logCollector=new LogCollector();
+        EhiLogger.getInstance().addListener(logCollector);
+        boolean ret=Validator.runValidation("test/data/Beispiel2DegeneratedArc.xtf", null);
+        EhiLogger.getInstance().removeListener(logCollector);
+        assertTrue(ret);
+        assertEquals(3, countArcIsStraightMsgs(logCollector));
+    }
+    @Test
+    public void xtfOkWithValidationConfigDegeneratedArcValidationOff() {
+        LogCollector logCollector=new LogCollector();
+        EhiLogger.getInstance().addListener(logCollector);
+        Settings settings=new Settings();
+        settings.setValue(Validator.SETTING_CONFIGFILE, "test/data/Beispiel2DegeneratedArc.ini");
+        boolean ret=Validator.runValidation("test/data/Beispiel2DegeneratedArc.xtf", settings);
+        EhiLogger.getInstance().removeListener(logCollector);
+        assertTrue(ret);
+        assertEquals(0, countArcIsStraightMsgs(logCollector));
+    }
+    private int countArcIsStraightMsgs(LogCollector logCollector) {
+        int count=0;
+        for(LogEvent event:logCollector.getEvents()) {
+            if(event.getEventMsg().contains("arc is straight")) {
+                count++;
+            }
+        }
+        return count;
     }
 	@Test
 	public void xtfFailForceTypeCheckWithValidationConfig() {
