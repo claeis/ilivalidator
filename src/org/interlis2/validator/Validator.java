@@ -478,6 +478,12 @@ public class Validator {
                 if(bannedBaskets!=null) {
                     modelConfig.setConfigValue(ValidationConfig.PARAMETER, ValidationConfig.BANNED_BASKETS, bannedBaskets);
                 }
+                final String skipBasketsSetting = settings.getValue(SETTING_SKIP_BASKETS);
+                String[] skipBaskets = skipBasketsSetting == null ? null : skipBasketsSetting.split(ValidationConfig.SEP);
+                if (skipBaskets != null && skipBaskets.length > 0) {
+                    EhiLogger.logState("skipBaskets <" + skipBasketsSetting + ">");
+                    modelConfig.setConfigValue(ValidationConfig.PARAMETER, ValidationConfig.SKIPPED_BASKETS, skipBasketsSetting);
+                }
 				allowItfAreaHoles = TRUE.equals(settings.getValue(SETTING_ALLOW_ITF_AREA_HOLES));
 				skipGeometryErrors=ValidationConfig.OFF.equals(modelConfig.getConfigValue(ValidationConfig.PARAMETER, ValidationConfig.DEFAULT_GEOMETRY_TYPE_VALIDATION));
 				String settingsMultiplicityValidation=settings.getValue(SETTING_MULTIPLICITY_VALIDATION);
@@ -505,7 +511,9 @@ public class Validator {
 					IoxReader ioxReader=null;
 					ioxReader = createReader(filename, td,errFactory,settings,pool);
 			        if(ioxReader instanceof IoxIliReader){
-			            ((IoxIliReader) ioxReader).setModel(td);    
+                        IoxIliReader ioxIliReader = (IoxIliReader) ioxReader;
+                        ioxIliReader.setModel(td);
+                        ioxIliReader.setSkipTopicFilter(skipBaskets);
 			        }
 			        String fileMd5=RepositoryAccess.calcMD5(new File(filename));
 					statistics.setFilename(filename);
@@ -728,6 +736,8 @@ public class Validator {
                     settings.setValue(Validator.SETTING_OPTIONAL_BASKETS, config.getConfigValue(Validator.METACONFIG_ILIVALIDATOR, arg));
                 }else if(arg.equals("bannedBaskets")){
                     settings.setValue(Validator.SETTING_BANNED_BASKETS, config.getConfigValue(Validator.METACONFIG_ILIVALIDATOR, arg));
+                }else if(arg.equals("skipBaskets")){
+                    settings.setValue(Validator.SETTING_SKIP_BASKETS, config.getConfigValue(Validator.METACONFIG_ILIVALIDATOR, arg));
                 }else if(arg.equals("refmapping")){
                     settings.setValue(Validator.SETTING_REF_MAPPING_DATA, config.getConfigValue(Validator.METACONFIG_ILIVALIDATOR, arg));
                 }else {
@@ -1022,6 +1032,10 @@ public class Validator {
      * e.g. ModelA.TopicA;ModelA.TopicB
      */
     public static final String SETTING_BANNED_BASKETS = "org.interlis2.validator.bannedBaskets";
+    /** List of topics skipped from transfer. Does not affect the topics of referenced data (`--refdata`).
+     * Qualified ili-name of topics; semicolon separated. e.g. ModelA.TopicA;ModelA.TopicB
+     */
+    public static final String SETTING_SKIP_BASKETS = "org.interlis2.validator.skipBaskets";
 	/** Name of the data file (XTF format) that receives the validation results.
 	 */
 	public static final String SETTING_XTFLOG = "org.interlis2.validator.xtflog";

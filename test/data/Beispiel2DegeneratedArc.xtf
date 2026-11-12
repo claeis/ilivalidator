@@ -1,0 +1,44 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<TRANSFER xmlns="http://www.interlis.ch/INTERLIS2.3">
+    <HEADERSECTION SENDER="ilivalidator" VERSION="2.3">
+        <MODELS>
+            <MODEL NAME="Beispiel2" VERSION="2011-12-22" URI="http://interlis.ch"></MODEL>
+        </MODELS>
+    </HEADERSECTION>
+    <DATASECTION>
+        <Beispiel2.Bodenbedeckung BID="b1">
+            <Beispiel2.Bodenbedeckung.BoFlaechen TID="o1">
+                <Form>
+                    <SURFACE>
+                        <BOUNDARY>
+                            <POLYLINE>
+                                <COORD>
+                                    <C1>2600000.000</C1>
+                                    <C2>1200000.000</C2>
+                                </COORD>
+                                <ARC>
+                                    <C1>2600010.000</C1>
+                                    <C2>1200000.000</C2>
+                                    <A1>2600005.000</A1>
+                                    <A2>1200000.000</A2>
+                                </ARC>
+                                <COORD>
+                                    <C1>2600010.000</C1>
+                                    <C2>1200010.000</C2>
+                                </COORD>
+                                <COORD>
+                                    <C1>2600000.000</C1>
+                                    <C2>1200010.000</C2>
+                                </COORD>
+                                <COORD>
+                                    <C1>2600000.000</C1>
+                                    <C2>1200000.000</C2>
+                                </COORD>
+                            </POLYLINE>
+                        </BOUNDARY>
+                    </SURFACE>
+                </Form>
+            </Beispiel2.Bodenbedeckung.BoFlaechen>
+        </Beispiel2.Bodenbedeckung>
+    </DATASECTION>
+</TRANSFER>

@@ -7,6 +7,7 @@ import java.util.HashMap;
 import org.junit.Ignore;
 import org.junit.Test;
 import ch.ehi.basics.logging.EhiLogger;
+import ch.ehi.basics.logging.LogEvent;
 import ch.ehi.basics.settings.Settings;
 import ch.interlis.iom.IomObject;
 import ch.interlis.iom_j.xtf.XtfReader;
@@ -169,7 +170,7 @@ public class ValidatorTest {
                 }
              }while(!(event instanceof EndTransferEvent));
             assertEquals(1,objs.size());
-            assertEquals("Beschreibung fehlt (\u00E4\u00F6\u00FC)",objs.values().iterator().next().getattrvalue("Message"));
+            assertEquals("Beschreibung fehlt (\u00E4\u00F6\u00FC) Beispiel4.Bodenbedeckung.GebaeudeArt.Constraint1",objs.values().iterator().next().getattrvalue("Message"));
         }finally {
             if(reader!=null) {
                 reader.close();
@@ -197,6 +198,35 @@ public class ValidatorTest {
         settings.setValue(Validator.SETTING_CONFIGFILE, "test/data/Beispiel2AreaOverlap.ini");
         boolean ret=Validator.runValidation("test/data/Beispiel2AreaOverlap.xtf", settings);
         assertTrue(ret);
+    }
+    @Test
+    public void xtfOkWithDegeneratedArc() {
+        LogCollector logCollector=new LogCollector();
+        EhiLogger.getInstance().addListener(logCollector);
+        boolean ret=Validator.runValidation("test/data/Beispiel2DegeneratedArc.xtf", null);
+        EhiLogger.getInstance().removeListener(logCollector);
+        assertTrue(ret);
+        assertEquals(3, countArcIsStraightMsgs(logCollector));
+    }
+    @Test
+    public void xtfOkWithValidationConfigDegeneratedArcValidationOff() {
+        LogCollector logCollector=new LogCollector();
+        EhiLogger.getInstance().addListener(logCollector);
+        Settings settings=new Settings();
+        settings.setValue(Validator.SETTING_CONFIGFILE, "test/data/Beispiel2DegeneratedArc.ini");
+        boolean ret=Validator.runValidation("test/data/Beispiel2DegeneratedArc.xtf", settings);
+        EhiLogger.getInstance().removeListener(logCollector);
+        assertTrue(ret);
+        assertEquals(0, countArcIsStraightMsgs(logCollector));
+    }
+    private int countArcIsStraightMsgs(LogCollector logCollector) {
+        int count=0;
+        for(LogEvent event:logCollector.getEvents()) {
+            if(event.getEventMsg().contains("arc is straight")) {
+                count++;
+            }
+        }
+        return count;
     }
 	@Test
 	public void xtfFailForceTypeCheckWithValidationConfig() {
@@ -276,4 +306,23 @@ public class ValidatorTest {
         assertTrue(ret);
     }
 
+	@Test
+	public void xtfSkippedBasketOk() {
+		Settings settings = new Settings();
+		settings.setValue(Validator.SETTING_ALL_OBJECTS_ACCESSIBLE, Validator.TRUE);
+		// both the transfer and ref data contain an object "o1" in TopicA, skipping it from the transfer falls back to ref data without id conflict
+		settings.setValue(Validator.SETTING_SKIP_BASKETS, "SkippedBaskets.TopicA");
+		settings.setValue(Validator.SETTING_REF_DATA, "test/data/skippedBaskets/refData.xtf");
+		boolean ret = Validator.runValidation(new String[] { "test/data/skippedBaskets/skippedBaskets.xtf" }, settings);
+		assertTrue(ret);
+	}
+
+	@Test
+	public void xtfSkippedBasketFail() {
+		Settings settings = new Settings();
+		settings.setValue(Validator.SETTING_ALL_OBJECTS_ACCESSIBLE, Validator.TRUE);
+		settings.setValue(Validator.SETTING_REF_DATA, "test/data/skippedBaskets/refData.xtf");
+		boolean ret = Validator.runValidation(new String[] { "test/data/skippedBaskets/skippedBaskets.xtf" }, settings);
+		assertFalse(ret);
+	}
 }

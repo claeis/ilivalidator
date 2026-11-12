@@ -1,0 +1,16 @@
+INTERLIS 2.4;
+
+MODEL SkippedBaskets AT "http://www.interlis.ch/ili2c/tests/" VERSION "1" =
+    TOPIC TopicA =
+        CLASS ClassA =
+        END ClassA;
+    END TopicA;
+
+    TOPIC TopicB =
+        DEPENDS ON TopicA;
+
+        CLASS ClassB =
+            reference : MANDATORY REFERENCE TO (EXTERNAL) SkippedBaskets.TopicA.ClassA;
+        END ClassB;
+    END TopicB;
+END SkippedBaskets.

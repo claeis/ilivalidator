@@ -92,6 +92,20 @@ public class IliRepositoryTest {
         assertTrue(ret);
     }
     @Test
+    public void xtf23_extRef_MetaConfigWithoutCmdlineRefDataOk() {
+        // as set by Main/MainFrame if no --refdata/--refmapping is given
+        Settings settings=new Settings();
+        settings.setValue(Validator.SETTING_ALL_OBJECTS_ACCESSIBLE, Validator.TRUE);
+        settings.setValue(Validator.SETTING_ILIDIRS, "test/data/ilirepository/repos");
+        settings.setValue(Validator.SETTING_META_CONFIGFILE,"ilidata:163d16de-83df-4d84-8039-256f2261e226");
+        settings.setValue(Validator.SETTING_REF_DATA,Main.makeFileList(new String[0]));
+        settings.setValue(Validator.SETTING_REF_MAPPING_DATA,Main.makeFileList(new String[0]));
+        String[] listOfFiles = new String[1];
+        listOfFiles[0]="test/data/ilirepository/ExtRef23a.xtf";
+        boolean ret=Validator.runValidation(listOfFiles, settings);
+        assertTrue(ret);
+    }
+    @Test
     public void xtf23_extRef_DatasetIdOk() {
         Settings settings=new Settings();
         settings.setValue(Validator.SETTING_ALL_OBJECTS_ACCESSIBLE, Validator.TRUE);

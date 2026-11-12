@@ -343,6 +343,9 @@ Optionen:
 | ``--bannedBaskets topicnames``              | Die Transferdatei darf keine Baskets der gegebenen Topics enthalten. Mehrere Topicnamen können durch Semikolon ‚;‘ getrennt werden.                                                                                                                                                                                                                                                                                                                                                                                                    |
 |                                             |                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                        |
 +---------------------------------------------+----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------+
+| ``--skipBaskets topicnames``                | Die Baskets der gegebenen Topics werden aus der Transferdatei übersprungen. Referenzdaten sind davon nicht betroffen und werden nicht übersprungen. Mehrere Topicnamen können durch Semikolon ‚;‘ getrennt werden.                                                                                                                                                                                                                                                                                                                     |
+|                                             |                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                        |
++---------------------------------------------+----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------+
 | ``--models modelnames``                     | Setzt spezifische Modellnamen, welche sich innerhalb von ili-Dateien befinden. Mehrere Modellnamen können durch Semikolon ‚;‘ getrennt werden. Das Setzen des Pfades, der zu den Modellen führt, muss mittels '--modeldir path' angegeben werden.                                                                                                                                                                                                                                                                                      |
 |                                             |                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                        |
 +---------------------------------------------+----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------+
@@ -520,7 +523,13 @@ In der Meta-Konfigurationsdatei werden die folgenden Parameter unterstützt (hie
 |                                 | .. code::                                          |                                                                                   |
 |                                 |                                                    |                                                                                   |
 | bannedBaskets                   |   [ch.ehi.ilivalidator]                            | Entspricht dem Kommandozeilenargument ``--bannedBaskets``                         |
-|                                 |   bannedBaskets=ModelA.TopicA;ModelB.TopicC        |                                                                                   |  
+|                                 |   bannedBaskets=ModelA.TopicA;ModelB.TopicC        |                                                                                   |
+|                                 |                                                    |                                                                                   |
++---------------------------------+----------------------------------------------------+-----------------------------------------------------------------------------------+
+|                                 | .. code::                                          |                                                                                   |
+|                                 |                                                    |                                                                                   |
+| skipBaskets                     |   [ch.ehi.ilivalidator]                            | Entspricht dem Kommandozeilenargument ``--skipBaskets``                           |
+|                                 |   skipBaskets=ModelA.TopicA;ModelB.TopicC          |                                                                                   |
 |                                 |                                                    |                                                                                   |
 +---------------------------------+----------------------------------------------------+-----------------------------------------------------------------------------------+
 |                                 | .. code::                                          |                                                                                   |
@@ -622,6 +631,11 @@ INI-Globale Konfigurationen
 |                                 |                                                 | Betrifft: INTERLIS.areAreas(), INTERLIS_ext.areAreas2(), INTERLIS_ext.areaAreas3()|
 |                                 |                                                 | Mögliche Einstellungen sind: "true", "false". DEFAULT ist "false".                |
 +---------------------------------+-------------------------------------------------+-----------------------------------------------------------------------------------+
+| degeneratedArcValidation        | ["PARAMETER"]                                   | Legt fest, wie ein Kreisbogen gemeldet wird, dessen drei Punkte auf               |
+|                                 | degeneratedArcValidation="off"                  | einer Geraden liegen (Meldung "arc is straight"). Ein solcher                     |
+|                                 |                                                 | Kreisbogen wird als Gerade geprüft.                                               |
+|                                 |                                                 | Mögliche Einstellungen sind: "on", "warning", "off". DEFAULT ist "warning".       |
++---------------------------------+-------------------------------------------------+-----------------------------------------------------------------------------------+
 | verifyModelVersion              | ["PARAMETER"]                                   | "true" es wird geprüft, ob die VERSIONs Angabe zum Model in der HEADERSECTION     |
 |                                 | verifyModelVersion="true"                       | der XTF-Datei mit der Angabe im Modell (.ili-Datei)  übereinstimmt.               |
 |                                 |                                                 | Wenn die Angabe nicht übereinstimmt, erfolt eine Info-Meldung.                    |
@@ -634,13 +648,20 @@ INI-Globale Konfigurationen
 |                                 |                                                 |                                                                                   |
 +---------------------------------+-------------------------------------------------+-----------------------------------------------------------------------------------+
 | optionalBaskets                 | ["PARAMETER"]                                   | "ModelA.TopicA" und "ModelB.TopicC" sind die qualifizierten Namen der Topics      |
-|                                 | optionalBaskets="ModelA.TopicA;ModelB.TopicC"   | die in der Transferdatei vorkommen müssen.                                        |
+|                                 | optionalBaskets="ModelA.TopicA;ModelB.TopicC"   | die in der Transferdatei vorkommen dürfen aber nicht müssen.                      |
 |                                 |                                                 |                                                                                   |
 |                                 |                                                 | Mehrere Topics werden mit einem Strichpunkt ";" getrennt.                         |
 |                                 |                                                 |                                                                                   |
 +---------------------------------+-------------------------------------------------+-----------------------------------------------------------------------------------+
 | bannedBaskets                   | ["PARAMETER"]                                   | "ModelA.TopicA" und "ModelB.TopicC" sind die qualifizierten Namen der Topics      |
-|                                 | bannedBaskets="ModelA.TopicA;ModelB.TopicC"     | die in der Transferdatei vorkommen müssen.                                        |
+|                                 | bannedBaskets="ModelA.TopicA;ModelB.TopicC"     | die in der Transferdatei nicht vorkommen dürfen.                                  |
+|                                 |                                                 |                                                                                   |
+|                                 |                                                 | Mehrere Topics werden mit einem Strichpunkt ";" getrennt.                         |
+|                                 |                                                 |                                                                                   |
++---------------------------------+-------------------------------------------------+-----------------------------------------------------------------------------------+
+| skipBaskets                     | ["PARAMETER"]                                   | "ModelA.TopicA" und "ModelB.TopicC" sind die qualifizierten Namen der Topics      |
+|                                 | skipBaskets="ModelA.TopicA;ModelB.TopicC"       | deren Baskets in den zu prüfenden Daten übersprungen werden.                      |
+|                                 |                                                 | Referenzdaten sind nicht betroffen.                                               |
 |                                 |                                                 |                                                                                   |
 |                                 |                                                 | Mehrere Topics werden mit einem Strichpunkt ";" getrennt.                         |
 |                                 |                                                 |                                                                                   |
@@ -854,6 +875,9 @@ Falls keiner dieser Parameter definiert wurde, gilt: ``--optionalBaskets=ANY``. 
 Falls optionalBaskets gesetzt ist und bannedBaskets nicht gesetzt ist, gilt: ``--bannedBaskets=ANY``.
 
 Falls mandatoryBaskets gesetzt ist und optionalBaskets nicht gesetzt ist, gilt: ``--optionalBaskets=ANY``.
+
+Mit ``--skipBaskets`` werden Baskets der gegebenen Topics aus der Transferdatei übersprungen, als wären sie nicht vorhanden.
+Referenzdaten (``--refdata``) sind davon nicht betroffen.
 
 
 INTERLIS 1
