@@ -1,5 +1,21 @@
-ilivalidator 1.15.1 (2026-11-xx)
+ilivalidator 1.15.1 (2026-11-12)
 --------------------------------
+- Implement areAreasWithoutGaps/areAreasWithoutGaps2
+- new option --skipBaskets to skip baskets from transfer (#471)
+- Configurable severity of "arc is straight" messages (#473)
+- evaluate calculated attributes of views (#472)
+- areAreas() uses tolerance of geometry definition (#468)
+- evaluate embedded role object path (#336)
+- Fix ClassCastException in existence constraint with association objects (#397)
+- Append constraint name to custom constraint message (#289)
+- Skip constraints navigating inaccessible external objects (#460)
+- Support EXISTENCE CONSTRAINT of geometry required in coord (#358)
+- Fix ch.interlis.referenceData Metaconfig since 1.14.4 ineffective (#458)
+- Support KGKCGC_DMAVTYM_Topologie_V1_1 functions
+- Xtf24Reader: local part cannot be "null" when creating a QName"
+- new function DMAVTYM_Topologie_V1_1.geometricFilter
+- resolve calculated attributes
+- Constraint function "covers" doesn't work correct with BAG OF lines (ilivalidator#465)
 - iox-ili-1.24.6
 - ili2c-5.6.9
 
